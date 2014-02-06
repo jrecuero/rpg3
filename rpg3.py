@@ -14,30 +14,30 @@ DIR_UP    = 3
 DIR_DOWN  = 4
 
 
-def _goRight(theFirstLoopIdx, theSecondLoopIdx):
+def _updatePositionLoopToRight(theFirstLoopIdx, theSecondLoopIdx):
     return(theFirstLoopIdx, theSecondLoopIdx)
 
 
-def _goDown(theFirstLoopIdx, theSecondLoopIdx):
+def _updatePostionLoopToDown(theFirstLoopIdx, theSecondLoopIdx):
     return(theSecondLoopIdx, theFirstLoopIdx)
 
 
-MOVE_IN_BOARD = {'DIR_RIGHT': {'loopFunc': _goRight,
-                               'inc': 1,
-                               'axe': 'AXE_X',
-                               'direction': DIR_RIGHT},
-                 'DIR_LEFT':  {'loopFunc': _goRight,
-                               'inc': -1,
-                               'axe': 'AXE_X',
-                               'direction': DIR_LEFT},
-                 'DIR_DOWN':  {'loopFunc': _goDown,
-                               'inc': 1,
-                               'axe': 'AXE_Y',
-                               'direction': DIR_DOWN},
-                 'DIR_UP':    {'loopFunc': _goDown,
-                               'inc': -1,
-                               'axe': 'AXE_Y',
-                               'direction': DIR_UP}, }
+MOVE_IN_BOARD = {'right': {'loopFunc':  lambda first, second: (first, second),
+                           'incFunc':   lambda (x, y): (x, y + 1),
+                           'axe':       AXE_X,
+                           'direction': DIR_RIGHT},
+                 'left':  {'loopFunc':  lambda first, second: (first, second),
+                           'incFunc':   lambda (x, y): (x, y - 1),
+                           'axe':       AXE_X,
+                           'direction': DIR_LEFT},
+                 'down':  {'loopFunc':  lambda first, second: (second, first),
+                           'incFunc':   lambda (x, y): (x + 1, y),
+                           'axe':       AXE_Y,
+                           'direction': DIR_DOWN},
+                 'up':    {'loopFunc':  lambda first, second: (second, first),
+                           'incFunc':   lambda (x, y): (x - 1, y),
+                           'axe':       AXE_Y,
+                           'direction': DIR_UP}, }
 
 
 matrix = [[0 for x in xrange(BOARD_SIZE)] for x in xrange(BOARD_SIZE)]
@@ -136,23 +136,30 @@ class TableBoard(object):
             x, y = thePosition
             self.matrix[x][y] = theCell
 
-    def incPosition(self, thePosition, theAxe, theDirection):
-        x, y = thePosition
-        moveOp = 1
-        if theDirection == DIR_UP or theDirection == DIR_LEFT:
-            moveOp = -1
-        if theAxe == AXE_X:
-            y += moveOp
-        elif theAxe == AXE_Y:
-            x += moveOp
-        if x >= self.size or y >= self.size or x < 0 or y < 0:
-            return None
-        return (x, y)
+    def isValueIn(self, theValue):
+        return (theValue >= 0) and (theValue < self.size)
+
+    #def incPosition(self, thePosition, theAxe, theDirection):
+    #    x, y = thePosition
+    #    moveOp = 1
+    #    if theDirection == DIR_UP or theDirection == DIR_LEFT:
+    #        moveOp = -1
+    #    if theAxe == AXE_X:
+    #        y += moveOp
+    #    elif theAxe == AXE_Y:
+    #        x += moveOp
+    #    if x >= self.size or y >= self.size or x < 0 or y < 0:
+    #        return None
+    #    return (x, y)
+
+    def incPosition(self, thePosition, theSide):
+        newPosition = MOVE_IN_BOARD[theSide]['incFunc'](thePosition)
+        return None if False in filter(self.isValueIn, newPosition) else newPosition
 
     def isMatch(self, theValue, theMatch):
         return theValue == theMatch or theMatch == WILDCARD
 
-    def findMatch(self, thePosition, theValue, theCounter, theMatchSet, theAxe, theDirection):
+    def findMatch(self, thePosition, theValue, theCounter, theMatchSet, theSide):
         x, y = thePosition
         if self.isMatch(theValue, self.getCell(thePosition)):
             theCounter += 1
@@ -160,8 +167,9 @@ class TableBoard(object):
             if theCounter == COUNT_LIMIT:
                 return theCounter
             else:
-                newPosition = self.incPosition(thePosition, theAxe, theDirection)
-                return self.findMatch(newPosition, theValue, theCounter, theMatchSet, theAxe, theDirection) if newPosition else theCounter
+                #newPosition = self.incPosition(thePosition, theAxe, theDirection)
+                newPosition = self.incPosition(thePosition, theSide)
+                return self.findMatch(newPosition, theValue, theCounter, theMatchSet, theSide) if newPosition else theCounter
         else:
             return theCounter
 
