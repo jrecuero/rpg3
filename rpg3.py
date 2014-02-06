@@ -14,6 +14,32 @@ DIR_UP    = 3
 DIR_DOWN  = 4
 
 
+def _goRight(theFirstLoopIdx, theSecondLoopIdx):
+    return(theFirstLoopIdx, theSecondLoopIdx)
+
+
+def _goDown(theFirstLoopIdx, theSecondLoopIdx):
+    return(theSecondLoopIdx, theFirstLoopIdx)
+
+
+MOVE_IN_BOARD = {'DIR_RIGHT': {'loopFunc': _goRight,
+                               'inc': 1,
+                               'axe': 'AXE_X',
+                               'direction': DIR_RIGHT},
+                 'DIR_LEFT':  {'loopFunc': _goRight,
+                               'inc': -1,
+                               'axe': 'AXE_X',
+                               'direction': DIR_LEFT},
+                 'DIR_DOWN':  {'loopFunc': _goDown,
+                               'inc': 1,
+                               'axe': 'AXE_Y',
+                               'direction': DIR_DOWN},
+                 'DIR_UP':    {'loopFunc': _goDown,
+                               'inc': -1,
+                               'axe': 'AXE_Y',
+                               'direction': DIR_UP}, }
+
+
 matrix = [[0 for x in xrange(BOARD_SIZE)] for x in xrange(BOARD_SIZE)]
 
 
@@ -109,6 +135,82 @@ class TableBoard(object):
         if self.isCellInBoard(thePosition):
             x, y = thePosition
             self.matrix[x][y] = theCell
+
+    def incPosition(self, thePosition, theAxe, theDirection):
+        x, y = thePosition
+        moveOp = 1
+        if theDirection == DIR_UP or theDirection == DIR_LEFT:
+            moveOp = -1
+        if theAxe == AXE_X:
+            y += moveOp
+        elif theAxe == AXE_Y:
+            x += moveOp
+        if x >= self.size or y >= self.size or x < 0 or y < 0:
+            return None
+        return (x, y)
+
+    def isMatch(self, theValue, theMatch):
+        return theValue == theMatch or theMatch == WILDCARD
+
+    def findMatch(self, thePosition, theValue, theCounter, theMatchSet, theAxe, theDirection):
+        x, y = thePosition
+        if self.isMatch(theValue, self.getCell(thePosition)):
+            theCounter += 1
+            theMatchSet.add(thePosition)
+            if theCounter == COUNT_LIMIT:
+                return theCounter
+            else:
+                newPosition = self.incPosition(thePosition, theAxe, theDirection)
+                return self.findMatch(newPosition, theValue, theCounter, theMatchSet, theAxe, theDirection) if newPosition else theCounter
+        else:
+            return theCounter
+
+    def matchAtCell(self, thePosition):
+        xMatch = set()
+        yMatch = set()
+        self.findMatch(thePosition, self.getCell(thePosition), 0, xMatch, AXE_X, DIR_RIGHT)
+        self.findMatch(thePosition, self.getCell(thePosition), 0, xMatch, AXE_X, DIR_LEFT)
+        self.findMatch(thePosition, self.getCell(thePosition), 0, yMatch, AXE_Y, DIR_DOWN)
+        self.findMatch(thePosition, self.getCell(thePosition), 0, yMatch, AXE_Y, DIR_UP)
+        return (list(xMatch), list(yMatch))
+
+    def _loopForCells(self, theSide):
+        match = []
+        for firstLoopIdx in xrange(self.size):
+            secondLoopIdx = 0
+            while secondLoopIdx <= (self.size - 2):
+                position  = MOVE_IN_BOARD[theSide]['loopFunc'](firstLoopIdx, secondLoopIdx)
+                axe       = MOVE_IN_BOARD[theSide]['axe']
+                direction = MOVE_IN_BOARD[theSide]['direction']
+                traverseMatch = set()
+                inc = self.findMatch(position, self.getCell(position), 0, traverseMatch, axe, direction)
+                if inc >= MIN_MATCH:
+                    match.append(list(traverseMatch))
+                secondLoopIdx += inc
+        return match
+
+    def matchBoard(self):
+        xMatch = []
+        yMatch = []
+        for x in xrange(self.size):
+            y = 0
+            while y <= (self.size - 2):
+                position = (x, y)
+                match = set()
+                inc = self.findMatch(position, self.getCell(position), 0, match, AXE_X, DIR_RIGHT)
+                if inc >= MIN_MATCH:
+                    xMatch.append(list(match))
+                y += inc
+        for y in xrange(self.size):
+            x = 0
+            while x <= (self.size - 2):
+                position = (x, y)
+                match = set()
+                inc = self.findMatch(position, self.getCell(position), 0, match, AXE_Y, DIR_DOWN)
+                if inc >= MIN_MATCH:
+                    yMatch.append(list(match))
+                x += inc
+        return (xMatch, yMatch)
 
 
 class Rpg3(cocos.layer.Layer):
