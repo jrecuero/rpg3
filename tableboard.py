@@ -1,3 +1,6 @@
+import cell
+
+
 COUNT_LIMIT = 100
 MIN_MATCH   = 3
 WILDCARD    = 9
@@ -33,7 +36,7 @@ class TableBoard(object):
 
     def __init__(self, theSize):
         self.size   = theSize
-        self.matrix = [[None for x in xrange(theSize)] for x in xrange(theSize)]
+        self.matrix = [[cell.Cell((x, y)) for y in xrange(theSize)] for x in xrange(theSize)]
 
     def isCellInBoard(self, thePosition):
         x, y = thePosition
@@ -50,6 +53,10 @@ class TableBoard(object):
         cell = self.getCell(thePosition)
         return cell.getData() if cell else None
 
+    def getCellSprite(self, thePosition):
+        cell = self.getCell(thePosition)
+        return cell.getSprite() if cell else None
+
     def setCell(self, thePosition, theCell):
         if self.isCellInBoard(thePosition):
             x, y = thePosition
@@ -62,10 +69,16 @@ class TableBoard(object):
         cell = self.getCell(thePosition)
         return cell.setData(theData) if cell else False
 
+    def setCellSprite(self, thePosition, theSprite):
+        cell = self.getCell(thePosition)
+        return cell.setSprite(theSprite) if cell else False
+
     def swapCells(self, theFirstCell, theSecondCell):
         x1, y1 = theFirstCell.position
         x2, y2 = theSecondCell.position
+        theFirstCell.position, theSecondCell.position = theSecondCell.position, theFirstCell.position,
         self.matrix[x1][y1], self.matrix[x2][y2] = self.matrix[x2][y2], self.matrix[x1][y1]
+        return True
 
     def isValueIn(self, theValue):
         return (theValue >= 0) and (theValue < self.size)
@@ -83,12 +96,12 @@ class TableBoard(object):
     #        return None
     #    return (x, y)
 
-    def incPosition(self, thePosition, theSide):
-        newPosition = MOVE_IN_BOARD[theSide]['incFunc'](thePosition)
-        return None if False in filter(self.isValueIn, newPosition) else newPosition
-
     def isMatch(self, theValue, theMatch):
         return theValue == theMatch or theMatch == WILDCARD
+
+    def incPosition(self, thePosition, theSide):
+        newPosition = MOVE_IN_BOARD[theSide]['incFunc'](thePosition)
+        return None if False in map(self.isValueIn, newPosition) else newPosition
 
     def findMatch(self, thePosition, theValue, theCounter, theMatchSet, theSide):
         x, y = thePosition
@@ -154,3 +167,10 @@ class TableBoard(object):
         #            yMatch.append(list(match))
         #        x += inc
         #return (xMatch, yMatch)
+
+
+if __name__ == '__main__':
+    import unittest
+    import test.test_tableboard as testTB
+    runner = unittest.TextTestRunner(verbosity=2)
+    runner.run(testTB.TableBoardTestSuite())
