@@ -117,27 +117,35 @@ class TableBoard(object):
         else:
             return theCounter
 
+    def _copyToListAndSort(self, theSet):
+        lista = list(theSet)
+        lista.sort()
+        return lista
+
     def matchAtCell(self, thePosition):
         xMatch = set()
         yMatch = set()
-        self.findMatch(thePosition, self.getCellData(thePosition), 0, xMatch, AXE_X, DIR_RIGHT)
-        self.findMatch(thePosition, self.getCellData(thePosition), 0, xMatch, AXE_X, DIR_LEFT)
-        self.findMatch(thePosition, self.getCellData(thePosition), 0, yMatch, AXE_Y, DIR_DOWN)
-        self.findMatch(thePosition, self.getCellData(thePosition), 0, yMatch, AXE_Y, DIR_UP)
-        return (list(xMatch), list(yMatch))
+        self.findMatch(thePosition, self.getCellData(thePosition), 0, xMatch, 'right')
+        self.findMatch(thePosition, self.getCellData(thePosition), 0, xMatch, 'left')
+        self.findMatch(thePosition, self.getCellData(thePosition), 0, yMatch, 'down')
+        self.findMatch(thePosition, self.getCellData(thePosition), 0, yMatch, 'up')
+        return (self._copyToListAndSort(xMatch), self._copyToListAndSort(yMatch))
 
     def _loopForCells(self, theSide):
         match = []
         for firstLoopIdx in xrange(self.size):
             secondLoopIdx = 0
             while secondLoopIdx <= (self.size - 2):
+                #print ('%s %s %s %s' % (theSide, firstLoopIdx, secondLoopIdx, match))
                 position  = MOVE_IN_BOARD[theSide]['loopFunc'](firstLoopIdx, secondLoopIdx)
-                axe       = MOVE_IN_BOARD[theSide]['axe']
-                direction = MOVE_IN_BOARD[theSide]['direction']
+                #axe       = MOVE_IN_BOARD[theSide]['axe']
+                #direction = MOVE_IN_BOARD[theSide]['direction']
                 traverseMatch = set()
-                inc = self.findMatch(position, self.getCellData(position), 0, traverseMatch, axe, direction)
+                inc = self.findMatch(position, self.getCellData(position), 0, traverseMatch, theSide)
                 if inc >= MIN_MATCH:
-                    match.append(list(traverseMatch))
+                    traverseListMatch = list(traverseMatch)
+                    traverseListMatch.sort()
+                    match.append(traverseListMatch)
                 secondLoopIdx += inc
         return match
 
@@ -153,7 +161,7 @@ class TableBoard(object):
         #    while y <= (self.size - 2):
         #        position = (x, y)
         #        match = set()
-        #        inc = self.findMatch(position, self.getCellData(position), 0, match, AXE_X, DIR_RIGHT)
+        #        inc = self.findMatch(position, self.getCellData(position), 0, match, 'right')
         #        if inc >= MIN_MATCH:
         #            xMatch.append(list(match))
         #        y += inc
@@ -162,7 +170,7 @@ class TableBoard(object):
         #    while x <= (self.size - 2):
         #        position = (x, y)
         #        match = set()
-        #        inc = self.findMatch(position, self.getCellData(position), 0, match, AXE_Y, DIR_DOWN)
+        #        inc = self.findMatch(position, self.getCellData(position), 0, match, 'down')
         #        if inc >= MIN_MATCH:
         #            yMatch.append(list(match))
         #        x += inc

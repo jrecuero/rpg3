@@ -27,6 +27,7 @@ def TableBoardTestSuite():
     suite.addTest(TableBoardTestCase("test_incPosition"))
     suite.addTest(TableBoardTestCase("test_findMatch"))
     suite.addTest(TableBoardTestCase("test_matchAtCell"))
+    suite.addTest(TableBoardTestCase("test_matchBoard"))
     return suite
 
 
@@ -39,6 +40,11 @@ class TableBoardTestCase(unittest.TestCase):
         for x in xrange(SIZE):
             for y in xrange(SIZE):
                 self.tb.setCellData((x, y), 0)
+
+    def _createTestBoardNoMatch(self):
+        for x in xrange(SIZE):
+            for y in xrange(SIZE):
+                self.tb.setCellData((x, y), 10 + x + y)
 
     def setUp(self):
         self.tb = tableboard.TableBoard(SIZE)
@@ -185,7 +191,39 @@ class TableBoardTestCase(unittest.TestCase):
         self.assertEqual(matchList, [])
 
     def test_matchAtCell(self):
-        pass
+        self._createTestBoard()
+        matchCellPos = [(1, 1), (1, 2), (1, 3)]
+        valueToMatch = 1
+        for pos in matchCellPos:
+            self.tb.setCellData(pos, valueToMatch)
+        (xresult, yresult) = self.tb.matchAtCell(matchCellPos[0])
+        self.assertEqual(xresult, matchCellPos)
+        self.assertEqual(yresult, [matchCellPos[0], ])
+
+        self._createTestBoard()
+        valueToMatch = 1
+        xMatchCellPos = [(1, 1), (1, 2), (1, 3)]
+        yMatchCellPos = [(1, 1), (2, 1), (3, 1)]
+        for pos in xMatchCellPos:
+            self.tb.setCellData(pos, valueToMatch)
+        for pos in yMatchCellPos:
+            self.tb.setCellData(pos, valueToMatch)
+        (xresult, yresult) = self.tb.matchAtCell(xMatchCellPos[0])
+        self.assertEqual(xresult, xMatchCellPos)
+        self.assertEqual(yresult, yMatchCellPos)
+
+    def test_matchBoard(self):
+        self._createTestBoardNoMatch()
+        valueToMatch = 1
+        xMatchCellPos = [(1, 1), (1, 2), (1, 3)]
+        yMatchCellPos = [(1, 1), (2, 1), (3, 1)]
+        for pos in xMatchCellPos:
+            self.tb.setCellData(pos, valueToMatch)
+        for pos in yMatchCellPos:
+            self.tb.setCellData(pos, valueToMatch)
+        result = self.tb.matchBoard()
+        self.assertEqual(result[0][0], xMatchCellPos)
+        self.assertEqual(result[1][0], yMatchCellPos)
 
 
 #if __name__ == '__main__':
