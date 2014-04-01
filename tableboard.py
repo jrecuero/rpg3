@@ -297,7 +297,8 @@ class TableBoard(object):
 
 
 if __name__ == '__main__':
-    import unittest
-    import test.test_tableboard as testTB
-    runner = unittest.TextTestRunner(verbosity=2)
-    runner.run(testTB.TableBoardTestSuite())
+    #import unittest
+    #import test.test_tableboard as testTB
+    #runner = unittest.TextTestRunner(verbosity=2)
+    #runner.run(testTB.TableBoardTestSuite())
+    pass

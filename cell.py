@@ -1,6 +1,6 @@
 class Cell(object):
 
-    def __init__(self, thePosition, theName,  **kwargs):
+    def __init__(self, thePosition, theData=None, **kwargs):
         """ Cell initialization method.
 
         :type thePosition: tuple
@@ -13,7 +13,8 @@ class Cell(object):
         :param kwargs: Dictionary with sword attributes.
         """
         self.position = thePosition
-        self.name     = theName
+        self.data     = theData
+        self.name     = kwargs['theName'] if 'theName' in kwargs else None
         self.sprite   = kwargs['theSprite'] if 'theSprite' in kwargs else None
         self.damage   = kwargs['theDamage'] if 'theDamage' in kwargs else None
         self.defense  = kwargs['theDefense'] if 'theDefense' in kwargs else None
@@ -26,6 +27,13 @@ class Cell(object):
 
     def setName(self, theName):
         self.name = theName
+        return True
+
+    def getData(self):
+        return self.data
+
+    def setData(self, theData):
+        self.data = theData
         return True
 
     def getSprite(self):
@@ -43,36 +51,36 @@ class Cell(object):
         return True
 
     def getDefense(self):
-        return self.damage
+        return self.defense
 
     def setDefense(self, theDefense):
-        self.damage = theDefense
+        self.defense = theDefense
         return True
 
     def getMoney(self):
-        return self.damage
+        return self.money
 
     def setMoney(self, theMoney):
-        self.damage = theMoney
+        self.money = theMoney
         return True
 
     def getHealth(self):
-        return self.damage
+        return self.health
 
     def setHealth(self, theHealth):
-        self.damage = theHealth
+        self.health = theHealth
         return True
 
     def getPower(self):
-        return self.damage
+        return self.power
 
     def setPower(self, thePower):
-        self.damage = thePower
+        self.power = thePower
         return True
 
 
-if __name__ == '__main__':
-    import unittest
-    import test.test_cell as testCell
-    runner = unittest.TextTestRunner(verbosity=2)
-    runner.run(testCell.CellTestSuite())
+#if __name__ == '__main__':
+#    import unittest
+#    import test.test_cell as testCell
+#    runner = unittest.TextTestRunner(verbosity=2)
+#    runner.run(testCell.CellTestSuite())

@@ -9,6 +9,7 @@ import cell
 
 ORIGIN  = (0, 0)
 NAME    = 'cell test'
+DATA    = 'data'
 SPRITE  = 'sprite'
 DAMAGE  = 100
 DEFENSE = 200
@@ -21,6 +22,7 @@ POWER   = 400
 def CellTestSuite():
     suite = unittest.TestSuite()
     suite.addTest(CellTestCase("test_create"))
+    suite.addTest(CellTestCase("test_getData"))
     suite.addTest(CellTestCase("test_getName"))
     suite.addTest(CellTestCase("test_getSprite"))
     suite.addTest(CellTestCase("test_getDamage"))
@@ -28,6 +30,7 @@ def CellTestSuite():
     suite.addTest(CellTestCase("test_getMoney"))
     suite.addTest(CellTestCase("test_getHealth"))
     suite.addTest(CellTestCase("test_getPower"))
+    suite.addTest(CellTestCase("test_setData"))
     suite.addTest(CellTestCase("test_setName"))
     suite.addTest(CellTestCase("test_setSprite"))
     suite.addTest(CellTestCase("test_setDamage"))
@@ -45,7 +48,8 @@ class CellTestCase(unittest.TestCase):
 
     def setUp(self):
         self.cell = cell.Cell(ORIGIN,
-                              NAME,
+                              DATA,
+                              theName=NAME,
                               theSprite=SPRITE,
                               theDamage=DAMAGE,
                               theDefense=DEFENSE,
@@ -58,6 +62,7 @@ class CellTestCase(unittest.TestCase):
 
     def test_create(self):
         self.assertEqual(self.cell.position, ORIGIN)
+        self.assertEqual(self.cell.data, DATA)
         self.assertEqual(self.cell.name, NAME)
         self.assertEqual(self.cell.sprite, SPRITE)
         self.assertEqual(self.cell.damage, DAMAGE)
@@ -65,6 +70,9 @@ class CellTestCase(unittest.TestCase):
         self.assertEqual(self.cell.money, MONEY)
         self.assertEqual(self.cell.health, HEALTH)
         self.assertEqual(self.cell.power, POWER)
+
+    def test_getData(self):
+        self.assertEqual(self.cell.getData(), DATA)
 
     def test_getName(self):
         self.assertEqual(self.cell.getName(), NAME)
@@ -87,9 +95,14 @@ class CellTestCase(unittest.TestCase):
     def test_getPower(self):
         self.assertEqual(self.cell.getPower(), POWER)
 
+    def test_setData(self):
+        NEW_DATA = 'new cell data'
+        self.assertTrue(self.cell.setData(NEW_DATA))
+        self.assertEqual(self.cell.getData(), NEW_DATA)
+
     def test_setName(self):
         NEW_NAME = 'new cell name'
-        self.assertTrue(self.cell.setNamName(NEW_NAME))
+        self.assertTrue(self.cell.setName(NEW_NAME))
         self.assertEqual(self.cell.getName(), NEW_NAME)
 
     def test_setSprite(self):
@@ -123,6 +136,6 @@ class CellTestCase(unittest.TestCase):
         self.assertEqual(self.cell.getPower(), NEW_POWER)
 
 
-#if __name__ == '__main__':
-#    runner = unittest.TextTestRunner(verbosity=2)
-#    runner.run(CellTestSuite())
+if __name__ == '__main__':
+    runner = unittest.TextTestRunner(verbosity=2)
+    runner.run(CellTestSuite())
