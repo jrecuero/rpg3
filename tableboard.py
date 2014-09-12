@@ -68,11 +68,12 @@ class TableBoard(object):
         match = []
         for firstLoopIdx in xrange(self.size):
             secondLoopIdx = 0
-            while secondLoopIdx <= (self.size - 2):
+            # We don't have to loop until the end, because if it does not find
+            # a match at MIN_MATCH - 1, it is not going to find it in what is
+            # left.
+            while secondLoopIdx <= (self.size - (MIN_MATCH - 1)):
                 #print ('%s %s %s %s' % (theSide, firstLoopIdx, secondLoopIdx, match))
                 position  = MOVE_IN_BOARD[theSide]['loopFunc'](firstLoopIdx, secondLoopIdx)
-                #axe       = MOVE_IN_BOARD[theSide]['axe']
-                #direction = MOVE_IN_BOARD[theSide]['direction']
                 traverseMatch = set()
                 inc = self.findMatch(position, self.getCellData(position), 0, traverseMatch, theSide)
                 if inc >= MIN_MATCH:
@@ -261,7 +262,6 @@ class TableBoard(object):
             if theCounter == COUNT_LIMIT:
                 return theCounter
             else:
-                #newPosition = self.incPosition(thePosition, theAxe, theDirection)
                 newPosition = self.incPosition(thePosition, theSide)
                 return self.findMatch(newPosition, theValue, theCounter, theMatchSet, theSide) if newPosition else theCounter
         else:
