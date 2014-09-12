@@ -1,255 +1,6 @@
 import cocos
 import pyglet
-#from pyglet.gl import glPushMatrix, glPopMatrix
-
-COUNT_LIMIT = 100
-MIN_MATCH   = 3
-WILDCARD    = 9
-BOARD_SIZE  = 8
-
-AXE_X = 1
-AXE_Y = 2
-
-DIR_RIGHT = 1
-DIR_LEFT  = 2
-DIR_UP    = 3
-DIR_DOWN  = 4
-
-
-def _updatePositionLoopToRight(theFirstLoopIdx, theSecondLoopIdx):
-    return(theFirstLoopIdx, theSecondLoopIdx)
-
-
-def _updatePostionLoopToDown(theFirstLoopIdx, theSecondLoopIdx):
-    return(theSecondLoopIdx, theFirstLoopIdx)
-
-
-MOVE_IN_BOARD = {'right': {'loopFunc':  lambda first, second: (first, second),
-                           'incFunc':   lambda (x, y): (x, y + 1),
-                           'axe':       AXE_X,
-                           'direction': DIR_RIGHT},
-                 'left':  {'loopFunc':  lambda first, second: (first, second),
-                           'incFunc':   lambda (x, y): (x, y - 1),
-                           'axe':       AXE_X,
-                           'direction': DIR_LEFT},
-                 'down':  {'loopFunc':  lambda first, second: (second, first),
-                           'incFunc':   lambda (x, y): (x + 1, y),
-                           'axe':       AXE_Y,
-                           'direction': DIR_DOWN},
-                 'up':    {'loopFunc':  lambda first, second: (second, first),
-                           'incFunc':   lambda (x, y): (x - 1, y),
-                           'axe':       AXE_Y,
-                           'direction': DIR_UP}, }
-
-
-matrix = [[0 for x in xrange(BOARD_SIZE)] for x in xrange(BOARD_SIZE)]
-
-
-def incPosition(thePosition, theAxe, theDirection, theSize):
-    x, y = thePosition
-    moveOp = 1
-    if theDirection == DIR_UP or theDirection == DIR_LEFT:
-        moveOp = -1
-    if theAxe == AXE_X:
-        y += moveOp
-    elif theAxe == AXE_Y:
-        x += moveOp
-    if x >= theSize or y >= theSize or x < 0 or y < 0:
-        return None
-    return (x, y)
-
-
-def isMatch(theValue, theMatch):
-    return theValue == theMatch or theMatch == WILDCARD
-
-
-def findMatch(theMatrix, thePosition, theValue, theCounter, theMatchSet, theAxe, theDirection, theSize):
-    x, y = thePosition
-    if isMatch(theValue, theMatrix[x][y]):
-        theCounter += 1
-        theMatchSet.add(thePosition)
-        if theCounter == COUNT_LIMIT:
-            return theCounter
-        else:
-            newPosition = incPosition(thePosition, theAxe, theDirection, theSize)
-            return findMatch(theMatrix, newPosition, theValue, theCounter, theMatchSet, theAxe, theDirection, theSize) if newPosition else theCounter
-    else:
-        return theCounter
-
-
-def matchAtCell(theMatrix, thePosition, theSize):
-    xMatch = set()
-    yMatch = set()
-    x, y = thePosition
-    findMatch(theMatrix, thePosition, theMatrix[x][y], 0, xMatch, AXE_X, DIR_RIGHT, theSize)
-    findMatch(theMatrix, thePosition, theMatrix[x][y], 0, xMatch, AXE_X, DIR_LEFT, theSize)
-    findMatch(theMatrix, thePosition, theMatrix[x][y], 0, yMatch, AXE_Y, DIR_DOWN, theSize)
-    findMatch(theMatrix, thePosition, theMatrix[x][y], 0, yMatch, AXE_Y, DIR_UP, theSize)
-    return (list(xMatch), list(yMatch))
-
-
-def matchBoard(theMatrix, theSize):
-    xMatch = []
-    yMatch = []
-    for x in xrange(theSize):
-        y = 0
-        while y <= (theSize - 2):
-            match = set()
-            inc = findMatch(theMatrix, (x, y), theMatrix[x][y], 0, match, AXE_X, DIR_RIGHT, theSize)
-            if inc >= MIN_MATCH:
-                xMatch.append(list(match))
-            y += inc
-    for y in xrange(theSize):
-        x = 0
-        while x <= (theSize - 2):
-            match = set()
-            inc = findMatch(theMatrix, (x, y), theMatrix[x][y], 0, match, AXE_Y, DIR_DOWN, theSize)
-            if inc >= MIN_MATCH:
-                yMatch.append(list(match))
-            x += inc
-    return (xMatch, yMatch)
-
-
-class Cell(object):
-
-    def __init__(self, thePosition, theSprite, theData):
-        self.position = thePosition
-        self.sprite   = theSprite
-        self.data     = theData
-
-    def getData(self):
-        return self.data
-
-    def setData(self, theData):
-        self.data = theData
-        return True
-
-
-class TableBoard(object):
-
-    def __init__(self, theSize):
-        self.size   = theSize
-        self.matrix = [[None for x in xrange(theSize)] for x in xrange(theSize)]
-
-    def isCellInBoard(self, thePosition):
-        x, y = thePosition
-        return (x >= 0) and (x < self.size) and (y >= 0) and (y < self.size)
-
-    def getCell(self, thePosition):
-        if self.isCellInBoard(thePosition):
-            x, y = thePosition
-            return self.matrix[x][y]
-        else:
-            return None
-
-    def getCellData(self, thePosition):
-        cell = self.getCell(thePosition)
-        return cell.getData() if cell else None
-
-    def setCell(self, thePosition, theCell):
-        if self.isCellInBoard(thePosition):
-            x, y = thePosition
-            self.matrix[x][y] = theCell
-            return True
-        else:
-            return False
-
-    def setCellData(self, thePosition, theData):
-        cell = self.getCell(thePosition)
-        return cell.setData(theData) if cell else False
-
-    def swapCells(self, theFirstCell, theSecondCell):
-        x1, y1 = theFirstCell.position
-        x2, y2 = theSecondCell.position
-        self.matrix[x1][y1], self.matrix[x2][y2] = self.matrix[x2][y2], self.matrix[x1][y1]
-
-    def isValueIn(self, theValue):
-        return (theValue >= 0) and (theValue < self.size)
-
-    #def incPosition(self, thePosition, theAxe, theDirection):
-    #    x, y = thePosition
-    #    moveOp = 1
-    #    if theDirection == DIR_UP or theDirection == DIR_LEFT:
-    #        moveOp = -1
-    #    if theAxe == AXE_X:
-    #        y += moveOp
-    #    elif theAxe == AXE_Y:
-    #        x += moveOp
-    #    if x >= self.size or y >= self.size or x < 0 or y < 0:
-    #        return None
-    #    return (x, y)
-
-    def incPosition(self, thePosition, theSide):
-        newPosition = MOVE_IN_BOARD[theSide]['incFunc'](thePosition)
-        return None if False in filter(self.isValueIn, newPosition) else newPosition
-
-    def isMatch(self, theValue, theMatch):
-        return theValue == theMatch or theMatch == WILDCARD
-
-    def findMatch(self, thePosition, theValue, theCounter, theMatchSet, theSide):
-        x, y = thePosition
-        if self.isMatch(theValue, self.getCellData(thePosition)):
-            theCounter += 1
-            theMatchSet.add(thePosition)
-            if theCounter == COUNT_LIMIT:
-                return theCounter
-            else:
-                #newPosition = self.incPosition(thePosition, theAxe, theDirection)
-                newPosition = self.incPosition(thePosition, theSide)
-                return self.findMatch(newPosition, theValue, theCounter, theMatchSet, theSide) if newPosition else theCounter
-        else:
-            return theCounter
-
-    def matchAtCell(self, thePosition):
-        xMatch = set()
-        yMatch = set()
-        self.findMatch(thePosition, self.getCellData(thePosition), 0, xMatch, AXE_X, DIR_RIGHT)
-        self.findMatch(thePosition, self.getCellData(thePosition), 0, xMatch, AXE_X, DIR_LEFT)
-        self.findMatch(thePosition, self.getCellData(thePosition), 0, yMatch, AXE_Y, DIR_DOWN)
-        self.findMatch(thePosition, self.getCellData(thePosition), 0, yMatch, AXE_Y, DIR_UP)
-        return (list(xMatch), list(yMatch))
-
-    def _loopForCells(self, theSide):
-        match = []
-        for firstLoopIdx in xrange(self.size):
-            secondLoopIdx = 0
-            while secondLoopIdx <= (self.size - 2):
-                position  = MOVE_IN_BOARD[theSide]['loopFunc'](firstLoopIdx, secondLoopIdx)
-                axe       = MOVE_IN_BOARD[theSide]['axe']
-                direction = MOVE_IN_BOARD[theSide]['direction']
-                traverseMatch = set()
-                inc = self.findMatch(position, self.getCellData(position), 0, traverseMatch, axe, direction)
-                if inc >= MIN_MATCH:
-                    match.append(list(traverseMatch))
-                secondLoopIdx += inc
-        return match
-
-    def matchBoard(self):
-        match = []
-        for side in ('right', 'down'):
-            match.append(self._loopForCells(side))
-        return match
-        #xMatch = []
-        #yMatch = []
-        #for x in xrange(self.size):
-        #    y = 0
-        #    while y <= (self.size - 2):
-        #        position = (x, y)
-        #        match = set()
-        #        inc = self.findMatch(position, self.getCellData(position), 0, match, AXE_X, DIR_RIGHT)
-        #        if inc >= MIN_MATCH:
-        #            xMatch.append(list(match))
-        #        y += inc
-        #for y in xrange(self.size):
-        #    x = 0
-        #    while x <= (self.size - 2):
-        #        position = (x, y)
-        #        match = set()
-        #        inc = self.findMatch(position, self.getCellData(position), 0, match, AXE_Y, DIR_DOWN)
-        #        if inc >= MIN_MATCH:
-        #            yMatch.append(list(match))
-        #        x += inc
-        #return (xMatch, yMatch)
+import random
 
 
 class Piece(cocos.sprite.Sprite):
@@ -258,10 +9,17 @@ class Piece(cocos.sprite.Sprite):
         super(Piece, self).__init__(*args, **kwargs)
         self.selected = False
 
+    def select(self, x, y):
+        if self.contains(x, y):
+            self.selected = not self.selected
+            self.opacity = 125 if self.selected else 255
+
 
 class Rpg3(cocos.layer.Layer):
 
     is_event_handler = True
+
+    images = ['blue', 'green', 'yellow', 'red', 'black', 'cyan']
 
     def __init__(self):
         super(Rpg3, self).__init__()
@@ -272,26 +30,23 @@ class Rpg3(cocos.layer.Layer):
         label.position = 320, 240
         self.add(label)
 
+        # self.pieces = [Piece('images/%s.png' % x) for x in Rpg3.images]
         self.pieces = []
-        self.pieces.append(Piece('images/blue.png'))
-        self.pieces.append(Piece('images/green.png'))
-        self.pieces.append(Piece('images/yellow.png'))
-        self.pieces.append(Piece('images/red.png'))
-        self.pieces.append(Piece('images/black.png'))
-        self.pieces.append(Piece('images/cyan.png'))
 
-        x = 32
-        for piece in self.pieces:
-            piece.position = x, 32
-            self.add(piece)
-            x += 64
+        for x in xrange(1, 7):
+            for y in xrange(1, 7):
+                piece = self.createNewPiece()
+                piece.position = 64 * x, 64 * y
+                self.add(piece)
+                self.pieces.append(piece)
 
     def on_mouse_press(self, x, y, buttons, modifiers):
         for piece in self.pieces:
-            if piece.contains(x, y):
-                piece.selected = not piece.selected
-                piece.opacity = 125 if piece.selected else 255
-                #piece.position = piece.position[0] + 10, piece.position[1] + 10
+            piece.select(x, y)
+
+    def createNewPiece(self):
+        color = random.sample(Rpg3.images, 1)[0]
+        return Piece('images/%s.png' % color)
 
 
 if __name__ == '__main__':
