@@ -252,7 +252,16 @@ class TableBoard(object):
         #return (xMatch, yMatch)
 
 
+class Piece(cocos.sprite.Sprite):
+
+    def __init__(self, *args, **kwargs):
+        super(Piece, self).__init__(*args, **kwargs)
+        self.selected = False
+
+
 class Rpg3(cocos.layer.Layer):
+
+    is_event_handler = True
 
     def __init__(self):
         super(Rpg3, self).__init__()
@@ -263,19 +272,26 @@ class Rpg3(cocos.layer.Layer):
         label.position = 320, 240
         self.add(label)
 
-        self.sprites = []
-        self.sprites.append(cocos.sprite.Sprite('images/blue.png'))
-        self.sprites.append(cocos.sprite.Sprite('images/green.png'))
-        self.sprites.append(cocos.sprite.Sprite('images/yellow.png'))
-        self.sprites.append(cocos.sprite.Sprite('images/red.png'))
-        self.sprites.append(cocos.sprite.Sprite('images/black.png'))
-        self.sprites.append(cocos.sprite.Sprite('images/cyan.png'))
+        self.pieces = []
+        self.pieces.append(Piece('images/blue.png'))
+        self.pieces.append(Piece('images/green.png'))
+        self.pieces.append(Piece('images/yellow.png'))
+        self.pieces.append(Piece('images/red.png'))
+        self.pieces.append(Piece('images/black.png'))
+        self.pieces.append(Piece('images/cyan.png'))
 
         x = 32
-        for spr in self.sprites:
-            spr.position = x, 32
-            self.add(spr)
+        for piece in self.pieces:
+            piece.position = x, 32
+            self.add(piece)
             x += 64
+
+    def on_mouse_press(self, x, y, buttons, modifiers):
+        for piece in self.pieces:
+            if piece.contains(x, y):
+                piece.selected = not piece.selected
+                piece.opacity = 125 if piece.selected else 255
+                #piece.position = piece.position[0] + 10, piece.position[1] + 10
 
 
 if __name__ == '__main__':
