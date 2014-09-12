@@ -1,6 +1,6 @@
 import cocos
 import pyglet
-from pyglet.gl import glPushMatrix, glPopMatrix
+#from pyglet.gl import glPushMatrix, glPopMatrix
 
 COUNT_LIMIT = 100
 MIN_MATCH   = 3
@@ -254,9 +254,8 @@ class TableBoard(object):
 
 class Rpg3(cocos.layer.Layer):
 
-    def __init__(self, images):
+    def __init__(self):
         super(Rpg3, self).__init__()
-        self.images = images
         label = cocos.text.Label('RPG Match 3',
                                  font_name='Times New Roman',
                                  font_size=32,
@@ -264,30 +263,26 @@ class Rpg3(cocos.layer.Layer):
         label.position = 320, 240
         self.add(label)
 
-    def draw(self):
-        glPushMatrix()
+        self.sprites = []
+        self.sprites.append(cocos.sprite.Sprite('images/blue.png'))
+        self.sprites.append(cocos.sprite.Sprite('images/green.png'))
+        self.sprites.append(cocos.sprite.Sprite('images/yellow.png'))
+        self.sprites.append(cocos.sprite.Sprite('images/red.png'))
+        self.sprites.append(cocos.sprite.Sprite('images/black.png'))
+        self.sprites.append(cocos.sprite.Sprite('images/cyan.png'))
 
-        x = 10
-        for img in images:
-            img.blit(x, 10)
+        x = 32
+        for spr in self.sprites:
+            spr.position = x, 32
+            self.add(spr)
             x += 64
-
-        glPopMatrix()
 
 
 if __name__ == '__main__':
     pyglet.resource.path.append('images')
     pyglet.resource.reindex()
 
-    images = []
-    images.append(pyglet.resource.image('blue.png'))
-    images.append(pyglet.resource.image('green.png'))
-    images.append(pyglet.resource.image('yellow.png'))
-    images.append(pyglet.resource.image('red.png'))
-    images.append(pyglet.resource.image('black.png'))
-    images.append(pyglet.resource.image('cyan.png'))
-
     cocos.director.director.init()
-    rpg3Layer = Rpg3(images)
+    rpg3Layer = Rpg3()
     mainScene = cocos.scene.Scene(rpg3Layer)
     cocos.director.director.run(mainScene)
