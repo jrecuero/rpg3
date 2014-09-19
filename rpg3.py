@@ -9,10 +9,13 @@ class Piece(cocos.sprite.Sprite):
         super(Piece, self).__init__(*args, **kwargs)
         self.selected = False
 
-    def select(self, x, y):
-        if self.contains(x, y):
-            self.selected = not self.selected
-            self.opacity = 125 if self.selected else 255
+    def _select(self):
+        self.selected = not self.selected
+        self.opacity = 125 if self.selected else 255
+
+    def select(self, x=None, y=None):
+        if (x is None and y is None) or self.contains(x, y):
+            self._select()
 
 
 class Rpg3(cocos.layer.Layer):
@@ -40,9 +43,17 @@ class Rpg3(cocos.layer.Layer):
                 self.add(piece)
                 self.pieces.append(piece)
 
+    def piecesSelected(self):
+        return [x for x in self.pieces if x.selected]
+
     def on_mouse_press(self, x, y, buttons, modifiers):
         for piece in self.pieces:
             piece.select(x, y)
+        selected = self.piecesSelected()
+        if len(selected) == 2:
+            selected[0].image, selected[1].image = selected[1].image, selected[0].image
+            for piece in selected:
+                piece.select()
 
     def createNewPiece(self):
         color = random.sample(Rpg3.images, 1)[0]
