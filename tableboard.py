@@ -136,8 +136,8 @@ class TableBoard(object):
         :rtype: object
         :return: The data object instance for the given position.
         """
-        cell = self.getCell(thePosition)
-        return cell.getData() if cell else None
+        aCell = self.getCell(thePosition)
+        return aCell.getData() if aCell else None
 
     def getCellSprite(self, thePosition):
         """ Get the cell sprite instance for a given position.
@@ -148,8 +148,38 @@ class TableBoard(object):
         :rtype: object
         :return: The sprite object instance for the given position.
         """
-        cell = self.getCell(thePosition)
-        return cell.getSprite() if cell else None
+        aCell = self.getCell(thePosition)
+        return aCell.getSprite() if aCell else None
+
+    def iterCell(self):
+        """ Iterate all cells in the matrix.
+
+        :rtype: iterator
+        :return: iterator with next cell in the matrix
+        """
+        for row in self.matrix:
+            for aCell in row:
+                yield aCell
+
+    def iterCellData(self):
+        """ Iterate all cells data in the matrix.
+
+        :rtype: iterator
+        :return: iterator with next cell data in the matrix
+        """
+        for row in self.matrix:
+            for aCell in row:
+                yield aCell.getData()
+
+    def iterCellSprite(self):
+        """ Iterate all cells sprite in the matrix.
+
+        :rtype: iterator
+        :return: iterator with next cell sprite in the matrix
+        """
+        for row in self.matrix:
+            for aCell in row:
+                yield aCell.getSprite()
 
     def setCell(self, thePosition, theCell):
         """ Asign the given cell instance to the given position.
@@ -182,8 +212,8 @@ class TableBoard(object):
         :rtype: boolean
         :return: True if data was inserted. False if not (outside the baord).
         """
-        cell = self.getCell(thePosition)
-        return cell.setData(theData) if cell else False
+        aCell = self.getCell(thePosition)
+        return aCell.setData(theData) if aCell else False
 
     def setCellSprite(self, thePosition, theSprite):
         """ Asign the given sprite instance to the given position.
@@ -197,8 +227,8 @@ class TableBoard(object):
         :rtype: boolean
         :return: True if sprite was inserted. False if not (outside the baord).
         """
-        cell = self.getCell(thePosition)
-        return cell.setSprite(theSprite) if cell else False
+        aCell = self.getCell(thePosition)
+        return aCell.setSprite(theSprite) if aCell else False
 
     def swapCells(self, theFirstCell, theSecondCell):
         """ Swap cell content for given position.
