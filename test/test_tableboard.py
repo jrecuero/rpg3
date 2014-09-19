@@ -16,9 +16,12 @@ def TableBoardTestSuite():
     suite = unittest.TestSuite()
     suite.addTest(TableBoardTestCase("test_create"))
     suite.addTest(TableBoardTestCase("test_getCell"))
-    suite.addTest(TableBoardTestCase("test_setCell"))
     suite.addTest(TableBoardTestCase("test_getCellData"))
     suite.addTest(TableBoardTestCase("test_getCellSprite"))
+    suite.addTest(TableBoardTestCase("test_iterCell"))
+    suite.addTest(TableBoardTestCase("test_iterCellData"))
+    suite.addTest(TableBoardTestCase("test_iterCellSprite"))
+    suite.addTest(TableBoardTestCase("test_setCell"))
     suite.addTest(TableBoardTestCase("test_setCellData"))
     suite.addTest(TableBoardTestCase("test_setCellSprite"))
     suite.addTest(TableBoardTestCase("test_swapCells"))
@@ -40,6 +43,7 @@ class TableBoardTestCase(unittest.TestCase):
         for x in xrange(SIZE):
             for y in xrange(SIZE):
                 self.tb.setCellData((x, y), 0)
+                self.tb.setCellSprite((x, y), 1)
 
     def _createTestBoardNoMatch(self):
         for x in xrange(SIZE):
@@ -73,15 +77,6 @@ class TableBoardTestCase(unittest.TestCase):
                 self.assertEqual(self.tb.getCell((x, y)).position, (x, y))
         self.assertIsNone(self.tb.getCell((SIZE, SIZE)))
 
-    def test_setCell(self):
-        for x in xrange(SIZE):
-            for y in xrange(SIZE):
-                self.assertTrue(self.tb.setCell((x, y), (x, y)))
-        for x in xrange(SIZE):
-            for y in xrange(SIZE):
-                self.assertEqual(self.tb.getCell((x, y)), (x, y))
-        self.assertFalse(self.tb.setCell((SIZE, SIZE), (0, 0)))
-
     def test_getCellData(self):
         for x in xrange(SIZE):
             for y in xrange(SIZE):
@@ -92,6 +87,25 @@ class TableBoardTestCase(unittest.TestCase):
             for y in xrange(SIZE):
                 self.assertIsNone(self.tb.getCellSprite((x, y)))
 
+    def test_iterCell(self):
+        x, y = 0, 0
+        for aCell in self.tb.iterCell():
+            self.assertIsNotNone(aCell)
+            self.assertEqual(aCell.position, (x, y))
+            y = (y + 1) % SIZE
+            if not y:
+                x = (x + 1) % SIZE
+
+    def test_iterCellData(self):
+        self._createTestBoard()
+        for aData in self.tb.iterCellData():
+            self.assertEqual(aData, 0)
+
+    def test_iterCellSprite(self):
+        self._createTestBoard()
+        for aSprite in self.tb.iterCellSprite():
+            self.assertEqual(aSprite, 1)
+
     def test_setCellData(self):
         NEW_DATA = 'new data'
         for x in xrange(SIZE):
@@ -100,6 +114,15 @@ class TableBoardTestCase(unittest.TestCase):
         for x in xrange(SIZE):
             for y in xrange(SIZE):
                 self.assertEqual(self.tb.getCellData((x, y)), NEW_DATA)
+
+    def test_setCell(self):
+        for x in xrange(SIZE):
+            for y in xrange(SIZE):
+                self.assertTrue(self.tb.setCell((x, y), (x, y)))
+        for x in xrange(SIZE):
+            for y in xrange(SIZE):
+                self.assertEqual(self.tb.getCell((x, y)), (x, y))
+        self.assertFalse(self.tb.setCell((SIZE, SIZE), (0, 0)))
 
     def test_setCellSprite(self):
         NEW_SPRITE = 'new sprite'
