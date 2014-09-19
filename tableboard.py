@@ -34,14 +34,20 @@ MOVE_IN_BOARD = {'right': {'loopFunc':  lambda first, second: (first, second),
 
 class TableBoard(object):
 
-    def __init__(self, theSize):
+    def __init__(self, theSize, theMatrix=None):
         """ TableBoard initialization method.
 
         :type theSize: int
         :param theSize: Size of the board (size x size).
+
+        :type theMatrix: list
+        :param theMatrix: Matrix to be used for the tableboard
         """
         self.size   = theSize
-        self.matrix = [[cell.Cell((x, y)) for y in xrange(theSize)] for x in xrange(theSize)]
+        if theMatrix:
+            self.matrix = theMatrix
+        else:
+            self.matrix = [[cell.Cell((x, y)) for y in xrange(theSize)] for x in xrange(theSize)]
 
     def _copyToListAndSort(self, theSet):
         """ Copy a set to a list and sort the list result.

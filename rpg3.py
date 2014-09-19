@@ -2,6 +2,9 @@ import cocos
 import pyglet
 import random
 
+import cell
+import tableboard
+
 
 class Piece(cocos.sprite.Sprite):
 
@@ -33,31 +36,42 @@ class Rpg3(cocos.layer.Layer):
         label.position = 320, 240
         self.add(label)
 
-        # self.pieces = [Piece('images/%s.png' % x) for x in Rpg3.images]
-        self.pieces = []
+        self.size = 8
+        self.spriteSize = 64
+        self.tableboard = self.createTableBoard(self.size)
 
-        for x in xrange(1, 7):
-            for y in xrange(1, 7):
-                piece = self.createNewPiece()
-                piece.position = 64 * x, 64 * y
-                self.add(piece)
-                self.pieces.append(piece)
+    def createPiece(self, x, y):
+        color = random.sample(Rpg3.images, 1)[0]
+        piece = Piece('images/%s.png' % color)
+        piece.position = self.spriteSize * x, self.spriteSize * y
+        return (color, piece)
+
+    def createCell(self, x, y):
+        color, piece = self.createPiece(x, y)
+        return cell.Cell((x, y), theData=color, theSprite=piece)
+
+    def createTableBoard(self, theSize):
+        matrix = [[self.createCell((x, y)) for y in xrange(theSize)] for x in xrange(theSize)]
+        return tableboard.TableBoard(matrix)
 
     def piecesSelected(self):
-        return [x for x in self.pieces if x.selected]
+        selected = []
+        for x in xrange(self.size):
+            for y in xrange(self.size):
+                piece = self.tableboard.getCellSprite((x, y))
+                if piece.selected:
+                    selected.append(piece)
+        return selected
 
     def on_mouse_press(self, x, y, buttons, modifiers):
-        for piece in self.pieces:
-            piece.select(x, y)
+        for xPos in xrange(self.size):
+            for yPos in xrange(self.size):
+                self.tableboard.getCellSprite((xPos, yPos)).select(x, y)
         selected = self.piecesSelected()
         if len(selected) == 2:
             selected[0].image, selected[1].image = selected[1].image, selected[0].image
             for piece in selected:
                 piece.select()
-
-    def createNewPiece(self):
-        color = random.sample(Rpg3.images, 1)[0]
-        return Piece('images/%s.png' % color)
 
 
 if __name__ == '__main__':
