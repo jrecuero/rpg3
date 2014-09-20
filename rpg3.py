@@ -6,21 +6,6 @@ import cell
 import tableboard
 
 
-class Piece(cocos.sprite.Sprite):
-
-    def __init__(self, *args, **kwargs):
-        super(Piece, self).__init__(*args, **kwargs)
-        self.selected = False
-
-    def _select(self):
-        self.selected = not self.selected
-        self.opacity = 125 if self.selected else 255
-
-    def select(self, x=None, y=None):
-        if (x is None and y is None) or self.contains(x, y):
-            self._select()
-
-
 class Rpg3(cocos.layer.Layer):
 
     is_event_handler = True
@@ -36,14 +21,15 @@ class Rpg3(cocos.layer.Layer):
         label.position = 320, 240
         self.add(label)
 
-        self.size = 8
+        self.size = 6
         self.spriteSize = 64
         self.tableboard = self.createTableBoard(self.size)
 
     def createPiece(self, x, y):
         color = random.sample(Rpg3.images, 1)[0]
-        piece = Piece('images/%s.png' % color)
-        piece.position = self.spriteSize * x, self.spriteSize * y
+        piece = cocos.sprite.Sprite('images/%s.png' % color)
+        piece.position = self.spriteSize * (x + 1), self.spriteSize * (y + 1)
+        self.add(piece)
         return (color, piece)
 
     def createCell(self, x, y):
@@ -51,27 +37,27 @@ class Rpg3(cocos.layer.Layer):
         return cell.Cell((x, y), theData=color, theSprite=piece)
 
     def createTableBoard(self, theSize):
-        matrix = [[self.createCell((x, y)) for y in xrange(theSize)] for x in xrange(theSize)]
-        return tableboard.TableBoard(matrix)
+        matrix = [[self.createCell(x, y) for y in xrange(theSize)] for x in xrange(theSize)]
+        return tableboard.TableBoard(theSize, matrix)
 
-    def piecesSelected(self):
+    def celSelected(self):
         selected = []
         for x in xrange(self.size):
             for y in xrange(self.size):
-                piece = self.tableboard.getCellSprite((x, y))
-                if piece.selected:
-                    selected.append(piece)
+                aCell = self.tableboard.getCell((x, y))
+                if aCell.isSelected():
+                    selected.append(aCell)
         return selected
 
     def on_mouse_press(self, x, y, buttons, modifiers):
         for xPos in xrange(self.size):
             for yPos in xrange(self.size):
-                self.tableboard.getCellSprite((xPos, yPos)).select(x, y)
-        selected = self.piecesSelected()
-        if len(selected) == 2:
-            selected[0].image, selected[1].image = selected[1].image, selected[0].image
-            for piece in selected:
-                piece.select()
+                self.tableboard.getCell((xPos, yPos)).select(x, y)
+        cells = self.celSelected()
+        if len(cells) == 2:
+            cells[0].getSprite().image, cells[1].getSprite().image = cells[1].getSprite().image, cells[0].getSprite().image
+            for aCell in cells:
+                aCell.select()
 
 
 if __name__ == '__main__':

@@ -1,6 +1,6 @@
 class Cell(object):
 
-    def __init__(self, thePosition, theData=None, **kwargs):
+    def __init__(self, thePosition, **kwargs):
         """ Cell initialization method.
 
         :type thePosition: tuple
@@ -13,7 +13,7 @@ class Cell(object):
         :param kwargs: Dictionary with sword attributes.
         """
         self.position = thePosition
-        self.data     = theData
+        self.data     = kwargs['theData'] if 'theData' in kwargs else None
         self.name     = kwargs['theName'] if 'theName' in kwargs else None
         self.sprite   = kwargs['theSprite'] if 'theSprite' in kwargs else None
         self.damage   = kwargs['theDamage'] if 'theDamage' in kwargs else None
@@ -21,6 +21,7 @@ class Cell(object):
         self.money    = kwargs['theMoney']  if 'theMoney' in kwargs else None
         self.health   = kwargs['theHealth'] if 'theHealth' in kwargs else None
         self.power    = kwargs['thePower'] if 'thePower' in kwargs else None
+        self.selected = False
 
     def getName(self):
         return self.name
@@ -77,6 +78,17 @@ class Cell(object):
     def setPower(self, thePower):
         self.power = thePower
         return True
+
+    def isSelected(self):
+        return self.selected
+
+    def _select(self):
+        self.selected = not self.selected
+        self.getSprite().opacity = 125 if self.selected else 255
+
+    def select(self, x=None, y=None):
+        if (x is None and y is None) or self.getSprite().contains(x, y):
+            self._select()
 
 
 #if __name__ == '__main__':
