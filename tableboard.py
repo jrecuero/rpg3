@@ -246,7 +246,8 @@ class TableBoard(object):
         """
         x1, y1 = theFirstCell.position
         x2, y2 = theSecondCell.position
-        theFirstCell.position, theSecondCell.position = theSecondCell.position, theFirstCell.position,
+        #print "Swap (%s, %s) %s for (%s, %s) %s" % (x1, y1, theFirstCell.data, x2, y2, theSecondCell.data)
+        theFirstCell.swap(theSecondCell)
         self.matrix[x1][y1], self.matrix[x2][y2] = self.matrix[x2][y2], self.matrix[x1][y1]
         return True
 
@@ -292,6 +293,7 @@ class TableBoard(object):
         :param theSide: Direction to traverse for finding matches..
         """
         x, y = thePosition
+        #print "pos: (%s, %s), value: %s data: %s" % (x, y, theValue, self.getCellData(thePosition))
         if self.isMatch(theValue, self.getCellData(thePosition)):
             theCounter += 1
             theMatchSet.add(thePosition)
@@ -330,6 +332,29 @@ class TableBoard(object):
         for side in ('right', 'down'):
             match.append(self._loopForCells(side))
         return match
+
+    def printLogBoard(self):
+        print '\n'
+        for x in xrange(self.size):
+            pos = (0, x)
+            c = self.getCell(pos)
+            print pos, c.position, c.data,
+        print '\n'
+        for x in xrange(self.size):
+            pos = (1, x)
+            c = self.getCell(pos)
+            print pos, c.position, c.data,
+        print '\n'
+        for x in xrange(self.size):
+            pos = (2, x)
+            c = self.getCell(pos)
+            print pos, c.position, c.data,
+        print '\n'
+        for x in xrange(self.size):
+            pos = (3, x)
+            c = self.getCell(pos)
+            print pos, c.position, c.data,
+        print '\n'
 
 
 if __name__ == '__main__':

@@ -90,6 +90,11 @@ class Cell(object):
         if (x is None and y is None) or self.getSprite().contains(x, y):
             self._select()
 
+    def swap(self, theOther):
+        self.position, theOther.position = theOther.position, self.position,
+        #self.sprite.image, theOther.sprite.image = theOther.sprite.image, self.sprite.image
+        self.sprite.position, theOther.sprite.position = theOther.sprite.position, self.sprite.position
+
 
 #if __name__ == '__main__':
 #    import unittest

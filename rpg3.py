@@ -10,7 +10,7 @@ class Rpg3(cocos.layer.Layer):
 
     is_event_handler = True
 
-    images = ['blue', 'green', 'yellow', 'red', 'black', 'cyan']
+    images = ['blue', 'green', 'yellow', 'red', 'black', 'cyan', 'purple', 'orange']
 
     def __init__(self):
         super(Rpg3, self).__init__()
@@ -21,14 +21,14 @@ class Rpg3(cocos.layer.Layer):
         label.position = 320, 240
         self.add(label)
 
-        self.size = 6
+        self.size = 4
         self.spriteSize = 64
         self.tableboard = self.createTableBoard(self.size)
 
     def createPiece(self, x, y):
         color = random.sample(Rpg3.images, 1)[0]
         piece = cocos.sprite.Sprite('images/%s.png' % color)
-        piece.position = self.spriteSize * (x + 1), self.spriteSize * (y + 1)
+        piece.position = self.spriteSize * (y + 1), self.spriteSize * (x + 1)
         self.add(piece)
         return (color, piece)
 
@@ -37,7 +37,13 @@ class Rpg3(cocos.layer.Layer):
         return cell.Cell((x, y), theData=color, theSprite=piece)
 
     def createTableBoard(self, theSize):
+        #matrix = []
         matrix = [[self.createCell(x, y) for y in xrange(theSize)] for x in xrange(theSize)]
+        #for col in xrange(theSize):
+        #    cols = []
+        #    for row in xrange(theSize):
+        #        cols.append(self.createCell(row, col))
+        #    matrix.append(cols)
         return tableboard.TableBoard(theSize, matrix)
 
     def celSelected(self):
@@ -55,9 +61,12 @@ class Rpg3(cocos.layer.Layer):
                 self.tableboard.getCell((xPos, yPos)).select(x, y)
         cells = self.celSelected()
         if len(cells) == 2:
-            cells[0].getSprite().image, cells[1].getSprite().image = cells[1].getSprite().image, cells[0].getSprite().image
+            self.tableboard.swapCells(*cells)
+            #cells[0].getSprite().image, cells[1].getSprite().image = cells[1].getSprite().image, cells[0].getSprite().image
             for aCell in cells:
                 aCell.select()
+        print self.tableboard.matchBoard()
+        self.tableboard.printLogBoard()
 
 
 if __name__ == '__main__':
