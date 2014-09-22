@@ -251,6 +251,19 @@ class TableBoard(object):
         self.matrix[x1][y1], self.matrix[x2][y2] = self.matrix[x2][y2], self.matrix[x1][y1]
         return True
 
+    def fallCell(self, theCell):
+        if theCell.data is None:
+            x, y = theCell.position
+            if y == (self.size - 1):
+                return -1
+            topCell = self.matrix[x][y+1]
+            if topCell.data is None:
+                if self.fallCell(topCell) == -1:
+                    return -1
+            self.swapCells(theCell, topCell)
+        else:
+            return 0
+
     def isMatch(self, theValue, theMatch):
         """ Check if the given value is a valid match.
 
@@ -333,27 +346,23 @@ class TableBoard(object):
             match.append(self._loopForCells(side))
         return match
 
+    def fallBoard(self):
+        for aCell in self.iterCell():
+            self.fallCell(aCell)
+
+    def emptyCellsInBoard(self):
+        match = []
+        for aCell in self.iterCell():
+            if aCell.data is None:
+                match.append(aCell)
+
     def printLogBoard(self):
-        print '\n'
         for x in xrange(self.size):
-            pos = (0, x)
-            c = self.getCell(pos)
-            print pos, c.position, c.data,
-        print '\n'
-        for x in xrange(self.size):
-            pos = (1, x)
-            c = self.getCell(pos)
-            print pos, c.position, c.data,
-        print '\n'
-        for x in xrange(self.size):
-            pos = (2, x)
-            c = self.getCell(pos)
-            print pos, c.position, c.data,
-        print '\n'
-        for x in xrange(self.size):
-            pos = (3, x)
-            c = self.getCell(pos)
-            print pos, c.position, c.data,
+            print '\n'
+            for y in xrange(self.size):
+                pos = (x, y)
+                c = self.getCell(pos)
+                print pos, c.position, c.data,
         print '\n'
 
 

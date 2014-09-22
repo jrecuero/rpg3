@@ -65,8 +65,19 @@ class Rpg3(cocos.layer.Layer):
             #cells[0].getSprite().image, cells[1].getSprite().image = cells[1].getSprite().image, cells[0].getSprite().image
             for aCell in cells:
                 aCell.select()
-        print self.tableboard.matchBoard()
-        self.tableboard.printLogBoard()
+        matches = self.tableboard.matchBoard()
+        print matches
+        print self.tableboard.printLogBoard()
+        rowMatches, colMatches = matches
+        for match in rowMatches:
+            for pos in match:
+                self.tableboard.setCellData(pos, None)
+        for match in colMatches:
+            for pos in match:
+                self.tableboard.setCellData(pos, None)
+        self.tableboard.fallBoard()
+        print self.tableboard.emptyCellsInBoard()
+        print self.tableboard.printLogBoard()
 
 
 if __name__ == '__main__':
