@@ -252,11 +252,12 @@ class TableBoard(object):
         return True
 
     def fallCell(self, theCell):
+        print theCell.position, theCell.data
         if theCell.data is None:
             x, y = theCell.position
-            if y == (self.size - 1):
+            if x == (self.size - 1):
                 return -1
-            topCell = self.matrix[x][y+1]
+            topCell = self.matrix[x + 1][y]
             if topCell.data is None:
                 if self.fallCell(topCell) == -1:
                     return -1
@@ -355,6 +356,7 @@ class TableBoard(object):
         for aCell in self.iterCell():
             if aCell.data is None:
                 match.append(aCell)
+        return match
 
     def printLogBoard(self):
         for x in xrange(self.size):

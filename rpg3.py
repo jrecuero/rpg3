@@ -66,8 +66,8 @@ class Rpg3(cocos.layer.Layer):
             for aCell in cells:
                 aCell.select()
         matches = self.tableboard.matchBoard()
-        print matches
-        print self.tableboard.printLogBoard()
+        print 'matches: ', matches
+        #self.tableboard.printLogBoard()
         rowMatches, colMatches = matches
         for match in rowMatches:
             for pos in match:
@@ -75,9 +75,12 @@ class Rpg3(cocos.layer.Layer):
         for match in colMatches:
             for pos in match:
                 self.tableboard.setCellData(pos, None)
+        for x in self.tableboard.emptyCellsInBoard():
+            print 'empty cells: ', x.position
         self.tableboard.fallBoard()
-        print self.tableboard.emptyCellsInBoard()
-        print self.tableboard.printLogBoard()
+        for x in self.tableboard.emptyCellsInBoard():
+            print 'empty cells: ', x.position
+        self.tableboard.printLogBoard()
 
 
 if __name__ == '__main__':
