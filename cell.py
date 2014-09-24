@@ -1,5 +1,10 @@
+
+
+#
+#------------------------------------------------------------------------------
 class Cell(object):
 
+    #--------------------------------------------------------------------------
     def __init__(self, thePosition, **kwargs):
         """ Cell initialization method.
 
@@ -23,81 +28,147 @@ class Cell(object):
         self.power    = kwargs['thePower'] if 'thePower' in kwargs else None
         self.selected = False
 
+    #--------------------------------------------------------------------------
     def getPosition(self):
+        """
+        """
         return self.position
 
+    #--------------------------------------------------------------------------
     def setPosition(self, thePosition):
+        """
+        """
         self.position = thePosition
         return True
 
+    #--------------------------------------------------------------------------
     def getName(self):
+        """
+        """
         return self.name
 
+    #--------------------------------------------------------------------------
     def setName(self, theName):
+        """
+        """
         self.name = theName
         return True
 
+    #--------------------------------------------------------------------------
     def getData(self):
+        """
+        """
         return self.data
 
+    #--------------------------------------------------------------------------
     def setData(self, theData):
+        """
+        """
         self.data = theData
         return True
 
+    #--------------------------------------------------------------------------
     def getSprite(self):
+        """
+        """
         return self.sprite
 
+    #--------------------------------------------------------------------------
     def setSprite(self, theSprite):
+        """
+        """
         self.sprite = theSprite
         return True
 
+    #--------------------------------------------------------------------------
     def getDamage(self):
+        """
+        """
         return self.damage
 
+    #--------------------------------------------------------------------------
     def setDamage(self, theDamage):
+        """
+        """
         self.damage = theDamage
         return True
 
+    #--------------------------------------------------------------------------
     def getDefense(self):
+        """
+        """
         return self.defense
 
+    #--------------------------------------------------------------------------
     def setDefense(self, theDefense):
+        """
+        """
         self.defense = theDefense
         return True
 
+    #--------------------------------------------------------------------------
     def getMoney(self):
+        """
+        """
         return self.money
 
+    #--------------------------------------------------------------------------
     def setMoney(self, theMoney):
+        """
+        """
         self.money = theMoney
         return True
 
+    #--------------------------------------------------------------------------
     def getHealth(self):
+        """
+        """
         return self.health
 
+    #--------------------------------------------------------------------------
     def setHealth(self, theHealth):
+        """
+        """
         self.health = theHealth
         return True
 
+    #--------------------------------------------------------------------------
     def getPower(self):
+        """
+        """
         return self.power
 
+    #--------------------------------------------------------------------------
     def setPower(self, thePower):
+        """
+        """
         self.power = thePower
         return True
 
+    #--------------------------------------------------------------------------
     def isSelected(self):
+        """
+        """
         return self.selected
 
+    #--------------------------------------------------------------------------
     def _select(self):
+        """
+        """
         self.selected = not self.selected
         self.getSprite().opacity = 125 if self.selected else 255
 
+    #--------------------------------------------------------------------------
     def select(self, x=None, y=None):
+        """
+        """
         if (x is None and y is None) or self.getSprite().contains(x, y):
             self._select()
 
+    #--------------------------------------------------------------------------
     def swap(self, theOther):
+        """
+        """
         self.position, theOther.position = theOther.position, self.position,
         #self.sprite.image, theOther.sprite.image = theOther.sprite.image, self.sprite.image
         self.sprite.position, theOther.sprite.position = theOther.sprite.position, self.sprite.position

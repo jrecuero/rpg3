@@ -33,9 +33,12 @@ MOVE_IN_BOARD = {'right': {'loopFunc':  lambda first, second: (first, second),
                            'direction': DIR_UP}, }
 
 
+#
+#------------------------------------------------------------------------------
 class TableBoard(object):
 
-    def __init__(self, theSize, theMatrix=None):
+    #--------------------------------------------------------------------------
+    def __init__(self, theSize, theMatrix=None, theNewCellCb=None):
         """ TableBoard initialization method.
 
         :type theSize: int
@@ -43,14 +46,16 @@ class TableBoard(object):
 
         :type theMatrix: list
         :param theMatrix: Matrix to be used for the tableboard
+
+        :type theNewCellCb: func
+        :param theNewCellCb: Function to be called to create a new cell
         """
-        self.size   = theSize
-        if theMatrix:
-            self.matrix = theMatrix
-        else:
-            self.matrix = [[cell.Cell((x, y)) for y in xrange(theSize)] for x in xrange(theSize)]
+        self.size      = theSize
+        self.newCellCb = theNewCellCb
+        self.matrix = theMatrix if theMatrix else self._createDefaultTableBoard()
         self.logger = loggerator.getLoggerator('tableboard')
 
+    #--------------------------------------------------------------------------
     def _copyToListAndSort(self, theSet):
         """ Copy a set to a list and sort the list result.
 
@@ -64,6 +69,46 @@ class TableBoard(object):
         lista.sort()
         return lista
 
+    #--------------------------------------------------------------------------
+    def _createDefaultTableBoard(self):
+        """ Create a new default table board
+
+        :rtype: list
+        :return: matrix with a default table board
+        """
+        return [[cell.Cell((x, y), **self.newCellCb((x, y))) for y in xrange(self.size)] for x in xrange(self.size)]
+
+    #--------------------------------------------------------------------------
+    def addNewCell(self, thePosition):
+        """ Create a new cell at the given position
+
+        :type thePosition: tuple
+        :param thePosition: Tuple with x and y position coordinates
+
+        :rtype: Cell
+        :return: New cell instance
+        """
+        x, y  = thePosition
+        aCell = cell.Cell(thePosition, **self.newCellCb(thePosition))
+        self.matrix[x][y] = aCell
+        return aCell
+
+    #--------------------------------------------------------------------------
+    def removeCell(self, thePosition):
+        """ Remove a cell from the given position
+
+        :type thePosition: tuple
+        :param thePosition: Tuple with x and y position coordinates
+
+        :rtype: Cell
+        :return: Cell instance being removed
+        """
+        x, y  = thePosition
+        aCell = self.getCell(thePosition)
+        self.matrix[x][y] = None
+        return aCell
+
+    #--------------------------------------------------------------------------
     def _loopForCells(self, theSide):
         """ Loop a row or a column for matches.
 
@@ -91,6 +136,7 @@ class TableBoard(object):
                 secondLoopIdx += inc
         return match
 
+    #--------------------------------------------------------------------------
     def isValueIn(self, theValue):
         """ Check if the given value is inside the range.
 
@@ -102,6 +148,7 @@ class TableBoard(object):
         """
         return theValue in xrange(self.size)
 
+    #--------------------------------------------------------------------------
     def isCellInBoard(self, thePosition):
         """ Check if the given cell is inside the board.
 
@@ -114,6 +161,7 @@ class TableBoard(object):
         x, y = thePosition
         return self.isValueIn(x) and self.isValueIn(y)
 
+    #--------------------------------------------------------------------------
     def getCell(self, thePosition):
         """ Get the cell instance for a given position.
 
@@ -129,6 +177,7 @@ class TableBoard(object):
         else:
             return None
 
+    #--------------------------------------------------------------------------
     def getCellData(self, thePosition):
         """ Get the cell data instance for a given position.
 
@@ -141,6 +190,7 @@ class TableBoard(object):
         aCell = self.getCell(thePosition)
         return aCell.getData() if aCell else None
 
+    #--------------------------------------------------------------------------
     def getCellSprite(self, thePosition):
         """ Get the cell sprite instance for a given position.
 
@@ -153,6 +203,7 @@ class TableBoard(object):
         aCell = self.getCell(thePosition)
         return aCell.getSprite() if aCell else None
 
+    #--------------------------------------------------------------------------
     def iterCell(self):
         """ Iterate all cells in the matrix.
 
@@ -163,6 +214,7 @@ class TableBoard(object):
             for aCell in row:
                 yield aCell
 
+    #--------------------------------------------------------------------------
     def iterCellData(self):
         """ Iterate all cells data in the matrix.
 
@@ -173,6 +225,7 @@ class TableBoard(object):
             for aCell in row:
                 yield aCell.getData()
 
+    #--------------------------------------------------------------------------
     def iterCellSprite(self):
         """ Iterate all cells sprite in the matrix.
 
@@ -183,6 +236,7 @@ class TableBoard(object):
             for aCell in row:
                 yield aCell.getSprite()
 
+    #--------------------------------------------------------------------------
     def setCell(self, thePosition, theCell):
         """ Asign the given cell instance to the given position.
 
@@ -202,6 +256,7 @@ class TableBoard(object):
         else:
             return False
 
+    #--------------------------------------------------------------------------
     def setCellData(self, thePosition, theData):
         """ Asign the given data instance to the given position.
 
@@ -217,6 +272,7 @@ class TableBoard(object):
         aCell = self.getCell(thePosition)
         return aCell.setData(theData) if aCell else False
 
+    #--------------------------------------------------------------------------
     def setCellSprite(self, thePosition, theSprite):
         """ Asign the given sprite instance to the given position.
 
@@ -232,6 +288,7 @@ class TableBoard(object):
         aCell = self.getCell(thePosition)
         return aCell.setSprite(theSprite) if aCell else False
 
+    #--------------------------------------------------------------------------
     def swapCells(self, theFirstCell, theSecondCell):
         """ Swap cell content for given position.
 
@@ -253,7 +310,13 @@ class TableBoard(object):
         self.matrix[x1][y1], self.matrix[x2][y2] = self.matrix[x2][y2], self.matrix[x1][y1]
         return True
 
+    #--------------------------------------------------------------------------
     def fallCell(self, theCell):
+        """ Move down all non-empty cells on top of the given one.
+
+        :type theCell: Cell
+        :param theCell: Cells on top of this will be moved down
+        """
         self.logger.debug('%s %s' % (theCell.getPosition(), theCell.getData()))
         if theCell.getData() is None:
             x, y = theCell.getPosition()
@@ -267,6 +330,7 @@ class TableBoard(object):
         else:
             return 0
 
+    #--------------------------------------------------------------------------
     def isMatch(self, theValue, theMatch):
         """ Check if the given value is a valid match.
 
@@ -278,6 +342,7 @@ class TableBoard(object):
         """
         return theValue == theMatch or theMatch == WILDCARD
 
+    #--------------------------------------------------------------------------
     def incPosition(self, thePosition, theSide):
         """ Increase a traverse cell through the board in a given direction.
 
@@ -290,6 +355,7 @@ class TableBoard(object):
         newPosition = MOVE_IN_BOARD[theSide]['incFunc'](thePosition)
         return None if False in map(self.isValueIn, newPosition) else newPosition
 
+    #--------------------------------------------------------------------------
     def findMatch(self, thePosition, theValue, theCounter, theMatchSet, theSide):
         """ Find how many matches can be found in a given direction.
 
@@ -321,6 +387,7 @@ class TableBoard(object):
         else:
             return theCounter
 
+    #--------------------------------------------------------------------------
     def matchAtCell(self, thePosition):
         """ Find matches in all direction for a given position.
 
@@ -338,29 +405,58 @@ class TableBoard(object):
         self.findMatch(thePosition, self.getCellData(thePosition), 0, yMatch, 'up')
         return (self._copyToListAndSort(xMatch), self._copyToListAndSort(yMatch))
 
+    #--------------------------------------------------------------------------
     def matchBoard(self):
         """ Look for matches in all the board.
 
         :rtype: list
         :return: List with all matches found in the board.
         """
-        match = []
+        matches = []
         for side in ('right', 'down'):
-            match.append(self._loopForCells(side))
-        return match
+            matches.append(self._loopForCells(side))
+        self.logger.debug('matches: %s' % matches)
+        return matches
 
+    #--------------------------------------------------------------------------
+    def emptyCellsInBoard(self):
+        """ Look for cells with None data
+
+        :rtype: list
+        :return: List with all cells wiht None data
+        """
+        matches = []
+        for aCell in self.iterCell():
+            if aCell.data is None:
+                matches.append(aCell)
+        return matches
+
+    #--------------------------------------------------------------------------
+    def setEmtpyCells(self, theMatches):
+        """ Set Cell data to none for all position being passed
+
+        :type theMatches: list
+        :param theMatches: Row and Column lists with matches to None
+        """
+        rowMatches, colMatches = theMatches
+        for match in rowMatches:
+            for pos in match:
+                self.setCellData(pos, None)
+        for match in colMatches:
+            for pos in match:
+                self.setCellData(pos, None)
+
+    #--------------------------------------------------------------------------
     def fallBoard(self):
+        """ Traverse all cells in the board and make then fall
+        """
         for aCell in self.iterCell():
             self.fallCell(aCell)
 
-    def emptyCellsInBoard(self):
-        match = []
-        for aCell in self.iterCell():
-            if aCell.data is None:
-                match.append(aCell)
-        return match
-
+    #--------------------------------------------------------------------------
     def logBoard(self):
+        """ Log all board information
+        """
         for x in xrange(self.size):
             row = ""
             for y in xrange(self.size):
