@@ -1,3 +1,4 @@
+import loggerator
 import cell
 
 
@@ -48,6 +49,7 @@ class TableBoard(object):
             self.matrix = theMatrix
         else:
             self.matrix = [[cell.Cell((x, y)) for y in xrange(theSize)] for x in xrange(theSize)]
+        self.logger = loggerator.getLoggerator('tableboard')
 
     def _copyToListAndSort(self, theSet):
         """ Copy a set to a list and sort the list result.
@@ -78,7 +80,7 @@ class TableBoard(object):
             # a match at MIN_MATCH - 1, it is not going to find it in what is
             # left.
             while secondLoopIdx <= (self.size - (MIN_MATCH - 1)):
-                #print ('%s %s %s %s' % (theSide, firstLoopIdx, secondLoopIdx, match))
+                #self.logger.debug('%s %s %s %s' % (theSide, firstLoopIdx, secondLoopIdx, match))
                 position  = MOVE_IN_BOARD[theSide]['loopFunc'](firstLoopIdx, secondLoopIdx)
                 traverseMatch = set()
                 inc = self.findMatch(position, self.getCellData(position), 0, traverseMatch, theSide)
@@ -246,19 +248,19 @@ class TableBoard(object):
         """
         x1, y1 = theFirstCell.position
         x2, y2 = theSecondCell.position
-        #print "Swap (%s, %s) %s for (%s, %s) %s" % (x1, y1, theFirstCell.data, x2, y2, theSecondCell.data)
+        #self.logger.debug("Swap (%s, %s) %s for (%s, %s) %s" % (x1, y1, theFirstCell.data, x2, y2, theSecondCell.data))
         theFirstCell.swap(theSecondCell)
         self.matrix[x1][y1], self.matrix[x2][y2] = self.matrix[x2][y2], self.matrix[x1][y1]
         return True
 
     def fallCell(self, theCell):
-        print theCell.position, theCell.data
-        if theCell.data is None:
-            x, y = theCell.position
+        self.logger.debug('%s %s' % (theCell.getPosition(), theCell.getData()))
+        if theCell.getData() is None:
+            x, y = theCell.getPosition()
             if x == (self.size - 1):
                 return -1
             topCell = self.matrix[x + 1][y]
-            if topCell.data is None:
+            if topCell.getData() is None:
                 if self.fallCell(topCell) == -1:
                     return -1
             self.swapCells(theCell, topCell)
@@ -307,7 +309,7 @@ class TableBoard(object):
         :param theSide: Direction to traverse for finding matches..
         """
         x, y = thePosition
-        #print "pos: (%s, %s), value: %s data: %s" % (x, y, theValue, self.getCellData(thePosition))
+        #self.logger.debug("pos: (%s, %s), value: %s data: %s" % (x, y, theValue, self.getCellData(thePosition)))
         if self.isMatch(theValue, self.getCellData(thePosition)):
             theCounter += 1
             theMatchSet.add(thePosition)
@@ -358,14 +360,14 @@ class TableBoard(object):
                 match.append(aCell)
         return match
 
-    def printLogBoard(self):
+    def logBoard(self):
         for x in xrange(self.size):
-            print '\n'
+            row = ""
             for y in xrange(self.size):
                 pos = (x, y)
                 c = self.getCell(pos)
-                print pos, c.position, c.data,
-        print '\n'
+                row += '%s %s %s' % (pos, c.position, c.data)
+            self.logger.debug('%s' % row)
 
 
 if __name__ == '__main__':

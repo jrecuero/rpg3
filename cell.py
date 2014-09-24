@@ -23,6 +23,13 @@ class Cell(object):
         self.power    = kwargs['thePower'] if 'thePower' in kwargs else None
         self.selected = False
 
+    def getPosition(self):
+        return self.position
+
+    def setPosition(self, thePosition):
+        self.position = thePosition
+        return True
+
     def getName(self):
         return self.name
 

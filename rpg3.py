@@ -2,6 +2,7 @@ import cocos
 import pyglet
 import random
 
+import loggerator
 import cell
 import tableboard
 
@@ -24,6 +25,7 @@ class Rpg3(cocos.layer.Layer):
         self.size = 4
         self.spriteSize = 64
         self.tableboard = self.createTableBoard(self.size)
+        self.logger = loggerator.getLoggerator('rpg3')
 
     def createPiece(self, x, y):
         color = random.sample(Rpg3.images, 1)[0]
@@ -46,7 +48,7 @@ class Rpg3(cocos.layer.Layer):
         #    matrix.append(cols)
         return tableboard.TableBoard(theSize, matrix)
 
-    def celSelected(self):
+    def cellSelected(self):
         selected = []
         for x in xrange(self.size):
             for y in xrange(self.size):
@@ -59,15 +61,15 @@ class Rpg3(cocos.layer.Layer):
         for xPos in xrange(self.size):
             for yPos in xrange(self.size):
                 self.tableboard.getCell((xPos, yPos)).select(x, y)
-        cells = self.celSelected()
+        cells = self.cellSelected()
         if len(cells) == 2:
             self.tableboard.swapCells(*cells)
             #cells[0].getSprite().image, cells[1].getSprite().image = cells[1].getSprite().image, cells[0].getSprite().image
             for aCell in cells:
                 aCell.select()
         matches = self.tableboard.matchBoard()
-        print 'matches: ', matches
-        #self.tableboard.printLogBoard()
+        self.logger.debug('matches: %s' % matches)
+        #self.tableboard.logBoard()
         rowMatches, colMatches = matches
         for match in rowMatches:
             for pos in match:
@@ -75,12 +77,13 @@ class Rpg3(cocos.layer.Layer):
         for match in colMatches:
             for pos in match:
                 self.tableboard.setCellData(pos, None)
-        for x in self.tableboard.emptyCellsInBoard():
-            print 'empty cells: ', x.position
+        for aCell in self.tableboard.emptyCellsInBoard():
+            self.logger.debug('empty cells: %s' % aCell.getPosition())
         self.tableboard.fallBoard()
-        for x in self.tableboard.emptyCellsInBoard():
-            print 'empty cells: ', x.position
-        self.tableboard.printLogBoard()
+        for aCell in self.tableboard.emptyCellsInBoard():
+            self.logger.debug('empty cells: ' % aCell.getPosition())
+            self.remove(aCell.getSprite())
+        self.tableboard.logBoard()
 
 
 if __name__ == '__main__':
