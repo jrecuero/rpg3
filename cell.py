@@ -1,3 +1,4 @@
+import cocos
 
 
 #
@@ -27,6 +28,17 @@ class Cell(object):
         self.health   = kwargs['theHealth'] if 'theHealth' in kwargs else None
         self.power    = kwargs['thePower'] if 'thePower' in kwargs else None
         self.selected = False
+        self.createSprite()
+
+    #--------------------------------------------------------------------------
+    def createSprite(self):
+        """
+        """
+        x, y = self.position
+        self.sprite = cocos.sprite.Sprite('images/%s.png' % (self.STRING, ))
+        self.sprite.position = self.sprite.width * (y + 1), self.sprite.height * (x + 1)
+        self.data = self.STRING
+        return self.sprite
 
     #--------------------------------------------------------------------------
     def getPosition(self):

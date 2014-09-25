@@ -6,6 +6,17 @@ import loggerator
 import cell
 import tableboard
 
+from axe import Axe
+from bow import Bow
+from coin import Coin
+from dagger import Dagger
+from heart import Heart
+from lance import Lance
+from mana import Mana
+from shield import Shield
+from staff import Staff
+from sword import Sword
+
 
 #
 #------------------------------------------------------------------------------
@@ -13,7 +24,16 @@ class Rpg3(cocos.layer.Layer):
 
     is_event_handler = True
 
-    images = ['blue', 'green', 'yellow', 'red', 'black', 'cyan', 'purple', 'orange']
+    images = [Axe,
+              Bow,
+              Coin,
+              Dagger,
+              Heart,
+              Lance,
+              Mana,
+              Shield,
+              Staff,
+              Sword, ]
 
     #--------------------------------------------------------------------------
     def __init__(self):
@@ -27,63 +47,35 @@ class Rpg3(cocos.layer.Layer):
         label.position = 320, 240
         self.add(label)
 
-        self.size = 4
-        self.spriteSize = 64
+        self.size = 8
         self.tableboard = self.createTableBoard(self.size)
         self.logger = loggerator.getLoggerator('rpg3')
-
-    #--------------------------------------------------------------------------
-    def createPiece(self, x, y):
-        """
-        """
-        color = random.sample(Rpg3.images, 1)[0]
-        piece = cocos.sprite.Sprite('images/%s.png' % color)
-        piece.position = self.spriteSize * (y + 1), self.spriteSize * (x + 1)
-        self.add(piece)
-        return (color, piece)
-
-    #--------------------------------------------------------------------------
-    def createCell(self, x, y):
-        """
-        """
-        color, piece = self.createPiece(x, y)
-        return cell.Cell((x, y), theData=color, theSprite=piece)
 
     #--------------------------------------------------------------------------
     def createCellCb(self, thePosition):
         """
         """
-        x, y = thePosition
-        color, piece = self.createPiece(x, y)
-        return {'theData': color, 'theSprite': piece}
+        cellKlass = random.sample(Rpg3.images, 1)[0]
+        newCell = cellKlass(thePosition)
+        self.add(newCell.getSprite())
+        return newCell
 
     #--------------------------------------------------------------------------
     def createTableBoard(self, theSize):
         """
         """
-        #matrix = [[self.createCell(x, y) for y in xrange(theSize)] for x in xrange(theSize)]
-        #return tableboard.TableBoard(theSize, matrix)
         return tableboard.TableBoard(theSize, theNewCellCb=self.createCellCb)
 
     #--------------------------------------------------------------------------
     def cellSelected(self):
         """
         """
-        #selected = []
-        #for x in xrange(self.size):
-        #    for y in xrange(self.size):
-        #        aCell = self.tableboard.getCell((x, y))
-        #        if aCell.isSelected():
-        #            selected.append(aCell)
         return [aCell for aCell in self.tableboard.iterCell() if aCell.isSelected()]
 
     #--------------------------------------------------------------------------
     def on_mouse_press(self, x, y, buttons, modifiers):
         """
         """
-        #for xPos in xrange(self.size):
-        #    for yPos in xrange(self.size):
-        #        self.tableboard.getCell((xPos, yPos)).select(x, y)
         for aCell in self.tableboard.iterCell():
             aCell.select(x, y)
         cells = self.cellSelected()

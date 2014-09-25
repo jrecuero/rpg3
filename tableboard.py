@@ -76,7 +76,7 @@ class TableBoard(object):
         :rtype: list
         :return: matrix with a default table board
         """
-        return [[cell.Cell((x, y), **self.newCellCb((x, y))) for y in xrange(self.size)] for x in xrange(self.size)]
+        return [[self.newCellCb((x, y)) for y in xrange(self.size)] for x in xrange(self.size)]
 
     #--------------------------------------------------------------------------
     def addNewCell(self, thePosition):
@@ -89,7 +89,7 @@ class TableBoard(object):
         :return: New cell instance
         """
         x, y  = thePosition
-        aCell = cell.Cell(thePosition, **self.newCellCb(thePosition))
+        aCell = self.newCellCb(thePosition)
         self.matrix[x][y] = aCell
         return aCell
 
