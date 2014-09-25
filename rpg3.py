@@ -82,20 +82,22 @@ class Rpg3(cocos.layer.Layer):
         if len(cells) == 2:
             self.tableboard.swapCells(*cells)
             [aCell.select() for aCell in cells]
-        matches = self.tableboard.matchBoard()
         self.logger.debug("#------------------------------------------------#")
-        self.tableboard.logBoard()
-        self.tableboard.setEmptyCells(matches)
-        for aCell in self.tableboard.emptyCellsInBoard():
-            self.logger.debug('empty cells: %s' % (aCell.getPosition(), ))
-        self.tableboard.fallBoard()
-        for aCell in self.tableboard.emptyCellsInBoard():
-            self.logger.debug('empty cells: %s' % (aCell.getPosition(), ))
-            self.tableboard.removeCell(aCell.getPosition())
-            self.remove(aCell.getSprite())
-            newCell = self.tableboard.addNewCell(aCell.getPosition())
-            self.add(newCell.getSprite())
-        self.tableboard.logBoard()
+        matches = self.tableboard.defaultMatches()
+        while self.tableboard.isThereAnyMatch(matches):
+            matches = self.tableboard.matchBoard()
+            #self.tableboard.logBoard()
+            self.tableboard.setEmptyCells(matches)
+            #for aCell in self.tableboard.emptyCellsInBoard():
+            #    self.logger.debug('empty cells: %s' % (aCell.getPosition(), ))
+            self.tableboard.fallBoard()
+            for aCell in self.tableboard.emptyCellsInBoard():
+            #    self.logger.debug('empty cells: %s' % (aCell.getPosition(), ))
+                self.tableboard.removeCell(aCell.getPosition())
+                self.remove(aCell.getSprite())
+                newCell = self.tableboard.addNewCell(aCell.getPosition())
+                self.add(newCell.getSprite())
+            #self.tableboard.logBoard()
 
 
 if __name__ == '__main__':

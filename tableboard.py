@@ -420,6 +420,27 @@ class TableBoard(object):
         return matches
 
     #--------------------------------------------------------------------------
+    def defaultMatches(self):
+        """ Return default matches list to be used in a loop
+
+        :rtype: list
+        :return: List with default values to be used in a loop
+        """
+        return [True, True]
+
+    #--------------------------------------------------------------------------
+    def isThereAnyMatch(self, theMatches):
+        """ Check if there is any match in the parameter passed
+
+        :type theMatches: list
+        :param theMatches: list with row and column matches
+
+        :rtype: bool
+        :return: True if there is any match, else False
+        """
+        return theMatches[0] or theMatches[1]
+
+    #--------------------------------------------------------------------------
     def emptyCellsInBoard(self):
         """ Look for cells with None data
 
