@@ -415,7 +415,7 @@ class TableBoard(object):
         matches = []
         for side in ('right', 'down'):
             matches.append(self._loopForCells(side))
-        self.logger.debug('matches: %s' % matches)
+        self.logger.debug('matches: %s' % (matches, ))
         return matches
 
     #--------------------------------------------------------------------------
@@ -432,7 +432,7 @@ class TableBoard(object):
         return matches
 
     #--------------------------------------------------------------------------
-    def setEmtpyCells(self, theMatches):
+    def setEmptyCells(self, theMatches):
         """ Set Cell data to none for all position being passed
 
         :type theMatches: list
@@ -463,7 +463,7 @@ class TableBoard(object):
                 pos = (x, y)
                 c = self.getCell(pos)
                 row += '%s %s %s' % (pos, c.position, c.data)
-            self.logger.debug('%s' % row)
+            self.logger.debug('%s' % (row, ))
 
 
 if __name__ == '__main__':

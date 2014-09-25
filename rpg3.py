@@ -91,7 +91,8 @@ class Rpg3(cocos.layer.Layer):
             self.tableboard.swapCells(*cells)
             [aCell.select() for aCell in cells]
         matches = self.tableboard.matchBoard()
-        #self.tableboard.logBoard()
+        self.logger.debug("#------------------------------------------------#")
+        self.tableboard.logBoard()
         #rowMatches, colMatches = matches
         #for match in rowMatches:
         #    for pos in match:
@@ -101,10 +102,10 @@ class Rpg3(cocos.layer.Layer):
         #        self.tableboard.setCellData(pos, None)
         self.tableboard.setEmptyCells(matches)
         for aCell in self.tableboard.emptyCellsInBoard():
-            self.logger.debug('empty cells: %s' % aCell.getPosition())
+            self.logger.debug('empty cells: %s' % (aCell.getPosition(), ))
         self.tableboard.fallBoard()
         for aCell in self.tableboard.emptyCellsInBoard():
-            self.logger.debug('empty cells: ' % aCell.getPosition())
+            self.logger.debug('empty cells: %s' % (aCell.getPosition(), ))
             self.tableboard.removeCell(aCell.getPosition())
             self.remove(aCell.getSprite())
             newCell = self.tableboard.addNewCell(aCell.getPosition())
