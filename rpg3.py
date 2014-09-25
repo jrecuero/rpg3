@@ -40,18 +40,22 @@ class Rpg3(cocos.layer.Layer):
         """
         """
         super(Rpg3, self).__init__()
-        label = cocos.text.Label('RPG Match 3',
-                                 font_name='Times New Roman',
-                                 font_size=32,
-                                 anchor_x='center', anchor_y='center')
-        label.position = 320, 240
-        self.add(label)
 
-        self.size = 4
+        self.size = 5
         self.tableboard = self.createTableBoard(self.size)
         self.logger = loggerator.getLoggerator('rpg3')
-
         self.statsDict = cell.Cell.createStatsDict()
+
+        labelAttrs = {'font_name': 'Times New Roman',
+                      'font_size': 16,
+                      'anchor_x': 'left',
+                      'anchor_y': 'top', }
+        x, y = 5, 460
+        for stat, value in self.statsDict.iteritems():
+            label = cocos.text.Label('%s: %s' % (stat, value), **labelAttrs)
+            label.position = x, y
+            self.add(label, name=stat)
+            x, y = x, y - 20
 
     #--------------------------------------------------------------------------
     def createCellCb(self, thePosition):
@@ -91,6 +95,8 @@ class Rpg3(cocos.layer.Layer):
             statsDict = self.tableboard.matchResults(matches)
             for stat, value in statsDict.iteritems():
                 self.statsDict[stat] += value
+                label = self.get(stat)
+                label.element.text = '%s: %d' % (stat, self.statsDict[stat], )
             self.logger.debug("stats: %s" % (self.statsDict))
             #self.tableboard.logBoard()
             self.tableboard.setEmptyCells(matches)
