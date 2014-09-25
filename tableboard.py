@@ -1,5 +1,5 @@
 import loggerator
-import cell
+#import cell
 
 
 COUNT_LIMIT = 100
@@ -305,7 +305,7 @@ class TableBoard(object):
         """
         x1, y1 = theFirstCell.position
         x2, y2 = theSecondCell.position
-        #self.logger.debug("Swap (%s, %s) %s for (%s, %s) %s" % (x1, y1, theFirstCell.data, x2, y2, theSecondCell.data))
+        self.logger.debug("Swap (%s, %s) %s for (%s, %s) %s" % (x1, y1, theFirstCell.data, x2, y2, theSecondCell.data))
         theFirstCell.swap(theSecondCell)
         self.matrix[x1][y1], self.matrix[x2][y2] = self.matrix[x2][y2], self.matrix[x1][y1]
         return True
@@ -317,8 +317,8 @@ class TableBoard(object):
         :type theCell: Cell
         :param theCell: Cells on top of this will be moved down
         """
-        self.logger.debug('%s %s' % (theCell.getPosition(), theCell.getData()))
         if theCell.getData() is None:
+            self.logger.debug('falling cell %s %s' % (theCell.getPosition(), theCell.getData()))
             x, y = theCell.getPosition()
             if x == (self.size - 1):
                 return -1
@@ -326,6 +326,7 @@ class TableBoard(object):
             if topCell.getData() is None:
                 if self.fallCell(topCell) == -1:
                     return -1
+            topCell = self.matrix[x + 1][y]
             self.swapCells(theCell, topCell)
         else:
             return 0
@@ -462,7 +463,7 @@ class TableBoard(object):
             for y in xrange(self.size):
                 pos = (x, y)
                 c = self.getCell(pos)
-                row += '%s %s %s' % (pos, c.position, c.data)
+                row += '%s %s' % (c.position, c.data)
             self.logger.debug('%s' % (row, ))
 
 
