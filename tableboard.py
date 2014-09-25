@@ -1,5 +1,5 @@
 import loggerator
-#import cell
+import cell
 
 
 COUNT_LIMIT = 100
@@ -486,6 +486,19 @@ class TableBoard(object):
                 c = self.getCell(pos)
                 row += '%s %s' % (c.position, c.data)
             self.logger.debug('%s' % (row, ))
+
+    #--------------------------------------------------------------------------
+    def matchResults(self, theMatches):
+        stats = cell.Cell.getStats()
+        statsDict = cell.Cell.createStatsDict()
+        for matchLines in theMatches:
+            for match in matchLines:
+                for pos in match:
+                    for stat in stats:
+                        statsDict[stat] += getattr(self.getCell(pos), stat, 0)
+                for stat in stats:
+                    self.logger.info("Match %s  = %d" % (stat, statsDict[stat]))
+        return statsDict
 
 
 if __name__ == '__main__':

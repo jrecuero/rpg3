@@ -4,6 +4,7 @@ import cell
 class Staff(cell.Cell):
 
     STRING = "staff"
+    DAMAGE = 4
 
     def __init__(self, thePosition, **kwargs):
         """ Staff initialization method.

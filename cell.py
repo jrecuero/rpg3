@@ -6,6 +6,19 @@ import cocos
 class Cell(object):
 
     #--------------------------------------------------------------------------
+    @staticmethod
+    def getStats():
+        return ('damage', 'defense', 'money', 'health', 'power')
+
+    #--------------------------------------------------------------------------
+    @staticmethod
+    def createStatsDict():
+        dicta = {}
+        for stat in Cell.getStats():
+            dicta[stat] = 0
+        return dicta
+
+    #--------------------------------------------------------------------------
     def __init__(self, thePosition, **kwargs):
         """ Cell initialization method.
 
@@ -37,7 +50,12 @@ class Cell(object):
         x, y = self.position
         self.sprite = cocos.sprite.Sprite('images/%s.png' % (self.STRING, ))
         self.sprite.position = self.sprite.width * (y + 1), self.sprite.height * (x + 1)
-        self.data = self.STRING
+        self.data    = getattr(self, 'STRING', 'CELL')
+        self.damage  = getattr(self, 'DAMAGE', 0)
+        self.defense = getattr(self, 'DEFENSE', 0)
+        self.money   = getattr(self, 'MONEY', 0)
+        self.health  = getattr(self, 'HEALTH', 0)
+        self.power   = getattr(self, 'POWER', 0)
         return self.sprite
 
     #--------------------------------------------------------------------------

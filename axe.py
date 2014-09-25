@@ -4,6 +4,7 @@ import cell
 class Axe(cell.Cell):
 
     STRING = "axe"
+    DAMAGE = 10
 
     def __init__(self, thePosition, **kwargs):
         """ Axe initialization method.

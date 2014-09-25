@@ -3,7 +3,7 @@ import pyglet
 import random
 
 import loggerator
-#import cell
+import cell
 import tableboard
 
 from axe import Axe
@@ -51,6 +51,8 @@ class Rpg3(cocos.layer.Layer):
         self.tableboard = self.createTableBoard(self.size)
         self.logger = loggerator.getLoggerator('rpg3')
 
+        self.statsDict = cell.Cell.createStatsDict()
+
     #--------------------------------------------------------------------------
     def createCellCb(self, thePosition):
         """
@@ -86,6 +88,10 @@ class Rpg3(cocos.layer.Layer):
         matches = self.tableboard.defaultMatches()
         while self.tableboard.isThereAnyMatch(matches):
             matches = self.tableboard.matchBoard()
+            statsDict = self.tableboard.matchResults(matches)
+            for stat, value in statsDict.iteritems():
+                self.statsDict[stat] += value
+            self.logger.debug("stats: %s" % (self.statsDict))
             #self.tableboard.logBoard()
             self.tableboard.setEmptyCells(matches)
             #for aCell in self.tableboard.emptyCellsInBoard():

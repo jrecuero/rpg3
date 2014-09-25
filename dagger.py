@@ -4,6 +4,7 @@ import cell
 class Dagger(cell.Cell):
 
     STRING = "dagger"
+    DAMAGE = 3
 
     def __init__(self, thePosition, **kwargs):
         """ Dagger initialization method.

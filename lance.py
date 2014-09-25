@@ -4,6 +4,7 @@ import cell
 class Lance(cell.Cell):
 
     STRING = "lance"
+    DAMAGE = 6
 
     def __init__(self, thePosition, **kwargs):
         """ Lance initialization method.

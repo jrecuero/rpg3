@@ -4,6 +4,7 @@ import cell
 class Mana(cell.Cell):
 
     STRING = "mana"
+    POWER  = 20
 
     def __init__(self, thePosition, **kwargs):
         """ Mana initialization method.
