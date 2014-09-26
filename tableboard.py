@@ -493,9 +493,12 @@ class TableBoard(object):
         statsDict = cell.Cell.createStatsDict()
         for matchLines in theMatches:
             for match in matchLines:
-                for pos in match:
-                    for stat in stats:
-                        statsDict[stat] += getattr(self.getCell(pos), stat, 0)
+                for stat in stats:
+                    # every match should be the same, so just use the first one
+                    # to retrieve the match calculation method to be used.
+                    matchStatFunc = getattr(self.getCell(match[0]), stat, None)
+                    if matchStatFunc:
+                        statsDict[stat] += matchStatFunc(match)
                 for stat in stats:
                     self.logger.info("Match %s  = %d" % (stat, statsDict[stat]))
         return statsDict

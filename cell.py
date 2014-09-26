@@ -51,12 +51,73 @@ class Cell(object):
         self.sprite = cocos.sprite.Sprite('images/%s.png' % (self.STRING, ))
         self.sprite.position = self.sprite.width * (y + 1), self.sprite.height * (x + 1)
         self.data    = getattr(self, 'STRING', 'CELL')
-        self.damage  = getattr(self, 'DAMAGE', 0)
-        self.defense = getattr(self, 'DEFENSE', 0)
-        self.money   = getattr(self, 'MONEY', 0)
-        self.health  = getattr(self, 'HEALTH', 0)
-        self.power   = getattr(self, 'POWER', 0)
         return self.sprite
+
+    #--------------------------------------------------------------------------
+    def _matchStat(self, theMatch, theStat):
+        """ Basic match accumulation method for any stat
+
+        :type theMatch: list
+        :param theMatch: List with position matching
+
+        :type theStat: str
+        :param theStat: String with the stat name
+
+        :rtype: int
+        :return: Total value accumulate to the given stat
+        """
+        total = 0
+        for match in theMatch:
+            total += getattr(self, theStat, 0)
+        return total
+
+    #--------------------------------------------------------------------------
+    def _criticalMatchStat(self, theMatch, theStat):
+        """ Critical match accumulation method for any stat
+
+        :type theMatch: list
+        :param theMatch: List with position matching
+
+        :type theStat: str
+        :param theStat: String with the stat name
+
+        :rtype: int
+        :return: Total value accumulate to the given stat
+        """
+        total = 0
+        for match in theMatch:
+            total += getattr(self, theStat, 0) * 2
+        return total
+
+    #--------------------------------------------------------------------------
+    def damage(self, theMatch):
+        """
+        """
+        return self._matchStat(theMatch, 'DAMAGE')
+
+    #--------------------------------------------------------------------------
+    def defense(self, theMatch):
+        """
+        """
+        return self._matchStat(theMatch, 'DEFENSE')
+
+    #--------------------------------------------------------------------------
+    def money(self, theMatch):
+        """
+        """
+        return self._matchStat(theMatch, 'MONEY')
+
+    #--------------------------------------------------------------------------
+    def health(self, theMatch):
+        """
+        """
+        return self._matchStat(theMatch, 'HEALTH')
+
+    #--------------------------------------------------------------------------
+    def power(self, theMatch):
+        """
+        """
+        return self._matchStat(theMatch, 'POWER')
 
     #--------------------------------------------------------------------------
     def getPosition(self):

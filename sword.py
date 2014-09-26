@@ -16,3 +16,12 @@ class Sword(cell.Cell):
         :param kwargs: Dictionary with sword attributes.
         """
         super(Sword, self).__init__(thePosition, **kwargs)
+
+    #--------------------------------------------------------------------------
+    def damage(self, theMatch):
+        """
+        """
+        if len(theMatch) == 3:
+            return self._matchStat(theMatch, 'DAMAGE')
+        else:
+            return self._criticalMatchStat(theMatch, 'DAMAGE')
