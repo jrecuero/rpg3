@@ -368,7 +368,7 @@ class Loggerator(object):
         return eval('+'.join(map(lambda x: '%s_%s' % (x[0], x[1]), color)))
 
     # =========================================================================
-    def _log(self, message, color=None, *args, **kwargs):
+    def _log(self, message, level, color=None, *args, **kwargs):
         """ Log a message with the given color.
 
         It logs the given message with the given color.
@@ -387,7 +387,9 @@ class Loggerator(object):
         """
         color = self._setColor(color)
         formattedMessage = '%s%s%s' % (color, message, COL_RESET)
-        self.loggerator.debug(formattedMessage, *args, **kwargs)
+        function = getattr(self.loggerator, level, None)
+        if function:
+            function(formattedMessage, *args, **kwargs)
 
     # =========================================================================
     def getLoggerator(self):
@@ -416,7 +418,7 @@ class Loggerator(object):
         :type kwargs: dict
         :param kwargs: Dictionary of parameters
         """
-        self._log(message, ((mode, color), ) if color  else self.defaultColor['debug'], *args, **kwargs)
+        self._log(message, 'debug', ((mode, color), ) if color  else self.defaultColor['debug'], *args, **kwargs)
 
     # =========================================================================
     def info(self, message, color=None, mode='FG', *args, **kwargs):
@@ -436,7 +438,7 @@ class Loggerator(object):
         :type kwargs: dict
         :param kwargs: Dictionary of parameters
         """
-        self._log(message, ((mode, color), ) if color else self.defaultColor['info'], *args, **kwargs)
+        self._log(message, 'info', ((mode, color), ) if color else self.defaultColor['info'], *args, **kwargs)
 
     # =========================================================================
     def trace(self, message, color=None, mode='FG', *args, **kwargs):
@@ -476,7 +478,7 @@ class Loggerator(object):
         :type kwargs: dict
         :param kwargs: Dictionary of parameters
         """
-        self._log(message, ((mode, color), ) if color else self.defaultColor['warning'], *args, **kwargs)
+        self._log(message, 'warning',  ((mode, color), ) if color else self.defaultColor['warning'], *args, **kwargs)
 
     # =========================================================================
     def error(self, message, color=None, mode='FG', *args, **kwargs):
@@ -496,7 +498,7 @@ class Loggerator(object):
         :type kwargs: dict
         :param kwargs: Dictionary of parameters
         """
-        self._log(message, ((mode, color), ) if color else self.defaultColor['error'], *args, **kwargs)
+        self._log(message, 'error', ((mode, color), ) if color else self.defaultColor['error'], *args, **kwargs)
 
 
 ###############################################################################
