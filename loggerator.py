@@ -335,8 +335,10 @@ class Loggerator(object):
         self.loggerator = logging.getLogger(name[0:15].center(16, '*'))
         self.loggerator.setLevel(logging.DEBUG)
         defaultHandler = logging.StreamHandler()
+        color        = color if 'win' not in sys.platform else ""
+        color_reset  = COL_RESET if 'win' not in sys.platform else ""
         formatString = '%(asctime)s ' + color + '%(name)-16s ' +\
-                       COL_RESET + '[%(levelname)-8s] %(message)s'
+                       color_reset + '[%(levelname)-8s] %(message)s'
         formatter = logging.Formatter(formatString)
         defaultHandler.setFormatter(formatter)
         self.loggerator.addHandler(defaultHandler)
