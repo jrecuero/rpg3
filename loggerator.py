@@ -24,6 +24,7 @@ __docformat__ = 'restructuredtext en'
 # import std python modules
 #
 import logging
+import sys
 
 #
 # import dbase python modules
@@ -385,8 +386,9 @@ class Loggerator(object):
         :type kwargs: dict
         :param kwargs: Dictionary of parameters
         """
-        color = self._setColor(color)
-        formattedMessage = '%s%s%s' % (color, message, COL_RESET)
+        color       = self._setColor(color) if 'win' not in sys.platform else ""
+        color_reset = COL_RESET if 'win' not in sys.platform else ""
+        formattedMessage = '%s%s%s' % (color, message, color_reset)
         function = getattr(self.loggerator, level, None)
         if function:
             function(formattedMessage, *args, **kwargs)
