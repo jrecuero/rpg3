@@ -1,9 +1,12 @@
 import cocos
+import loggerator
 
 
 #
 #------------------------------------------------------------------------------
 class Cell(object):
+
+    customStatCbs = {}
 
     #--------------------------------------------------------------------------
     @staticmethod
@@ -31,17 +34,19 @@ class Cell(object):
         :type kwargs: dict
         :param kwargs: Dictionary with sword attributes.
         """
+        self.logger   = loggerator.getLoggerator('cell')
         self.position = thePosition
         self.data     = kwargs['theData'] if 'theData' in kwargs else None
         self.name     = kwargs['theName'] if 'theName' in kwargs else None
         self.sprite   = kwargs['theSprite'] if 'theSprite' in kwargs else None
-        self.damage   = kwargs['theDamage'] if 'theDamage' in kwargs else None
-        self.defense  = kwargs['theDefense'] if 'theDefense' in kwargs else None
-        self.money    = kwargs['theMoney']  if 'theMoney' in kwargs else None
-        self.health   = kwargs['theHealth'] if 'theHealth' in kwargs else None
-        self.power    = kwargs['thePower'] if 'thePower' in kwargs else None
+        #self.damage   = kwargs['theDamage'] if 'theDamage' in kwargs else None
+        #self.defense  = kwargs['theDefense'] if 'theDefense' in kwargs else None
+        #self.money    = kwargs['theMoney']  if 'theMoney' in kwargs else None
+        #self.health   = kwargs['theHealth'] if 'theHealth' in kwargs else None
+        #self.power    = kwargs['thePower'] if 'thePower' in kwargs else None
         self.selected = False
         self.createSprite()
+        self.createStats()
 
     #--------------------------------------------------------------------------
     def createSprite(self):
@@ -50,11 +55,27 @@ class Cell(object):
         x, y = self.position
         self.sprite = cocos.sprite.Sprite('images/%s.png' % (self.STRING, ))
         self.sprite.position = self.sprite.width * (y + 1), self.sprite.height * (x + 1)
-        self.data    = getattr(self, 'STRING', 'CELL')
         return self.sprite
 
     #--------------------------------------------------------------------------
-    def _matchStat(self, theMatch, theStat):
+    def createStats(self):
+        """
+        """
+        self.data    = getattr(self, 'STRING', 'CELL')
+        self.DAMAGE  = getattr(self, 'DAMAGE', 0)
+        self.DEFENSE = getattr(self, 'DEFENSE', 0)
+        self.MONEY   = getattr(self, 'MONEY', 0)
+        self.HEALTH  = getattr(self, 'HEALTH', 0)
+        self.POWER   = getattr(self, 'POWER', 0)
+        self.statCbs = {'DAMAGE':  {'M3': self._m3Stat, 'M4': self._m4Stat, 'M5': self._m5Stat},
+                        'DEFENSE': {'M3': self._m3Stat, 'M4': self._m4Stat, 'M5': self._m5Stat},
+                        'MONEY':   {'M3': self._m3Stat, 'M4': self._m4Stat, 'M5': self._m5Stat},
+                        'HEALTH':  {'M3': self._m3Stat, 'M4': self._m4Stat, 'M5': self._m5Stat},
+                        'POWER':   {'M3': self._m3Stat, 'M4': self._m4Stat, 'M5': self._m5Stat}, }
+        self.statCbs.update(self.customStatCbs)
+
+    #--------------------------------------------------------------------------
+    def _m3Stat(self, theMatch, theStat):
         """ Basic match accumulation method for any stat
 
         :type theMatch: list
@@ -72,7 +93,7 @@ class Cell(object):
         return total
 
     #--------------------------------------------------------------------------
-    def _criticalMatchStat(self, theMatch, theStat):
+    def _m4Stat(self, theMatch, theStat):
         """ Critical match accumulation method for any stat
 
         :type theMatch: list
@@ -90,34 +111,62 @@ class Cell(object):
         return total
 
     #--------------------------------------------------------------------------
+    def _m5Stat(self, theMatch, theStat):
+        """ Critical match accumulation method for any stat
+
+        :type theMatch: list
+        :param theMatch: List with position matching
+
+        :type theStat: str
+        :param theStat: String with the stat name
+
+        :rtype: int
+        :return: Total value accumulate to the given stat
+        """
+        total = 0
+        for match in theMatch:
+            total += getattr(self, theStat, 0) * 3
+        return total
+
+    #--------------------------------------------------------------------------
+    def _matchCb(self, theMatch, theStat):
+        """
+        """
+        matchCb = getattr(self, 'M%d' % (len(theMatch), ), None)
+        self.logger.info('Match %d %s for %s' % (len(theMatch), self.__class__, theStat))
+        if matchCb:
+            return matchCb(theMatch, theStat)
+        return 0
+
+    #--------------------------------------------------------------------------
     def damage(self, theMatch):
         """
         """
-        return self._matchStat(theMatch, 'DAMAGE')
+        return self._matchCb(theMatch, 'DAMAGE')
 
     #--------------------------------------------------------------------------
     def defense(self, theMatch):
         """
         """
-        return self._matchStat(theMatch, 'DEFENSE')
+        return self._matchCb(theMatch, 'DEFENSE')
 
     #--------------------------------------------------------------------------
     def money(self, theMatch):
         """
         """
-        return self._matchStat(theMatch, 'MONEY')
+        return self._matchCb(theMatch, 'MONEY')
 
     #--------------------------------------------------------------------------
     def health(self, theMatch):
         """
         """
-        return self._matchStat(theMatch, 'HEALTH')
+        return self._matchCb(theMatch, 'HEALTH')
 
     #--------------------------------------------------------------------------
     def power(self, theMatch):
         """
         """
-        return self._matchStat(theMatch, 'POWER')
+        return self._matchCb(theMatch, 'POWER')
 
     #--------------------------------------------------------------------------
     def getPosition(self):

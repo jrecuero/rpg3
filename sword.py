@@ -22,6 +22,6 @@ class Sword(cell.Cell):
         """
         """
         if len(theMatch) == 3:
-            return self._matchStat(theMatch, 'DAMAGE')
+            return self._m3Stat(theMatch, 'DAMAGE')
         else:
-            return self._criticalMatchStat(theMatch, 'DAMAGE')
+            return self._m4Stat(theMatch, 'DAMAGE')
