@@ -50,12 +50,23 @@ class Rpg3(cocos.layer.Layer):
                       'font_size': 16,
                       'anchor_x': 'left',
                       'anchor_y': 'top', }
-        x, y = 5, 460
+        x, y = 32, 460
         for stat, value in self.statsDict.iteritems():
             label = cocos.text.Label('%s: %s' % (stat, value), **labelAttrs)
             label.position = x, y
             self.add(label, name=stat)
             x, y = x, y - 20
+        self.createCommandLine()
+
+    #--------------------------------------------------------------------------
+    def createCommandLine(self):
+        self.cmd = cocos.text.Label('Command Line', position=(400, 460), width=200, height=200, multiline=True)
+        self.add(self.cmd, name='CommandLine')
+        self.cmd.line = 0
+
+    #--------------------------------------------------------------------------
+    def newEntryInCommandLine(self, theNewLine):
+        self.cmd.element.text = '%s\n%s' % (self.cmd.element.text, 'match found')
 
     #--------------------------------------------------------------------------
     def createCellCb(self, thePosition):
@@ -92,6 +103,8 @@ class Rpg3(cocos.layer.Layer):
         matches = self.tableboard.defaultMatches()
         while self.tableboard.isThereAnyMatch(matches):
             matches = self.tableboard.matchBoard()
+            if matches[0] or matches[1]:
+                self.newEntryInCommandLine('match found')
             statsDict = self.tableboard.matchResults(matches)
             for stat, value in statsDict.iteritems():
                 self.statsDict[stat] += value
@@ -116,7 +129,7 @@ if __name__ == '__main__':
     pyglet.resource.path.append('images')
     pyglet.resource.reindex()
 
-    cocos.director.director.init()
+    cocos.director.director.init(width=800)
     rpg3Layer = Rpg3()
     mainScene = cocos.scene.Scene(rpg3Layer)
     cocos.director.director.run(mainScene)

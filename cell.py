@@ -132,8 +132,8 @@ class Cell(object):
     def _matchCb(self, theMatch, theStat):
         """
         """
-        matchCb = getattr(self, 'M%d' % (len(theMatch), ), None)
-        self.logger.info('Match %d %s for %s' % (len(theMatch), self.__class__, theStat))
+        matchCb = self.statCbs[theStat].get('M%d' % (len(theMatch), ), None)
+        self.logger.info('Match %d %s for %s,  cb: %s' % (len(theMatch), self.__class__, theStat, matchCb))
         if matchCb:
             return matchCb(theMatch, theStat)
         return 0
