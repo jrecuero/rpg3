@@ -41,7 +41,7 @@ class Rpg3(cocos.layer.Layer):
         """
         super(Rpg3, self).__init__()
 
-        self.size = 5
+        self.size = 8
         self.tableboard = self.createTableBoard(self.size)
         self.logger = loggerator.getLoggerator('rpg3')
         self.statsDict = cell.Cell.createStatsDict()
@@ -93,11 +93,13 @@ class Rpg3(cocos.layer.Layer):
     def on_mouse_press(self, x, y, buttons, modifiers):
         """
         """
+        cells = []
         for aCell in self.tableboard.iterCell():
             aCell.select(x, y)
         cells = self.cellSelected()
         if len(cells) == 2:
-            self.tableboard.swapCells(*cells)
+            if self.tableboard.cellTogetherCell(*cells):
+                self.tableboard.swapCells(*cells)
             [aCell.select() for aCell in cells]
         self.logger.debug("#------------------------------------------------#")
         matches = self.tableboard.defaultMatches()

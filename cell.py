@@ -304,6 +304,8 @@ class Cell(object):
         """
         if (x is None and y is None) or self.getSprite().contains(x, y):
             self._select()
+            return True
+        return False
 
     #--------------------------------------------------------------------------
     def swap(self, theOther):

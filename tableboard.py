@@ -503,6 +503,16 @@ class TableBoard(object):
                     self.logger.info("Match %s  = %d" % (stat, statsDict[stat]))
         return statsDict
 
+    #--------------------------------------------------------------------------
+    def cellTogetherCell(self, theCell, theOtherCell):
+        x1, y1 = theCell.position
+        x2, y2 = theOtherCell.position
+        if (x1 == x2) and abs(y1 - y2) == 1:
+            return True
+        if (y1 == y2) and abs(x1 - x2) == 1:
+            return True
+        return False
+
 
 if __name__ == '__main__':
     #import unittest
