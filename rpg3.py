@@ -1,4 +1,5 @@
 import cocos
+from cocos.actions import Delay, CallFunc
 import pyglet
 import random
 
@@ -122,21 +123,34 @@ class Rpg3(cocos.layer.Layer):
 
     #--------------------------------------------------------------------------
     def updateTableboard(self):
+        self.tableboard.fallBoard()
         for aCell in self.tableboard.emptyCellsInBoard():
             self.tableboard.removeCell(aCell.getPosition())
             self.remove(aCell.getSprite())
             newCell = self.tableboard.addNewCell(aCell.getPosition())
             self.add(newCell.getSprite())
+        self.processMatch()
+
+    #--------------------------------------------------------------------------
 
     #--------------------------------------------------------------------------
     def processMatch(self):
         matches = self.tableboard.matchBoard()
-        while self.tableboard.isThereAnyMatch(matches):
+        if self.tableboard.isThereAnyMatch(matches):
             self.updateStats(matches)
             self.tableboard.setEmptyCells(matches)
-            self.tableboard.fallBoard()
-            self.updateTableboard()
-            matches = self.tableboard.matchBoard()
+
+            for aCell in self.tableboard.emptyCellsInBoard():
+                sprite = cocos.sprite.Sprite('images/explosion.png')
+                sprite.position = aCell.getSprite().position
+                self.remove(aCell.getSprite())
+                aCell.setSprite(sprite)
+                self.add(aCell.getSprite())
+            self.do(Delay(1) + CallFunc(self.updateTableboard))
+
+            #self.tableboard.fallBoard()
+            #self.updateTableboard()
+            #matches = self.tableboard.matchBoard()
 
     #--------------------------------------------------------------------------
     def on_mouse_press(self, x, y, buttons, modifiers):
