@@ -42,7 +42,16 @@ class Rpg3(cocos.layer.Layer):
         super(Rpg3, self).__init__()
 
         self.size = 8
-        self.tableboard = self.createTableBoard(self.size)
+        while True:
+            self.createBoardPhase = True
+            self.tableSprites = []
+            self.tableboard = self.createTableBoard(self.size)
+            matches = self.tableboard.matchBoard()
+            if not self.tableboard.isThereAnyMatch(matches):
+                break
+        self.createBoardPhase = False
+        for aSprite in self.tableSprites:
+            self.add(aSprite)
         self.logger = loggerator.getLoggerator('rpg3')
         self.statsDict = cell.Cell.createStatsDict()
 
@@ -74,7 +83,10 @@ class Rpg3(cocos.layer.Layer):
         """
         cellKlass = random.sample(Rpg3.images, 1)[0]
         newCell = cellKlass(thePosition)
-        self.add(newCell.getSprite())
+        if self.createBoardPhase:
+            self.tableSprites.append(newCell.getSprite())
+        else:
+            self.add(newCell.getSprite())
         return newCell
 
     #--------------------------------------------------------------------------
@@ -90,10 +102,7 @@ class Rpg3(cocos.layer.Layer):
         return [aCell for aCell in self.tableboard.iterCell() if aCell.isSelected()]
 
     #--------------------------------------------------------------------------
-    def on_mouse_press(self, x, y, buttons, modifiers):
-        """
-        """
-        cells = []
+    def processCellSelected(self, x, y):
         for aCell in self.tableboard.iterCell():
             aCell.select(x, y)
         cells = self.cellSelected()
@@ -101,30 +110,40 @@ class Rpg3(cocos.layer.Layer):
             if self.tableboard.cellTogetherCell(*cells):
                 self.tableboard.swapCells(*cells)
             [aCell.select() for aCell in cells]
-        self.logger.debug("#------------------------------------------------#")
-        matches = self.tableboard.defaultMatches()
+
+    #--------------------------------------------------------------------------
+    def updateStats(self, theMatches):
+        statsDict = self.tableboard.matchResults(theMatches)
+        for stat, value in statsDict.iteritems():
+            self.statsDict[stat] += value
+            label = self.get(stat)
+            label.element.text = '%s: %d' % (stat, self.statsDict[stat], )
+        self.logger.debug("stats: %s" % (self.statsDict))
+
+    #--------------------------------------------------------------------------
+    def updateTableboard(self):
+        for aCell in self.tableboard.emptyCellsInBoard():
+            self.tableboard.removeCell(aCell.getPosition())
+            self.remove(aCell.getSprite())
+            newCell = self.tableboard.addNewCell(aCell.getPosition())
+            self.add(newCell.getSprite())
+
+    #--------------------------------------------------------------------------
+    def processMatch(self):
+        matches = self.tableboard.matchBoard()
         while self.tableboard.isThereAnyMatch(matches):
-            matches = self.tableboard.matchBoard()
-            if matches[0] or matches[1]:
-                self.newEntryInCommandLine('match found')
-            statsDict = self.tableboard.matchResults(matches)
-            for stat, value in statsDict.iteritems():
-                self.statsDict[stat] += value
-                label = self.get(stat)
-                label.element.text = '%s: %d' % (stat, self.statsDict[stat], )
-            self.logger.debug("stats: %s" % (self.statsDict))
-            #self.tableboard.logBoard()
+            self.updateStats(matches)
             self.tableboard.setEmptyCells(matches)
-            #for aCell in self.tableboard.emptyCellsInBoard():
-            #    self.logger.debug('empty cells: %s' % (aCell.getPosition(), ))
             self.tableboard.fallBoard()
-            for aCell in self.tableboard.emptyCellsInBoard():
-            #    self.logger.debug('empty cells: %s' % (aCell.getPosition(), ))
-                self.tableboard.removeCell(aCell.getPosition())
-                self.remove(aCell.getSprite())
-                newCell = self.tableboard.addNewCell(aCell.getPosition())
-                self.add(newCell.getSprite())
-            #self.tableboard.logBoard()
+            self.updateTableboard()
+            matches = self.tableboard.matchBoard()
+
+    #--------------------------------------------------------------------------
+    def on_mouse_press(self, x, y, buttons, modifiers):
+        """
+        """
+        self.processCellSelected(x, y)
+        self.processMatch()
 
 
 if __name__ == '__main__':
