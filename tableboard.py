@@ -491,7 +491,13 @@ class TableBoard(object):
 
     #--------------------------------------------------------------------------
     def matchResults(self, theMatches):
-        """
+        """ Update dictionary after cell match
+
+        :type theMatches: list
+        :param theMatches: Row and Column lists with matches to None
+
+        :rtype: dict
+        :return: dictionary with final stats
         """
         stats = cell.Cell.getStats()
         statsDict = cell.Cell.createStatsDict()
@@ -509,7 +515,16 @@ class TableBoard(object):
 
     #--------------------------------------------------------------------------
     def cellTogetherCell(self, theCell, theOtherCell):
-        """
+        """ Check if two cells are together (row or column wise)
+
+        :type theCell: Cell
+        :param theCell: first cell to check
+
+        :type theOtherCell: Cell
+        :param theOtherCell: second cell to check
+
+        :rtype: bool
+        :return: True if they are together, else False
         """
         x1, y1 = theCell.position
         x2, y2 = theOtherCell.position
@@ -520,8 +535,11 @@ class TableBoard(object):
         return False
 
     #--------------------------------------------------------------------------
-    def streamlineTable(self):
-        """
+    def streamlineTableRows(self):
+        """ Transform 2-dim table in 1-dim streaming rows
+
+        :rtype: list
+        :return: list with 2-dim table streamlines per row
         """
         oneline = []
         for line in self.matrix:
@@ -529,21 +547,41 @@ class TableBoard(object):
         return oneline
 
     #--------------------------------------------------------------------------
-    def searchInWindow(self, theSize):
+    def streamlineTableCols(self):
+        """ Transform 2-dim table in 1-dim streaming columns
+
+        :rtype: list
+        :return: list with 2-dim table streamlines per column
         """
+        return [self.matrix[y][x] for x in xrange(self.size) for y in xrange(self.size)]
+
+    #--------------------------------------------------------------------------
+    def searchInStreamline(self, theStreamline, theSize, theMatchSize):
+        """ Search if there is any match in the given streamline list
+
+        :type theStreamline: list
+        :param theStreamline: list to search for matches
+
+        :type theSize: int
+        :param theSize: window size
+
+        :type theMatchSize: int
+        :param theMatchSize: size for a valid match
+
+        :rtype: bool
+        :return: True if a match was found, else False
         """
         window = []
         index = 0
-        streamline = self.streamlineTable()
         while True:
-            if (index + theSize) > len(streamline):
+            if (index + theSize) > len(theStreamline):
                 return False
-            window = streamline[index:index + theSize]
+            window = theStreamline[index:index + theSize]
             klasses = {}
             for x in window:
                 if x.__class__ in klasses:
                     klasses[x.__class__] += 1
-                    if klasses[x.__class__] == theSize - 1:
+                    if klasses[x.__class__] == theMatchSize:
                         return True
                 else:
                     klasses[x.__class__] = 1
@@ -552,7 +590,45 @@ class TableBoard(object):
             else:
                 index += 1
 
+    #--------------------------------------------------------------------------
+    def searchInWindow(self, theSize, theMatchSize):
+        """ Search if there is any match in table rows and columns
 
+        :type theSize: int
+        :param theSize: window size
+
+        :type theMatchSize: int
+        :param theMatchSize: size for a valid match
+
+        :rtype: bool
+        :return: True if a match was found, else False
+        """
+        if self.searchInStreamline(self.streamlineTableRows(), theSize, theMatchSize):
+            return True
+        else:
+            return self.searchInStreamline(self.streamlineTableCols(), theSize, theMatchSize)
+
+    #--------------------------------------------------------------------------
+    def searchForAnyPossibleMatch(self):
+        """ Check if could be any match in the table
+
+        :rtype: bool
+        :return: True if could be a match, else False
+        """
+        return self.searchInWindow(MIN_MATCH + 1, MIN_MATCH)
+
+    #--------------------------------------------------------------------------
+    def searchForAnyMatch(self):
+        """ Check if there is any match in the table
+
+        :rtype: bool
+        :return: True if there is a match, else False
+        """
+        return self.searchInWindow(MIN_MATCH, MIN_MATCH)
+
+
+#
+#------------------------------------------------------------------------------
 if __name__ == '__main__':
     #import unittest
     #import test.test_tableboard as testTB
