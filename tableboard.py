@@ -490,11 +490,14 @@ class TableBoard(object):
             self.logger.debug('%s' % (row, ))
 
     #--------------------------------------------------------------------------
-    def matchResults(self, theMatches):
+    def matchResults(self, theMatches, theUser=None):
         """ Update dictionary after cell match
 
         :type theMatches: list
         :param theMatches: Row and Column lists with matches to None
+
+        :type theUser: User
+        :param theUser: user instance
 
         :rtype: dict
         :return: dictionary with final stats
@@ -508,7 +511,7 @@ class TableBoard(object):
                     # to retrieve the match calculation method to be used.
                     matchStatFunc = getattr(self.getCell(match[0]), stat, None)
                     if matchStatFunc:
-                        statsDict[stat] += matchStatFunc(match)
+                        statsDict[stat] += matchStatFunc(match, theUser)
                 for stat in stats:
                     self.logger.info("Match %s  = %d" % (stat, statsDict[stat]))
         return statsDict
@@ -579,12 +582,13 @@ class TableBoard(object):
             window = theStreamline[index:index + theSize]
             klasses = {}
             for x in window:
-                if x.__class__ in klasses:
-                    klasses[x.__class__] += 1
-                    if klasses[x.__class__] == theMatchSize:
+                klassName = x.__class__.__name__
+                if klassName in klasses:
+                    klasses[klassName] += 1
+                    if klasses[klassName] == theMatchSize:
                         return True
                 else:
-                    klasses[x.__class__] = 1
+                    klasses[klassName] = 1
             if (index + theSize) == self.size:
                 index += theSize
             else:

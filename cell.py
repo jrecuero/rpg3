@@ -39,11 +39,6 @@ class Cell(object):
         self.data     = kwargs['theData'] if 'theData' in kwargs else None
         self.name     = kwargs['theName'] if 'theName' in kwargs else None
         self.sprite   = kwargs['theSprite'] if 'theSprite' in kwargs else None
-        #self.damage   = kwargs['theDamage'] if 'theDamage' in kwargs else None
-        #self.defense  = kwargs['theDefense'] if 'theDefense' in kwargs else None
-        #self.money    = kwargs['theMoney']  if 'theMoney' in kwargs else None
-        #self.health   = kwargs['theHealth'] if 'theHealth' in kwargs else None
-        #self.power    = kwargs['thePower'] if 'thePower' in kwargs else None
         self.selected = False
         self.createSprite()
         self.createStats()
@@ -75,7 +70,24 @@ class Cell(object):
         self.statCbs.update(self.customStatCbs)
 
     #--------------------------------------------------------------------------
-    def _m3Stat(self, theMatch, theStat):
+    def _getTotalStatValue(self, theStat, theUser=None):
+        """ Get total value to add for a stat
+
+        :type theStat: str
+        :param theStat: String with the stat name
+
+        :type theUser: User
+        :param theUser: user instance
+
+        :rtype: int
+        :return: Total value accumulate to the given stat
+        """
+        cellValue = getattr(self, theStat, 0)
+        userValue = theUser.getStatValue(theStat, self.__class__.__name__) if theUser else 0
+        return cellValue + userValue
+
+    #--------------------------------------------------------------------------
+    def _m3Stat(self, theMatch, theStat, theUser=None):
         """ Basic match accumulation method for any stat
 
         :type theMatch: list
@@ -84,16 +96,17 @@ class Cell(object):
         :type theStat: str
         :param theStat: String with the stat name
 
+        :type theUser: User
+        :param theUser: user instance
+
         :rtype: int
         :return: Total value accumulate to the given stat
         """
-        total = 0
-        for match in theMatch:
-            total += getattr(self, theStat, 0)
-        return total
+        value = self._getTotalStatValue(theStat, theUser)
+        return value * len(theMatch)
 
     #--------------------------------------------------------------------------
-    def _m4Stat(self, theMatch, theStat):
+    def _m4Stat(self, theMatch, theStat, theUser=None):
         """ Critical match accumulation method for any stat
 
         :type theMatch: list
@@ -102,16 +115,17 @@ class Cell(object):
         :type theStat: str
         :param theStat: String with the stat name
 
+        :type theUser: User
+        :param theUser: user instance
+
         :rtype: int
         :return: Total value accumulate to the given stat
         """
-        total = 0
-        for match in theMatch:
-            total += getattr(self, theStat, 0) * 2
-        return total
+        value = self._getTotalStatValue(theStat, theUser) * 2
+        return value * len(theMatch)
 
     #--------------------------------------------------------------------------
-    def _m5Stat(self, theMatch, theStat):
+    def _m5Stat(self, theMatch, theStat, theUser=None):
         """ Critical match accumulation method for any stat
 
         :type theMatch: list
@@ -120,53 +134,77 @@ class Cell(object):
         :type theStat: str
         :param theStat: String with the stat name
 
+        :type theUser: User
+        :param theUser: user instance
+
         :rtype: int
         :return: Total value accumulate to the given stat
         """
-        total = 0
-        for match in theMatch:
-            total += getattr(self, theStat, 0) * 3
-        return total
+        value = self._getTotalStatValue(theStat, theUser) * 3
+        return value * len(theMatch)
 
     #--------------------------------------------------------------------------
-    def _matchCb(self, theMatch, theStat):
+    def _matchCb(self, theMatch, theStat, theUser=None):
         """
+        :type theMatch: list
+        :param theMatch: List with position matching
+
+        :type theStat: str
+        :param theStat: String with the stat name
+
+        :type theUser: User
+        :param theUser: user instance
         """
         matchCb = self.statCbs[theStat].get('M%d' % (len(theMatch), ), None)
-        self.logger.info('Match %d %s for %s,  cb: %s' % (len(theMatch), self.__class__, theStat, matchCb))
+        self.logger.info('Match %d %s for %s,  cb: %s' % (len(theMatch), self.__class__.__name__, theStat, matchCb))
         if matchCb:
-            return matchCb(theMatch, theStat)
+            return matchCb(theMatch, theStat, theUser)
         return 0
 
     #--------------------------------------------------------------------------
-    def damage(self, theMatch):
+    def damage(self, theMatch, theUser=None):
         """
+
+        :type theUser: User
+        :param theUser: user instance
         """
-        return self._matchCb(theMatch, 'DAMAGE')
+        return self._matchCb(theMatch, 'DAMAGE', theUser)
 
     #--------------------------------------------------------------------------
-    def defense(self, theMatch):
+    def defense(self, theMatch, theUser=None):
         """
+
+        :type theUser: User
+        :param theUser: user instance
         """
-        return self._matchCb(theMatch, 'DEFENSE')
+        return self._matchCb(theMatch, 'DEFENSE', theUser)
 
     #--------------------------------------------------------------------------
-    def money(self, theMatch):
+    def money(self, theMatch, theUser=None):
         """
+
+        :type theUser: User
+        :param theUser: user instance
         """
-        return self._matchCb(theMatch, 'MONEY')
+        return self._matchCb(theMatch, 'MONEY', theUser)
 
     #--------------------------------------------------------------------------
-    def health(self, theMatch):
+    def health(self, theMatch, theUser=None):
         """
+
+        :type theUser: User
+        :param theUser: user instance
         """
-        return self._matchCb(theMatch, 'HEALTH')
+        return self._matchCb(theMatch, 'HEALTH', theUser)
 
     #--------------------------------------------------------------------------
-    def power(self, theMatch):
+    def power(self, theMatch, theUser=None):
         """
+
+        :type theUser: User
+        :param theUser: user instance
         """
-        return self._matchCb(theMatch, 'POWER')
+        return self._matchCb(theMatch, 'POWER', theUser)
 
     #--------------------------------------------------------------------------
     def getPosition(self):
