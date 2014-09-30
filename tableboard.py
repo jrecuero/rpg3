@@ -1,3 +1,5 @@
+import copy
+
 import loggerator
 import cell
 
@@ -489,6 +491,8 @@ class TableBoard(object):
 
     #--------------------------------------------------------------------------
     def matchResults(self, theMatches):
+        """
+        """
         stats = cell.Cell.getStats()
         statsDict = cell.Cell.createStatsDict()
         for matchLines in theMatches:
@@ -505,6 +509,8 @@ class TableBoard(object):
 
     #--------------------------------------------------------------------------
     def cellTogetherCell(self, theCell, theOtherCell):
+        """
+        """
         x1, y1 = theCell.position
         x2, y2 = theOtherCell.position
         if (x1 == x2) and abs(y1 - y2) == 1:
@@ -512,6 +518,39 @@ class TableBoard(object):
         if (y1 == y2) and abs(x1 - x2) == 1:
             return True
         return False
+
+    #--------------------------------------------------------------------------
+    def streamlineTable(self):
+        """
+        """
+        oneline = []
+        for line in self.matrix:
+            oneline += copy.copy(line)
+        return oneline
+
+    #--------------------------------------------------------------------------
+    def searchInWindow(self, theSize):
+        """
+        """
+        window = []
+        index = 0
+        streamline = self.streamlineTable()
+        while True:
+            if (index + theSize) > len(streamline):
+                return False
+            window = streamline[index:index + theSize]
+            klasses = {}
+            for x in window:
+                if x.__class__ in klasses:
+                    klasses[x.__class__] += 1
+                    if klasses[x.__class__] == theSize - 1:
+                        return True
+                else:
+                    klasses[x.__class__] = 1
+            if (index + theSize) == self.size:
+                index += theSize
+            else:
+                index += 1
 
 
 if __name__ == '__main__':
