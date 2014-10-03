@@ -133,10 +133,10 @@ class Stats (object):
 
         """
         self.level  += 1
-        self.money  += 1
+        self.coin   += 1
         self.shield += 1
-        self.health += 1
-        self.power  += 1
+        self.heart  += 1
+        self.mana   += 1
         self.axe    += 1
         self.bow    += 1
         self.dagger += 1
