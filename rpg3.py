@@ -129,6 +129,8 @@ class Rpg3(cocos.layer.Layer):
 
         self.user = User('USERNAME')
 
+        self.logger.debug('Is there any match: %s' % (self.tableboard.searchForAnyPossibleMatch(), ))
+
     #--------------------------------------------------------------------------
     def createCommandLine(self):
         """ Create command line widget
@@ -144,7 +146,7 @@ class Rpg3(cocos.layer.Layer):
         :type theNewLine: str
         :param theNewLine: line to be added to the command line
         """
-        self.cmd.element.text = '%s\n%s' % (self.cmd.element.text, 'match found')
+        self.cmd.element.text = '%s\n%s' % (self.cmd.element.text, theNewLine)
 
     #--------------------------------------------------------------------------
     def createCellCb(self, thePosition):
@@ -215,7 +217,7 @@ class Rpg3(cocos.layer.Layer):
             self.statsDict[stat] += value
             label = self.get(stat)
             label.element.text = '%s: %d' % (stat, self.statsDict[stat], )
-        self.logger.debug("stats: %s" % (self.statsDict))
+        self.logger.info("stats: %s" % (self.statsDict))
 
     #--------------------------------------------------------------------------
     def updateTableboard(self):
@@ -228,6 +230,7 @@ class Rpg3(cocos.layer.Layer):
             newCell = self.tableboard.addNewCell(aCell.getPosition())
             self.add(newCell.getSprite())
         self.processMatch()
+        self.logger.debug('Is there any match: %s' % (self.tableboard.searchForAnyPossibleMatch(), ))
 
     #--------------------------------------------------------------------------
     def processMatch(self):
@@ -245,10 +248,6 @@ class Rpg3(cocos.layer.Layer):
                 aCell.setSprite(sprite)
                 self.add(aCell.getSprite())
             self.do(Delay(1) + CallFunc(self.updateTableboard))
-
-            #self.tableboard.fallBoard()
-            #self.updateTableboard()
-            #matches = self.tableboard.matchBoard()
 
     #--------------------------------------------------------------------------
     def on_mouse_press(self, x, y, buttons, modifiers):
@@ -268,6 +267,7 @@ class Rpg3(cocos.layer.Layer):
         """
         self.processCellSelected(x, y)
         self.processMatch()
+
 
 
 ###############################################################################

@@ -217,7 +217,7 @@ class Cell(object):
         :param theUser: user instance
         """
         matchCb = self.statCbs[theStat].get('M%d' % (len(theMatch), ), None)
-        self.logger.info('Match %d %s for %s,  cb: %s' % (len(theMatch), self.__class__.__name__, theStat, matchCb))
+        #self.logger.info('Match %d %s for %s,  cb: %s' % (len(theMatch), self.__class__.__name__, theStat, matchCb))
         if matchCb:
             return matchCb(theMatch, theStat, theUser)
         return 0

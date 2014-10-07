@@ -78,7 +78,7 @@ class Stats (object):
         >>> s = Stats()
         >>> s.level, s.exp
         (0, 0)
-        >>> s.money, s.shield, s.health, s.power
+        >>> s.coin, s.shield, s.heart, s.mana
         (0, 0, 0, 0)
         >>> s.axe, s.bow, s.dagger, s.lance, s.staff, s.sword
         (0, 0, 0, 0, 0, 0)
@@ -86,10 +86,10 @@ class Stats (object):
         """
         self.level  = 0
         self.exp    = 0
-        self.money  = 0
+        self.coin   = 0
         self.shield = 0
-        self.health = 0
-        self.power  = 0
+        self.heart  = 0
+        self.mana   = 0
         self.axe    = 0
         self.bow    = 0
         self.dagger = 0
@@ -126,7 +126,7 @@ class Stats (object):
         >>> s.levelUp()
         >>> s.level
         1
-        >>> s.money, s.shield, s.health, s.power
+        >>> s.coin, s.shield, s.heart, s.mana
         (1, 1, 1, 1)
         >>> s.axe, s.bow, s.dagger, s.lance, s.staff, s.sword
         (1, 1, 1, 1, 1, 1)
@@ -149,9 +149,9 @@ class Stats (object):
         """ Return value for the given stat
 
         >>> s = Stats()
-        >>> s.money = 100
+        >>> s.coin = 100
         >>> s.sword = 25
-        >>> s.getStatValue('money', None)
+        >>> s.getStatValue('coin', None)
         100
         >>> s.getStatValue('dummy', 'SWORD')
         25
@@ -162,7 +162,7 @@ class Stats (object):
         :type theKlass: object
         :param theKlass: instance with the cell stat
         """
-        self.logger.debug("getStatValue for %s, %s" % (theStat, theKlass))
+        #self.logger.debug("getStatValue for %s, %s" % (theStat, theKlass))
         statValue = getattr(self, theStat, None)
         if statValue is None:
             statValue = getattr(self, theKlass.lower(), None)

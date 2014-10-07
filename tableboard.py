@@ -363,7 +363,7 @@ class TableBoard(object):
         """
         x1, y1 = theFirstCell.position
         x2, y2 = theSecondCell.position
-        self.logger.debug("Swap (%s, %s) %s for (%s, %s) %s" % (x1, y1, theFirstCell.data, x2, y2, theSecondCell.data))
+        #self.logger.debug("Swap (%s, %s) %s for (%s, %s) %s" % (x1, y1, theFirstCell.data, x2, y2, theSecondCell.data))
         theFirstCell.swap(theSecondCell)
         self.matrix[x1][y1], self.matrix[x2][y2] = self.matrix[x2][y2], self.matrix[x1][y1]
         return True
@@ -376,7 +376,7 @@ class TableBoard(object):
         :param theCell: Cells on top of this will be moved down
         """
         if theCell.getData() is None:
-            self.logger.debug('falling cell %s %s' % (theCell.getPosition(), theCell.getData()))
+            #self.logger.debug('falling cell %s %s' % (theCell.getPosition(), theCell.getData()))
             x, y = theCell.getPosition()
             if x == (self.size - 1):
                 return -1
@@ -474,7 +474,7 @@ class TableBoard(object):
         matches = []
         for side in ('right', 'down'):
             matches.append(self._loopForCells(side))
-        self.logger.debug('matches: %s' % (matches, ))
+        #self.logger.debug('matches: %s' % (matches, ))
         return matches
 
     #--------------------------------------------------------------------------
@@ -543,7 +543,7 @@ class TableBoard(object):
                 pos = (x, y)
                 c = self.getCell(pos)
                 row += '%s %s' % (c.position, c.data)
-            self.logger.debug('%s' % (row, ))
+            #self.logger.debug('%s' % (row, ))
 
     #--------------------------------------------------------------------------
     def matchResults(self, theMatches, theUser=None):
@@ -568,8 +568,8 @@ class TableBoard(object):
                     matchStatFunc = getattr(self.getCell(match[0]), stat, None)
                     if matchStatFunc:
                         statsDict[stat] += matchStatFunc(match, theUser)
-                for stat in stats:
-                    self.logger.info("Match %s  = %d" % (stat, statsDict[stat]))
+                #for stat in stats:
+                #    self.logger.info("Match %s  = %d" % (stat, statsDict[stat]))
         return statsDict
 
     #--------------------------------------------------------------------------
@@ -615,6 +615,32 @@ class TableBoard(object):
         return [self.matrix[y][x] for x in xrange(self.size) for y in xrange(self.size)]
 
     #--------------------------------------------------------------------------
+    def matchInWindow(self, theWindow, theMatchSize):
+        """ Check if there is a match in window provided.
+
+        :type theWindow: list
+        :param theWindow: list to search for matches
+
+        :type theMatchSize: int
+        :param theMatchSize: size for a valid match
+
+        :rtype: bool
+        :return: True if a match was found, else False
+        """
+        klasses = {}
+        for x in theWindow:
+            klassName = x.__class__.__name__
+            if klassName in klasses:
+                klasses[klassName] += [x]
+                if len(klasses[klassName]) == theMatchSize:
+                    otherCell = [val for key, val in klasses.iteritems() if key != klassName]
+                    self.logger.info('match at %s other is %s' % (theWindow, otherCell))
+                    return (True, otherCell)
+            else:
+                klasses[klassName] = [x]
+        return (False, None)
+
+    #--------------------------------------------------------------------------
     def searchInStreamline(self, theStreamline, theSize, theMatchSize):
         """ Search if there is any match in the given streamline list
 
@@ -636,19 +662,14 @@ class TableBoard(object):
             if (index + theSize) > len(theStreamline):
                 return False
             window = theStreamline[index:index + theSize]
-            klasses = {}
-            for x in window:
-                klassName = x.__class__.__name__
-                if klassName in klasses:
-                    klasses[klassName] += 1
-                    if klasses[klassName] == theMatchSize:
-                        return True
-                else:
-                    klasses[klassName] = 1
-            if (index + theSize) == self.size:
-                index += theSize
+            anyMatch, noMatchCell = self.matchInWindow(window, theMatchSize)
+            if anyMatch:
+                return True
             else:
-                index += 1
+                if (index + theSize) % self.size:
+                    index += 1
+                else:
+                    index += theSize
 
     #--------------------------------------------------------------------------
     def searchInWindow(self, theSize, theMatchSize):

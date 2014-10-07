@@ -79,7 +79,7 @@ class Sword(cell.Cell):
         super(Sword, self).__init__(thePosition, **kwargs)
 
     #--------------------------------------------------------------------------
-    def damage(self, theMatch):
+    def damage(self, theMatch, theUser=None):
         """
         """
         if len(theMatch) == 3:
