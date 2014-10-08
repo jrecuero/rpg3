@@ -633,12 +633,55 @@ class TableBoard(object):
             if klassName in klasses:
                 klasses[klassName] += [x]
                 if len(klasses[klassName]) == theMatchSize:
-                    otherCell = [val for key, val in klasses.iteritems() if key != klassName]
-                    self.logger.info('match at %s other is %s' % (theWindow, otherCell))
-                    return (True, otherCell)
+                    matchCell = klasses[klassName][0]
+                    otherCell = [val[0] for key, val in klasses.iteritems() if key != klassName]
+                    #self.logger.info('match at %s other is %s' % (theWindow, otherCell))
+                    return (True, matchCell, otherCell)
             else:
                 klasses[klassName] = [x]
-        return (False, None)
+        return (False, None, None)
+
+    #--------------------------------------------------------------------------
+    def searchInCrossStreamline(self, theStreamline, theSize):
+        """ Search if there is any match in the given cross streamline list
+
+        It search if at least there is the number of cells passed as theSize,
+        and then check if moving the given ones can we make a match.
+
+        :type theStreamline: list
+        :param theStreamline: list to search for matches
+
+        :type theSize: int
+        :param theSize: window size
+
+        :rtype: bool
+        :return: True if a match was found, else False
+        """
+        window = []
+        index = 0
+        streamlineLen = len(theStreamline)
+        while True:
+            if (index + theSize) > streamlineLen:
+                return False
+            window = theStreamline[index:index + theSize]
+            anyMatch, matchCell, noMatchCell = self.matchInWindow(window, theSize - 1)
+            if anyMatch and noMatchCell:
+                noMatchIndex = theStreamline.index(noMatchCell[0])
+                beforeIndex  = noMatchIndex - theSize
+                afterIndex   = noMatchIndex + theSize
+                if beforeIndex >= 0 and afterIndex < streamlineLen:
+                    crossWindow = [theStreamline[beforeIndex],
+                                   matchCell,
+                                   theStreamline[afterIndex], ]
+                    anyCrossMatch, dummy1, dummy2 = self.matchInWindow(crossWindow, theSize)
+                    if anyCrossMatch:
+                        self.logger.info('searchInCrossStreamline: match found at %s' % (crossWindow, ))
+                        return True
+
+            if (index + theSize) % self.size:
+                index += 1
+            else:
+                index += theSize
 
     #--------------------------------------------------------------------------
     def searchInStreamline(self, theStreamline, theSize, theMatchSize):
@@ -662,8 +705,9 @@ class TableBoard(object):
             if (index + theSize) > len(theStreamline):
                 return False
             window = theStreamline[index:index + theSize]
-            anyMatch, noMatchCell = self.matchInWindow(window, theMatchSize)
+            anyMatch, matchCell, noMatchCell = self.matchInWindow(window, theMatchSize)
             if anyMatch:
+                self.logger.info('searchInStreamline: match found at %s' % (window, ))
                 return True
             else:
                 if (index + theSize) % self.size:
@@ -672,31 +716,20 @@ class TableBoard(object):
                     index += theSize
 
     #--------------------------------------------------------------------------
-    def searchInWindow(self, theSize, theMatchSize):
-        """ Search if there is any match in table rows and columns
-
-        :type theSize: int
-        :param theSize: window size
-
-        :type theMatchSize: int
-        :param theMatchSize: size for a valid match
-
-        :rtype: bool
-        :return: True if a match was found, else False
-        """
-        if self.searchInStreamline(self.streamlineTableRows(), theSize, theMatchSize):
-            return True
-        else:
-            return self.searchInStreamline(self.streamlineTableCols(), theSize, theMatchSize)
-
-    #--------------------------------------------------------------------------
     def searchForAnyPossibleMatch(self):
         """ Check if could be any match in the table
 
         :rtype: bool
         :return: True if could be a match, else False
         """
-        return self.searchInWindow(MIN_MATCH + 1, MIN_MATCH)
+        lines = (self.streamlineTableRows(), self.streamlineTableCols())
+
+        for line in lines:
+            if self.searchInCrossStreamline(line, MIN_MATCH):
+                return True
+            if self.searchInStreamline(line, MIN_MATCH + 1, MIN_MATCH):
+                return True
+        return False
 
     #--------------------------------------------------------------------------
     def searchForAnyMatch(self):
@@ -705,7 +738,10 @@ class TableBoard(object):
         :rtype: bool
         :return: True if there is a match, else False
         """
-        return self.searchInWindow(MIN_MATCH, MIN_MATCH)
+        if self.searchInStreamline(self.streamlineTableRows(), MIN_MATCH, MIN_MATCH):
+            return True
+        else:
+            return self.searchInStreamline(self.streamlineTableCols(), MIN_MATCH, MIN_MATCH)
 
 
 ###############################################################################
