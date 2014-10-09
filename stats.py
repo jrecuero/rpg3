@@ -78,25 +78,60 @@ class Stats (object):
         >>> s = Stats()
         >>> s.level, s.exp
         (0, 0)
-        >>> s.coin, s.shield, s.heart, s.mana
-        (0, 0, 0, 0)
-        >>> s.axe, s.bow, s.dagger, s.lance, s.staff, s.sword
-        (0, 0, 0, 0, 0, 0)
+        >>> s.coin.value
+        {'count': 0, 'value': 0}
+        >>> s.axe
+        {'count': 0, 'value': 0}
 
         """
         self.level  = 0
         self.exp    = 0
-        self.coin   = 0
-        self.shield = 0
-        self.heart  = 0
-        self.mana   = 0
-        self.axe    = 0
-        self.bow    = 0
-        self.dagger = 0
-        self.lance  = 0
-        self.staff  = 0
-        self.sword  = 0
+        self.coin   = self._initStat()
+        self.shield = self._initStat()
+        self.heart  = self._initStat()
+        self.mana   = self._initStat()
+        self.axe    = self._initStat()
+        self.bow    = self._initStat()
+        self.dagger = self._initStat()
+        self.lance  = self._initStat()
+        self.staff  = self._initStat()
+        self.sword  = self._initStat()
         self.logger = loggerator.getLoggerator('stat')
+
+    #--------------------------------------------------------------------------
+    def _initStat(self):
+        """ Initialize value for a stat attribute.
+
+        :rtype: dict
+        :return: dict with initial values
+        """
+        return {'count': 0, 'value': 0, }
+
+    #--------------------------------------------------------------------------
+    def _incStatValue(self, theStat, theIncVal=1):
+        """ Increase value field for a stat.
+
+        :type theStat: dict
+        :param theStat: dictinary with the stat to update
+
+        :type theIncVal: int
+        :param theIncVal: magnitude to increase the value
+        """
+        theStat['value'] += theIncVal
+        return theStat['value']
+
+    #--------------------------------------------------------------------------
+    def _incStatCount(self, theStat, theIncCount=1):
+        """ Increase counter field for a stat.
+
+        :type theStat: dict
+        :param theStat: dictinary with the stat to update
+
+        :type theIncCount: int
+        :param theIncCount: magnitude to increase the counter
+        """
+        theStat['count'] += theIncCount
+        return theStat['count']
 
     #--------------------------------------------------------------------------
     def addExp(self, theExp):
@@ -132,17 +167,30 @@ class Stats (object):
         (1, 1, 1, 1, 1, 1)
 
         """
-        self.level  += 1
-        self.coin   += 1
-        self.shield += 1
-        self.heart  += 1
-        self.mana   += 1
-        self.axe    += 1
-        self.bow    += 1
-        self.dagger += 1
-        self.lance  += 1
-        self.staff  += 1
-        self.sword  += 1
+        self.level += 1
+        self._incStatValue(self.coin)
+        self._incStatValue(self.shield)
+        self._incStatValue(self.heart)
+        self._incStatValue(self.mana)
+        self._incStatValue(self.axe)
+        self._incStatValue(self.bow)
+        self._incStatValue(self.dagger)
+        self._incStatValue(self.lance)
+        self._incStatValue(self.staff)
+        self._incStatValue(self.sword)
+
+    #--------------------------------------------------------------------------
+    def getStat(self, theStat, theKlass):
+        """ Return the given stat instance.
+
+        :type theStat: str
+        :param theStat: stat to retrieve the value
+
+        :type theKlass: object
+        :param theKlass: instance with the cell stat
+        """
+        stat = getattr(self, theStat, None)
+        return stat if stat else getattr(self, theKlass.lower(), None)
 
     #--------------------------------------------------------------------------
     def getStatValue(self, theStat, theKlass):
@@ -163,10 +211,24 @@ class Stats (object):
         :param theKlass: instance with the cell stat
         """
         #self.logger.debug("getStatValue for %s, %s" % (theStat, theKlass))
-        statValue = getattr(self, theStat, None)
-        if statValue is None:
-            statValue = getattr(self, theKlass.lower(), None)
-        return statValue
+        stat = self.getStat(theStat, theKlass)
+        return stat['value'] if stat else None
+
+    #--------------------------------------------------------------------------
+    def addStatCount(self, theValue, theStat, theKlass):
+        """ Add a value to the stat counter field.
+
+        :type theValue: int
+        :param theValue: value to add to the counter
+
+        :type theStat: str
+        :param theStat: stat to retrieve the value
+
+        :type theKlass: object
+        :param theKlass: instance with the cell stat
+        """
+        stat = self.getStat(theStat, theKlass)
+        return self._incStatCount(stat, theValue) if stat else None
 
 
 ###############################################################################
