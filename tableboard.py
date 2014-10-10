@@ -28,6 +28,7 @@ import copy
 #
 import loggerator
 import cell
+import stats
 
 
 ###############################################################################
@@ -558,17 +559,18 @@ class TableBoard(object):
         :rtype: dict
         :return: dictionary with final stats
         """
-        stats = cell.Cell.getStats()
+        cellStats = cell.Cell.getStats()
         statsDict = cell.Cell.createStatsDict()
         for matchLines in theMatches:
             for match in matchLines:
-                for stat in stats:
+                for stat in cellStats:
                     # every match should be the same, so just use the first one
                     # to retrieve the match calculation method to be used.
                     matchStatFunc = getattr(self.getCell(match[0]), stat, None)
                     if matchStatFunc:
-                        statsDict[stat] += matchStatFunc(match, theUser)
-                #for stat in stats:
+                        statsDict[stat] = stats.addStats(statsDict[stat],
+                                                         matchStatFunc(match, theUser))
+                #for stat in cellStats:
                 #    self.logger.info("Match %s  = %d" % (stat, statsDict[stat]))
         return statsDict
 

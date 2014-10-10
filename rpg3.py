@@ -44,6 +44,7 @@ from shield import Shield
 from staff import Staff
 from sword import Sword
 from user import User
+import stats
 
 
 ###############################################################################
@@ -121,7 +122,7 @@ class Rpg3(cocos.layer.Layer):
                       'anchor_y': 'top', }
         x, y = 32, 460
         for stat, value in self.statsDict.iteritems():
-            label = cocos.text.Label('%s: %s' % (stat, value), **labelAttrs)
+            label = cocos.text.Label('%s: %s, %s' % (stat, value[0], value[1]), **labelAttrs)
             label.position = x, y
             self.add(label, name=stat)
             x, y = x, y - 20
@@ -213,10 +214,10 @@ class Rpg3(cocos.layer.Layer):
         :param theMatches: list with all matches
         """
         statsDict = self.tableboard.matchResults(theMatches, self.user)
-        for stat, value in statsDict.iteritems():
-            self.statsDict[stat] += value
+        for stat, statPair  in statsDict.iteritems():
+            self.statsDict[stat] = stats.addStats(self.statsDict[stat], statPair)
             label = self.get(stat)
-            label.element.text = '%s: %d' % (stat, self.statsDict[stat], )
+            label.element.text = '%s: %s, %s' % (stat, self.statsDict[stat][0], self.statsDict[stat][1])
         self.logger.info("stats: %s" % (self.statsDict))
 
     #--------------------------------------------------------------------------
@@ -267,7 +268,6 @@ class Rpg3(cocos.layer.Layer):
         """
         self.processCellSelected(x, y)
         self.processMatch()
-
 
 
 ###############################################################################

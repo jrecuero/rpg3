@@ -79,7 +79,7 @@ class Cell(object):
         """
         dicta = {}
         for stat in Cell.getStats():
-            dicta[stat] = 0
+            dicta[stat] = (0, 0)
         return dicta
 
     #--------------------------------------------------------------------------
@@ -131,8 +131,13 @@ class Cell(object):
         self.statCbs.update(self.customStatCbs)
 
     #--------------------------------------------------------------------------
-    def _getTotalStatValue(self, theStat, theUser=None):
+    def _getTotalStatValue(self, theStat, theUser=None, theMatchNumber=0):
         """ Get total value to add for a stat
+
+        Calculate the total value based on the cell and the user value for
+        that particular cell.
+
+        It updates the counter for the cell type for the user.
 
         :type theStat: str
         :param theStat: String with the stat name
@@ -140,12 +145,18 @@ class Cell(object):
         :type theUser: User
         :param theUser: user instance
 
-        :rtype: int
-        :return: Total value accumulate to the given stat
+        :type theMatchNumber: int
+        :param theMatchNumber: number of cells being matched
+
+        :rtype: list
+        :return: Total value accumulate to the given sta
         """
         cellValue = getattr(self, theStat, 0)
-        userValue = theUser.getStatValue(theStat, self.__class__.__name__) if theUser else 0
-        return cellValue + userValue
+        userValue = 0
+        if theUser:
+            userValue = theUser.getStatValue(theStat, self.__class__.__name__)
+            userCount = theUser.addStatCount(theMatchNumber, theStat, self.__class__.__name__)
+        return (cellValue + userValue, userCount)
 
     #--------------------------------------------------------------------------
     def _m3Stat(self, theMatch, theStat, theUser=None):
@@ -160,11 +171,11 @@ class Cell(object):
         :type theUser: User
         :param theUser: user instance
 
-        :rtype: int
-        :return: Total value accumulate to the given stat
+        :rtype: list
+        :return: Total value accumulate to the given stat and counter
         """
-        value = self._getTotalStatValue(theStat, theUser)
-        return value * len(theMatch)
+        value, count = self._getTotalStatValue(theStat, theUser, len(theMatch))
+        return (value * len(theMatch), count)
 
     #--------------------------------------------------------------------------
     def _m4Stat(self, theMatch, theStat, theUser=None):
@@ -179,11 +190,11 @@ class Cell(object):
         :type theUser: User
         :param theUser: user instance
 
-        :rtype: int
-        :return: Total value accumulate to the given stat
+        :rtype: list
+        :return: Total value accumulate to the given stat and counter
         """
-        value = self._getTotalStatValue(theStat, theUser) * 2
-        return value * len(theMatch)
+        value, counter = self._getTotalStatValue(theStat, theUser, len(theMatch)) * 2
+        return (value * len(theMatch), counter)
 
     #--------------------------------------------------------------------------
     def _m5Stat(self, theMatch, theStat, theUser=None):
@@ -198,11 +209,11 @@ class Cell(object):
         :type theUser: User
         :param theUser: user instance
 
-        :rtype: int
-        :return: Total value accumulate to the given stat
+        :rtype: list
+        :return: Total value accumulate to the given stat and counter
         """
-        value = self._getTotalStatValue(theStat, theUser) * 3
-        return value * len(theMatch)
+        value, counter = self._getTotalStatValue(theStat, theUser, len(theMatch)) * 3
+        return (value * len(theMatch), counter)
 
     #--------------------------------------------------------------------------
     def _matchCb(self, theMatch, theStat, theUser=None):

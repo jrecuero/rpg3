@@ -80,7 +80,7 @@ class Player(object):
         """
         self.name   = theName
         self.stats  = stats.Stats()
-        self.logger = loggerator.getLoggerator('player')
+        self.logger = loggerator.getLoggerator(self.__class__.__name__.lower())
 
     #--------------------------------------------------------------------------
     def getStatValue(self, theStat, theKlass):
@@ -94,7 +94,6 @@ class Player(object):
         >>> u.getStatValue('dummy', 'AXE')
         24
 
-
         :type theStat: str
         :param theStat: stat to retrieve the value
 
@@ -102,6 +101,21 @@ class Player(object):
         :param theKlass: instance with the cell stat
         """
         return self.stats.getStatValue(theStat, theKlass)
+
+    #--------------------------------------------------------------------------
+    def addStatCount(self, theValue, theStat, theKlass):
+        """ Add a value to the stat counter field.
+
+        :type theValue: int
+        :param theValue: value to add to the counter
+
+        :type theStat: str
+        :param theStat: stat to retrieve the value
+
+        :type theKlass: object
+        :param theKlass: instance with the cell stat
+        """
+        return self.stats.addStatCount(theValue, theStat, theKlass)
 
     #--------------------------------------------------------------------------
     def addExp(self, theExp):

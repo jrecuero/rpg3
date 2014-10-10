@@ -55,6 +55,23 @@ EXP_NEXT_LEVEL = 100
 ###############################################################################
 #
 
+#------------------------------------------------------------------------------
+def addStats(theOneStat, theOtherStat):
+    """ Add two stats values (as a pair)
+
+    :type theOneStat: list
+    :param theOneStat: first stat to add
+
+    :type theOtherStat: list
+    :param theOtherStat: second stat to add
+
+    :rtype: list
+    :param: list with both stats added
+    """
+    value = theOneStat[0] + theOtherStat[0]
+    count = theOneStat[1] + theOtherStat[1]
+    return (value, count)
+
 ###############################################################################
 ##       _                     _       __ _       _ _   _
 ##   ___| | __ _ ___ ___    __| | ___ / _(_)_ __ (_) |_(_) ___  _ __  ___
@@ -228,7 +245,7 @@ class Stats (object):
         :param theKlass: instance with the cell stat
         """
         stat = self.getStat(theStat, theKlass)
-        return self._incStatCount(stat, theValue) if stat else None
+        return self._incStatCount(stat, theValue) if stat else 0
 
 
 ###############################################################################

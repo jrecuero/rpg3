@@ -25,8 +25,7 @@ __docformat__ = 'restructuredtext en'
 #
 # import enemy python modules
 #
-import loggerator
-import stats
+from player import Player
 
 
 ###############################################################################
@@ -61,7 +60,7 @@ import stats
 
 #
 #------------------------------------------------------------------------------
-class Enemy(object):
+class Enemy(Player):
     """
     """
 
@@ -78,47 +77,7 @@ class Enemy(object):
         :type theName: str
         :param theName: Enemy name
         """
-        self.name   = theName
-        self.stats  = stats.Stats()
-        self.logger = loggerator.getLoggerator('enemy')
-
-    #--------------------------------------------------------------------------
-    def getStatValue(self, theStat, theKlass):
-        """ Return value for the given stat
-
-        >>> u = Enemy('my name')
-        >>> u.stats.power = 99
-        >>> u.stats.axe = 24
-        >>> u.getStatValue('power', None)
-        99
-        >>> u.getStatValue('dummy', 'AXE')
-        24
-
-
-        :type theStat: str
-        :param theStat: stat to retrieve the value
-
-        :type theKlass: object
-        :param theKlass: instance with the cell stat
-        """
-        return self.stats.getStatValue(theStat, theKlass)
-
-    #--------------------------------------------------------------------------
-    def addExp(self, theExp):
-        """ Add some experience
-
-        >>> u = Enemy('the name')
-        >>> u.addExp(23)
-        >>> u.stats.exp, u.stats.level
-        (23, 0)
-        >>> u.addExp(201)
-        >>> u.stats.exp, u.stats.level
-        (24, 2)
-
-        :type theExp: int
-        :param theExp: experience to be added
-        """
-        self.stats.addExp(theExp)
+        super(Enemy, self).__init__(theName)
 
 
 ###############################################################################
