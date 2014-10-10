@@ -103,19 +103,16 @@ class Player(object):
         return self.stats.getStatValue(theStat, theKlass)
 
     #--------------------------------------------------------------------------
-    def addStatCount(self, theValue, theStat, theKlass):
+    def addStatCount(self, theValue, theKlass):
         """ Add a value to the stat counter field.
 
         :type theValue: int
         :param theValue: value to add to the counter
 
-        :type theStat: str
-        :param theStat: stat to retrieve the value
-
         :type theKlass: object
         :param theKlass: instance with the cell stat
         """
-        return self.stats.addStatCount(theValue, theStat, theKlass)
+        return self.stats.addStatCount(theValue, theKlass)
 
     #--------------------------------------------------------------------------
     def addExp(self, theExp):

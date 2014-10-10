@@ -122,7 +122,7 @@ class Rpg3(cocos.layer.Layer):
                       'anchor_y': 'top', }
         x, y = 32, 460
         for stat, value in self.statsDict.iteritems():
-            label = cocos.text.Label('%s: %s, %s' % (stat, value[0], value[1]), **labelAttrs)
+            label = cocos.text.Label('%s: %s' % (stat, value), **labelAttrs)
             label.position = x, y
             self.add(label, name=stat)
             x, y = x, y - 20
@@ -214,10 +214,10 @@ class Rpg3(cocos.layer.Layer):
         :param theMatches: list with all matches
         """
         statsDict = self.tableboard.matchResults(theMatches, self.user)
-        for stat, statPair  in statsDict.iteritems():
-            self.statsDict[stat] = stats.addStats(self.statsDict[stat], statPair)
+        for stat, value  in statsDict.iteritems():
+            self.statsDict[stat] += value
             label = self.get(stat)
-            label.element.text = '%s: %s, %s' % (stat, self.statsDict[stat][0], self.statsDict[stat][1])
+            label.element.text = '%s: %s' % (stat, self.statsDict[stat])
         self.logger.info("stats: %s" % (self.statsDict))
 
     #--------------------------------------------------------------------------
@@ -232,6 +232,10 @@ class Rpg3(cocos.layer.Layer):
             self.add(newCell.getSprite())
         self.processMatch()
         self.logger.debug('Is there any match: %s' % (self.tableboard.searchForAnyPossibleMatch(), ))
+        statsUserData = self.user.stats.getStatsData()
+        for k, v in statsUserData.iteritems():
+            self.logger.info('User stat[%s]: %s' % (k, v))
+        self.user.addExp(100)
 
     #--------------------------------------------------------------------------
     def processMatch(self):

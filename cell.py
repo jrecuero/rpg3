@@ -79,7 +79,7 @@ class Cell(object):
         """
         dicta = {}
         for stat in Cell.getStats():
-            dicta[stat] = (0, 0)
+            dicta[stat] = 0
         return dicta
 
     #--------------------------------------------------------------------------
@@ -155,8 +155,7 @@ class Cell(object):
         userValue = 0
         if theUser:
             userValue = theUser.getStatValue(theStat, self.__class__.__name__)
-            userCount = theUser.addStatCount(theMatchNumber, theStat, self.__class__.__name__)
-        return (cellValue + userValue, userCount)
+        return cellValue + userValue
 
     #--------------------------------------------------------------------------
     def _m3Stat(self, theMatch, theStat, theUser=None):
@@ -174,8 +173,8 @@ class Cell(object):
         :rtype: list
         :return: Total value accumulate to the given stat and counter
         """
-        value, count = self._getTotalStatValue(theStat, theUser, len(theMatch))
-        return (value * len(theMatch), count)
+        value = self._getTotalStatValue(theStat, theUser, len(theMatch))
+        return value * len(theMatch)
 
     #--------------------------------------------------------------------------
     def _m4Stat(self, theMatch, theStat, theUser=None):
@@ -193,8 +192,8 @@ class Cell(object):
         :rtype: list
         :return: Total value accumulate to the given stat and counter
         """
-        value, counter = self._getTotalStatValue(theStat, theUser, len(theMatch)) * 2
-        return (value * len(theMatch), counter)
+        value = self._getTotalStatValue(theStat, theUser, len(theMatch)) * 2
+        return value *  len(theMatch)
 
     #--------------------------------------------------------------------------
     def _m5Stat(self, theMatch, theStat, theUser=None):
@@ -212,8 +211,8 @@ class Cell(object):
         :rtype: list
         :return: Total value accumulate to the given stat and counter
         """
-        value, counter = self._getTotalStatValue(theStat, theUser, len(theMatch)) * 3
-        return (value * len(theMatch), counter)
+        value = self._getTotalStatValue(theStat, theUser, len(theMatch)) * 3
+        return value * len(theMatch)
 
     #--------------------------------------------------------------------------
     def _matchCb(self, theMatch, theStat, theUser=None):

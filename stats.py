@@ -206,7 +206,7 @@ class Stats (object):
         :type theKlass: object
         :param theKlass: instance with the cell stat
         """
-        stat = getattr(self, theStat, None)
+        stat = getattr(self, theStat, None) if theStat else None
         return stat if stat else getattr(self, theKlass.lower(), None)
 
     #--------------------------------------------------------------------------
@@ -232,20 +232,35 @@ class Stats (object):
         return stat['value'] if stat else None
 
     #--------------------------------------------------------------------------
-    def addStatCount(self, theValue, theStat, theKlass):
+    def addStatCount(self, theValue, theKlass):
         """ Add a value to the stat counter field.
 
         :type theValue: int
         :param theValue: value to add to the counter
 
-        :type theStat: str
-        :param theStat: stat to retrieve the value
-
         :type theKlass: object
         :param theKlass: instance with the cell stat
         """
-        stat = self.getStat(theStat, theKlass)
+        stat = self.getStat(None, theKlass)
         return self._incStatCount(stat, theValue) if stat else 0
+
+    #--------------------------------------------------------------------------
+    def getStatsData(self):
+        """ Return dictionary with stats
+
+        :rtype: dict
+        :return: dictionary with stats
+        """
+        return {'coin': self.coin,
+                'shield': self.shield,
+                'heart': self.heart,
+                'mana': self.mana,
+                'axe': self.axe,
+                'bow': self.bow,
+                'dagger': self.dagger,
+                'lance': self.lance,
+                'staff': self.staff,
+                'sword': self.sword, }
 
 
 ###############################################################################
