@@ -558,19 +558,16 @@ class TableBoard(object):
         :rtype: dict
         :return: dictionary with final stats
         """
-        statsDict = cell.Cell.createStatsDict()
+        attrsDict = cell.Cell.createStatsDict()
         for matchLines in theMatches:
             for match in matchLines:
                 cellToUse = self.getCell(match[0])
-                for stat in cellToUse.attrsUsed:
-                    # every match should be the same, so just use the first one
-                    # to retrieve the match calculation method to be used.
-                    matchStatFunc = getattr(cellToUse, stat, None)
-                    if matchStatFunc:
-                        statsDict[stat] += matchStatFunc(match, theUser)
+                matchDict = cellToUse.executeMatch(match, theUser)
+                for key in attrsDict.keys():
+                    attrsDict[key] += matchDict.get(key, 0)
                 cellKlass = cellToUse.__class__.__name__.lower()
                 theUser.addStatCount(len(match), cellKlass)
-        return statsDict
+        return attrsDict
 
     #--------------------------------------------------------------------------
     def cellTogetherCell(self, theCell, theOtherCell):

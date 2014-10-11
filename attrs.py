@@ -88,6 +88,8 @@ class Attrs (object):
         """ Initialize Attrs instance
         """
         self.logger   = loggerator.getLoggerator('attrs')
+        for attr in Attrs.getAttrs():
+            setattr(self, attr, 0)
 
 
 ###############################################################################

@@ -27,6 +27,7 @@ import cocos
 # import user python modules
 #
 import loggerator
+import attrs
 
 
 ###############################################################################
@@ -65,7 +66,7 @@ import loggerator
 #------------------------------------------------------------------------------
 class Cell(object):
 
-    customStatCbs = {}
+    customAttrsCbs = {}
 
     #--------------------------------------------------------------------------
     @staticmethod
@@ -76,12 +77,12 @@ class Cell(object):
 
     #--------------------------------------------------------------------------
     @staticmethod
-    def createStatsDict():
+    def createAttrsDict():
         """
         """
         dicta = {}
-        for stat in Cell.getCellAttrs():
-            dicta[stat] = 0
+        for attr in Cell.getCellAttrs():
+            dicta[attr] = 0
         return dicta
 
     #--------------------------------------------------------------------------
@@ -105,7 +106,8 @@ class Cell(object):
         self.selected = False
         self.attrsUsed = ()
         self.createSprite()
-        self.createStats()
+        self.createAttrs()
+        self.attrs = attrs.Attrs()
 
     #--------------------------------------------------------------------------
     def createSprite(self):
@@ -117,7 +119,7 @@ class Cell(object):
         return self.sprite
 
     #--------------------------------------------------------------------------
-    def createStats(self):
+    def createAttrs(self):
         """
         """
         self.data    = getattr(self, 'STRING', 'CELL')
@@ -126,24 +128,23 @@ class Cell(object):
         self.MONEY   = getattr(self, 'MONEY', 0)
         self.HEALTH  = getattr(self, 'HEALTH', 0)
         self.POWER   = getattr(self, 'POWER', 0)
-        self.statCbs = {'DAMAGE':  {'M3': self._m3Stat, 'M4': self._m4Stat, 'M5': self._m5Stat},
-                        'DEFENSE': {'M3': self._m3Stat, 'M4': self._m4Stat, 'M5': self._m5Stat},
-                        'MONEY':   {'M3': self._m3Stat, 'M4': self._m4Stat, 'M5': self._m5Stat},
-                        'HEALTH':  {'M3': self._m3Stat, 'M4': self._m4Stat, 'M5': self._m5Stat},
-                        'POWER':   {'M3': self._m3Stat, 'M4': self._m4Stat, 'M5': self._m5Stat}, }
-        self.statCbs.update(self.customStatCbs)
+
+        self.attrsCbs = {}
+        for attr in attrs.getAttrs():
+            self.attrsCbs[attr] = {3: self.baseMatch3, 4: self.baseMatch4, 5: self.baseMatch5}
+        self.attrsCbs.update(self.customAttrsCbs)
 
     #--------------------------------------------------------------------------
-    def _getTotalStatValue(self, theStat, theUser=None, theMatchNumber=0):
-        """ Get total value to add for a stat
+    def _getTotalAttrValue(self, theAttr, theUser=None, theMatchNumber=0):
+        """ Get total value to add for a Attr
 
         Calculate the total value based on the cell and the user value for
         that particular cell.
 
         It updates the counter for the cell type for the user.
 
-        :type theStat: str
-        :param theStat: String with the stat name
+        :type theAttr: str
+        :param theAttr: String with the Attr name
 
         :type theUser: User
         :param theUser: user instance
@@ -154,131 +155,102 @@ class Cell(object):
         :rtype: list
         :return: Total value accumulate to the given sta
         """
-        cellValue = getattr(self, theStat, 0)
+        cellValue = getattr(self, theAttr, 0)
         userValue = 0
         if theUser:
-            userValue = theUser.getStatValue(theStat, self.__class__.__name__)
+            userValue = theUser.getAttrValue(theAttr, self.__class__.__name__)
         return cellValue + userValue
 
     #--------------------------------------------------------------------------
-    def _m3Stat(self, theMatch, theStat, theUser=None):
-        """ Basic match accumulation method for any stat
+    def baseMatch3(self, theMatch, theAttr, theUser=None):
+        """ Basic match accumulation method for any Attr
 
         :type theMatch: list
         :param theMatch: List with position matching
 
-        :type theStat: str
-        :param theStat: String with the stat name
+        :type theAttr: str
+        :param theAttr: String with the Attr name
 
         :type theUser: User
         :param theUser: user instance
 
         :rtype: list
-        :return: Total value accumulate to the given stat and counter
+        :return: Total value accumulate to the given Attr and counter
         """
-        value = self._getTotalStatValue(theStat, theUser, len(theMatch))
+        value = self._getTotalAttrValue(theAttr, theUser, len(theMatch))
         return value * len(theMatch)
 
     #--------------------------------------------------------------------------
-    def _m4Stat(self, theMatch, theStat, theUser=None):
-        """ Critical match accumulation method for any stat
+    def baseMatch4(self, theMatch, theAttr, theUser=None):
+        """ Critical match accumulation method for any Attr
 
         :type theMatch: list
         :param theMatch: List with position matching
 
-        :type theStat: str
-        :param theStat: String with the stat name
+        :type theAttr: str
+        :param theAttr: String with the Attr name
 
         :type theUser: User
         :param theUser: user instance
 
         :rtype: list
-        :return: Total value accumulate to the given stat and counter
+        :return: Total value accumulate to the given Attr and counter
         """
-        value = self._getTotalStatValue(theStat, theUser, len(theMatch)) * 2
+        value = self._getTotalAttrValue(theAttr, theUser, len(theMatch)) * 2
         return value * len(theMatch)
 
     #--------------------------------------------------------------------------
-    def _m5Stat(self, theMatch, theStat, theUser=None):
-        """ Critical match accumulation method for any stat
+    def baseMatch5(self, theMatch, theAttr, theUser=None):
+        """ Critical match accumulation method for any Attr
 
         :type theMatch: list
         :param theMatch: List with position matching
 
-        :type theStat: str
-        :param theStat: String with the stat name
+        :type theAttr: str
+        :param theAttr: String with the Attr name
 
         :type theUser: User
         :param theUser: user instance
 
         :rtype: list
-        :return: Total value accumulate to the given stat and counter
+        :return: Total value accumulate to the given Attr and counter
         """
-        value = self._getTotalStatValue(theStat, theUser, len(theMatch)) * 3
+        value = self._getTotalAttrValue(theAttr, theUser, len(theMatch)) * 3
         return value * len(theMatch)
 
     #--------------------------------------------------------------------------
-    def _matchCb(self, theMatch, theStat, theUser=None):
+    def executeMatch(self, theMatch, theUser=None):
+        """ Execute the given match for the given cell.
+        :type theMatch: list
+        :param theMatch: List with position matching
+
+        :type theUser: User
+        :param theUser: user instance
+
+        :rtype: dict
+        :return: dictionary with cell attributes being updated
+        """
+        reto_dict = {}
+        for attr in self.attrsUsed:
+            reto_dict[attr] = self._matchCb(theMatch, attr, theUser)
+
+    #--------------------------------------------------------------------------
+    def _matchCb(self, theMatch, theAttr, theUser=None):
         """
         :type theMatch: list
         :param theMatch: List with position matching
 
-        :type theStat: str
-        :param theStat: String with the stat name
+        :type theAttr: str
+        :param theAttr: String with the attr name
 
         :type theUser: User
         :param theUser: user instance
         """
-        matchCb = self.statCbs[theStat].get('M%d' % (len(theMatch), ), None)
-        #self.logger.info('Match %d %s for %s,  cb: %s' % (len(theMatch), self.__class__.__name__, theStat, matchCb))
+        matchCb = self.attrsCbs[theAttr].get(len(theMatch), None)
+        #self.logger.info('Match %d %s for %s,  cb: %s' % (len(theMatch), self.__class__.__name__, theAttr, matchCb))
         if matchCb:
-            return matchCb(theMatch, theStat, theUser)
+            return matchCb(theMatch, theAttr, theUser)
         return 0
-
-    #--------------------------------------------------------------------------
-    def damage(self, theMatch, theUser=None):
-        """
-
-        :type theUser: User
-        :param theUser: user instance
-        """
-        return self._matchCb(theMatch, 'DAMAGE', theUser)
-
-    #--------------------------------------------------------------------------
-    def defense(self, theMatch, theUser=None):
-        """
-
-        :type theUser: User
-        :param theUser: user instance
-        """
-        return self._matchCb(theMatch, 'DEFENSE', theUser)
-
-    #--------------------------------------------------------------------------
-    def money(self, theMatch, theUser=None):
-        """
-
-        :type theUser: User
-        :param theUser: user instance
-        """
-        return self._matchCb(theMatch, 'MONEY', theUser)
-
-    #--------------------------------------------------------------------------
-    def health(self, theMatch, theUser=None):
-        """
-
-        :type theUser: User
-        :param theUser: user instance
-        """
-        return self._matchCb(theMatch, 'HEALTH', theUser)
-
-    #--------------------------------------------------------------------------
-    def power(self, theMatch, theUser=None):
-        """
-
-        :type theUser: User
-        :param theUser: user instance
-        """
-        return self._matchCb(theMatch, 'POWER', theUser)
 
     #--------------------------------------------------------------------------
     def getPosition(self):
