@@ -77,6 +77,7 @@ class Heart(cell.Cell):
         :param kwargs: Dictionary with Heart attributes.
         """
         super(Heart, self).__init__(thePosition, **kwargs)
+        self.attrsUsed = ('heart', )
 
 
 ###############################################################################

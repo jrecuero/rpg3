@@ -77,6 +77,7 @@ class Sword(cell.Cell):
         :param kwargs: Dictionary with sword attributes.
         """
         super(Sword, self).__init__(thePosition, **kwargs)
+        self.attrsUsed = ('damage', )
 
     #--------------------------------------------------------------------------
     def damage(self, theMatch, theUser=None):

@@ -77,6 +77,7 @@ class Bow(cell.Cell):
         :param kwargs: Dictionary with Bow attributes.
         """
         super(Bow, self).__init__(thePosition, **kwargs)
+        self.attrsUsed = ('damage', )
 
 
 ###############################################################################

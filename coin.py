@@ -77,6 +77,7 @@ class Coin(cell.Cell):
         :param kwargs: Dictionary with Coin attributes.
         """
         super(Coin, self).__init__(thePosition, **kwargs)
+        self.attrsUsed = ('money', )
 
 
 ###############################################################################

@@ -77,6 +77,7 @@ class Axe(cell.Cell):
         :param kwargs: Dictionary with Axe attributes.
         """
         super(Axe, self).__init__(thePosition, **kwargs)
+        self.attrsUsed = ('damage', )
 
 
 ###############################################################################

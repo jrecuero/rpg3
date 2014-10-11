@@ -77,6 +77,7 @@ class Staff(cell.Cell):
         :param kwargs: Dictionary with Staff attributes.
         """
         super(Staff, self).__init__(thePosition, **kwargs)
+        self.attrsUsed = ('damage', )
 
 
 ###############################################################################

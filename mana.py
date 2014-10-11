@@ -77,6 +77,7 @@ class Mana(cell.Cell):
         :param kwargs: Dictionary with mana attributes.
         """
         super(Mana, self).__init__(thePosition, **kwargs)
+        self.attrsUsed = ('power', )
 
 
 ###############################################################################

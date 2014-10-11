@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-"""shield.py class required for the shield cell.
+"""attrs.py class required for attrs used by the user.
 
 :author:    Jose Carlos Recuero
 :version:   0.1
-:since:     10/01/2014
+:since:     10/10/2014
 
 """
 
@@ -25,8 +25,7 @@ __docformat__ = 'restructuredtext en'
 #
 # import user python modules
 #
-import cell
-
+import loggerator
 
 ###############################################################################
 ##
@@ -37,6 +36,13 @@ import cell
 ##
 ###############################################################################
 #
+
+DAMAGE  = 'damage'
+DEFENSE = 'defense'
+MONEY   = 'money'
+HEALTH  = 'health'
+POWER   = 'power'
+
 
 ###############################################################################
 ##            _                     _   _
@@ -60,24 +66,28 @@ import cell
 
 #
 #------------------------------------------------------------------------------
-class Shield(cell.Cell):
+class Attrs (object):
     """
     """
-
-    STRING = "shield"
-    DEFENSE = 1
-
-    def __init__(self, thePosition, **kwargs):
-        """ Shield initialization method.
-
-        :type thePosition: tuple
-        :param thePosition: Tuple with x and y coordinates.
-
-        :type kwargs: dict
-        :param kwargs: Dictionary with Shield attributes.
+    #--------------------------------------------------------------------------
+    @staticmethod
+    def getAttrs():
         """
-        super(Shield, self).__init__(thePosition, **kwargs)
-        self.attrsUsed = ('defense', )
+        """
+        return (DAMAGE, DEFENSE, MONEY, HEALTH, POWER)
+
+    #--------------------------------------------------------------------------
+    @staticmethod
+    def createAttrsDict():
+        """
+        """
+        return dict(zip(Attrs.getAttrs(), (0, ) * len(Attrs.getAttrs())))
+
+    #--------------------------------------------------------------------------
+    def __init__(self):
+        """ Initialize Attrs instance
+        """
+        self.logger   = loggerator.getLoggerator('attrs')
 
 
 ###############################################################################

@@ -39,6 +39,7 @@ import loggerator
 ###############################################################################
 #
 
+
 ###############################################################################
 ##            _                     _   _
 ##  ___ _   _| |__  _ __ ___  _   _| |_(_)_ __   ___  ___
@@ -48,6 +49,7 @@ import loggerator
 ##
 ###############################################################################
 #
+
 
 ###############################################################################
 ##       _                     _       __ _       _ _   _
@@ -67,7 +69,7 @@ class Cell(object):
 
     #--------------------------------------------------------------------------
     @staticmethod
-    def getStats():
+    def getCellAttrs():
         """
         """
         return ('damage', 'defense', 'money', 'health', 'power')
@@ -78,7 +80,7 @@ class Cell(object):
         """
         """
         dicta = {}
-        for stat in Cell.getStats():
+        for stat in Cell.getCellAttrs():
             dicta[stat] = 0
         return dicta
 
@@ -101,6 +103,7 @@ class Cell(object):
         self.name     = kwargs['theName'] if 'theName' in kwargs else None
         self.sprite   = kwargs['theSprite'] if 'theSprite' in kwargs else None
         self.selected = False
+        self.attrsUsed = ()
         self.createSprite()
         self.createStats()
 
@@ -193,7 +196,7 @@ class Cell(object):
         :return: Total value accumulate to the given stat and counter
         """
         value = self._getTotalStatValue(theStat, theUser, len(theMatch)) * 2
-        return value *  len(theMatch)
+        return value * len(theMatch)
 
     #--------------------------------------------------------------------------
     def _m5Stat(self, theMatch, theStat, theUser=None):

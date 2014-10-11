@@ -77,6 +77,7 @@ class Dagger(cell.Cell):
         :param kwargs: Dictionary with Dagger attributes.
         """
         super(Dagger, self).__init__(thePosition, **kwargs)
+        self.attrsUsed = ('damage', )
 
 
 ###############################################################################

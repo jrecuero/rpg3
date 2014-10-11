@@ -77,6 +77,7 @@ class Lance(cell.Cell):
         :param kwargs: Dictionary with Lance attributes.
         """
         super(Lance, self).__init__(thePosition, **kwargs)
+        self.attrsUsed = ('damage', )
 
 
 ###############################################################################
