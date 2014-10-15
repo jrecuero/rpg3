@@ -96,22 +96,22 @@ MOVE_IN_BOARD = {'right': {'loopFunc':  lambda first, second: (first, second),
 class TableBoard(object):
 
     #--------------------------------------------------------------------------
-    def __init__(self, theSize, theMatrix=None, theNewCellCb=None):
+    def __init__(self, theSize, theBoard=None, theNewCellCb=None):
         """ TableBoard initialization method.
 
         :type theSize: int
         :param theSize: Size of the board (size x size).
 
-        :type theMatrix: list
-        :param theMatrix: Matrix to be used for the tableboard
+        :type theBoard: list
+        :param theBoard: board to be used for the tableboard
 
         :type theNewCellCb: func
         :param theNewCellCb: Function to be called to create a new cell
         """
         self.size      = theSize
         self.newCellCb = theNewCellCb
-        self.matrix = theMatrix if theMatrix else self._createDefaultTableBoard()
-        self.logger = loggerator.getLoggerator('tableboard')
+        self.board     = theBoard if theBoard else self._createDefaultTableBoard()
+        self.logger    = loggerator.getLoggerator('tableboard')
 
     #--------------------------------------------------------------------------
     def _copyToListAndSort(self, theSet):
@@ -131,14 +131,20 @@ class TableBoard(object):
     def _createDefaultTableBoard(self):
         """ Create a new default table board
 
+        It used callback method passed when the tableboard was created in order
+        to create new cells on the board.
+
         :rtype: list
-        :return: matrix with a default table board
+        :return: board with a default table board
         """
         return [[self.newCellCb((x, y)) for y in xrange(self.size)] for x in xrange(self.size)]
 
     #--------------------------------------------------------------------------
     def addNewCell(self, thePosition):
         """ Create a new cell at the given position
+
+        Create a new cell using the tableboard callback method passed at init
+        time.
 
         :type thePosition: tuple
         :param thePosition: Tuple with x and y position coordinates
@@ -148,12 +154,15 @@ class TableBoard(object):
         """
         x, y  = thePosition
         aCell = self.newCellCb(thePosition)
-        self.matrix[x][y] = aCell
+        self.board[x][y] = aCell
         return aCell
 
     #--------------------------------------------------------------------------
     def removeCell(self, thePosition):
         """ Remove a cell from the given position
+
+        Cell is removed from the tableboard and None is set for the empty
+        position.
 
         :type thePosition: tuple
         :param thePosition: Tuple with x and y position coordinates
@@ -163,7 +172,7 @@ class TableBoard(object):
         """
         x, y  = thePosition
         aCell = self.getCell(thePosition)
-        self.matrix[x][y] = None
+        self.board[x][y] = None
         return aCell
 
     #--------------------------------------------------------------------------
@@ -231,7 +240,7 @@ class TableBoard(object):
         """
         if self.isCellInBoard(thePosition):
             x, y = thePosition
-            return self.matrix[x][y]
+            return self.board[x][y]
         else:
             return None
 
@@ -263,34 +272,34 @@ class TableBoard(object):
 
     #--------------------------------------------------------------------------
     def iterCell(self):
-        """ Iterate all cells in the matrix.
+        """ Iterate all cells in the board.
 
         :rtype: iterator
-        :return: iterator with next cell in the matrix
+        :return: iterator with next cell in the board
         """
-        for row in self.matrix:
+        for row in self.board:
             for aCell in row:
                 yield aCell
 
     #--------------------------------------------------------------------------
     def iterCellData(self):
-        """ Iterate all cells data in the matrix.
+        """ Iterate all cells data in the board.
 
         :rtype: iterator
-        :return: iterator with next cell data in the matrix
+        :return: iterator with next cell data in the board
         """
-        for row in self.matrix:
+        for row in self.board:
             for aCell in row:
                 yield aCell.getData()
 
     #--------------------------------------------------------------------------
     def iterCellSprite(self):
-        """ Iterate all cells sprite in the matrix.
+        """ Iterate all cells sprite in the board.
 
         :rtype: iterator
-        :return: iterator with next cell sprite in the matrix
+        :return: iterator with next cell sprite in the board
         """
-        for row in self.matrix:
+        for row in self.board:
             for aCell in row:
                 yield aCell.getSprite()
 
@@ -309,7 +318,7 @@ class TableBoard(object):
         """
         if self.isCellInBoard(thePosition):
             x, y = thePosition
-            self.matrix[x][y] = theCell
+            self.board[x][y] = theCell
             return True
         else:
             return False
@@ -365,7 +374,7 @@ class TableBoard(object):
         x2, y2 = theSecondCell.position
         #self.logger.debug("Swap (%s, %s) %s for (%s, %s) %s" % (x1, y1, theFirstCell.data, x2, y2, theSecondCell.data))
         theFirstCell.swap(theSecondCell)
-        self.matrix[x1][y1], self.matrix[x2][y2] = self.matrix[x2][y2], self.matrix[x1][y1]
+        self.board[x1][y1], self.board[x2][y2] = self.board[x2][y2], self.board[x1][y1]
         return True
 
     #--------------------------------------------------------------------------
@@ -380,11 +389,11 @@ class TableBoard(object):
             x, y = theCell.getPosition()
             if x == (self.size - 1):
                 return -1
-            topCell = self.matrix[x + 1][y]
+            topCell = self.board[x + 1][y]
             if topCell.getData() is None:
                 if self.fallCell(topCell) == -1:
                     return -1
-            topCell = self.matrix[x + 1][y]
+            topCell = self.board[x + 1][y]
             self.swapCells(theCell, topCell)
         else:
             return 0
@@ -565,7 +574,7 @@ class TableBoard(object):
                 matchDict = cellToUse.executeMatch(match, theUser)
                 for key in attrsDict.keys():
                     attrsDict[key] += matchDict.get(key, 0)
-                cellKlass = cellToUse.__class__.__name__.lower()
+                cellKlass = cellToUse.getClass()
                 theUser.addStatCount(len(match), cellKlass)
         return attrsDict
 
@@ -598,7 +607,7 @@ class TableBoard(object):
         :return: list with 2-dim table streamlines per row
         """
         oneline = []
-        for line in self.matrix:
+        for line in self.board:
             oneline += copy.copy(line)
         return oneline
 
@@ -609,7 +618,7 @@ class TableBoard(object):
         :rtype: list
         :return: list with 2-dim table streamlines per column
         """
-        return [self.matrix[y][x] for x in xrange(self.size) for y in xrange(self.size)]
+        return [self.board[y][x] for x in xrange(self.size) for y in xrange(self.size)]
 
     #--------------------------------------------------------------------------
     def matchInWindow(self, theWindow, theMatchSize):
@@ -642,7 +651,7 @@ class TableBoard(object):
     #--------------------------------------------------------------------------
     def _logWindow(self, theWindow):
         """ Log information for the given window in a readable way.
-        
+
         :type theWindow: list
         :parama theWindow: window to log information
         """
@@ -650,7 +659,7 @@ class TableBoard(object):
         for acell in theWindow:
             x, y = acell.getPosition()
             retoStr += '%s[%d][%d] ' % (acell.getClass(), x, y)
-        return retoStr            
+        return retoStr
 
     #--------------------------------------------------------------------------
     def searchInCrossStreamline(self, theStreamline, theSize):

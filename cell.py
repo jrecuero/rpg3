@@ -26,6 +26,7 @@ import cocos
 #
 # import user python modules
 #
+import utilator
 import loggerator
 import attrs
 
@@ -65,7 +66,10 @@ import attrs
 #
 #------------------------------------------------------------------------------
 class Cell(object):
+    """
+    """
 
+    tracerList     = []
     customAttrsCbs = {}
 
     #--------------------------------------------------------------------------
@@ -84,6 +88,38 @@ class Cell(object):
         for attr in Cell.getCellAttrs():
             dicta[attr] = 0
         return dicta
+
+    #--------------------------------------------------------------------------
+    @staticmethod
+    def addTraceMatch(theCell, theAttr, theMatchLen, theValue, theTotalValue, theLog=True):
+        """ Add a new match to the tracer list.
+
+            :type theCell: object
+            :param theCell: cell instance inside the match
+
+            :type theAttr: str
+            :parama theAttr: cell attribute used
+
+            :type theMatchLen: int
+            :param theMatchLen: length of the match
+
+            :type theValue: int
+            :param theValue: value of the match per cell
+
+            :type theTotalValue: int
+            :param theTotalValue: total value of the match
+
+            :type theLog: bool
+            :param theLog: send the trace to the display log
+        """
+        Cell.traceList.append({'cell': theCell.getClass(),
+                              'attr': theAttr,
+                              'len': theMatchLen,
+                              'val': theValue,
+                              'total': theTotalValue})
+        if theLog:
+            theCell.logger.debug('Match %d %s, %s %s each, total %s' %
+                                 (theMatchLen, theCell.getClass(), theValue, theAttr, theTotalValue))
 
     #--------------------------------------------------------------------------
     def __init__(self, thePosition, **kwargs):
@@ -177,10 +213,12 @@ class Cell(object):
         :rtype: list
         :return: Total value accumulate to the given Attr and counter
         """
-        value = self._getTotalAttrValue(theAttr, theUser, len(theMatch))
-        self.logger.debug('Match %d %s, %s %s each, total %s' %
-                          (len(theMatch), self.__class__.__name__.lower(), value, theAttr, value * len(theMatch)))
-        return value * len(theMatch)
+        value      = self._getTotalAttrValue(theAttr, theUser, len(theMatch))
+        totalValue = value * len(theMatch)
+        #self.logger.debug('Match %d %s, %s %s each, total %s' %
+        #                  (len(theMatch), self.getClass(), value, theAttr, value * len(theMatch)))
+        Cell.addTraceMatch(self, theAttr, len(theMatch), value, totalValue)
+        return totalValue
 
     #--------------------------------------------------------------------------
     def baseMatch4(self, theMatch, theAttr, theUser=None):
@@ -198,10 +236,13 @@ class Cell(object):
         :rtype: list
         :return: Total value accumulate to the given Attr and counter
         """
-        value = self._getTotalAttrValue(theAttr, theUser, len(theMatch)) * 2
-        self.logger.debug('Match %d %s, %s %s each, total %s' %
-                          (len(theMatch), self.__class__.__name__.lower(), value, theAttr, value * len(theMatch)))
-        return value * len(theMatch)
+        value      = self._getTotalAttrValue(theAttr, theUser, len(theMatch)) * 2
+        totalValue = value * len(theMatch)
+        #self.logger.debug('Match %d %s, %s %s each, total %s' %
+        #self.logger.debug('Match %d %s, %s %s each, total %s' %
+        #                  (len(theMatch), self.getClass(), value, theAttr, value * len(theMatch)))
+        Cell.addTraceMatch(self, theAttr, len(theMatch), value, totalValue)
+        return totalValue
 
     #--------------------------------------------------------------------------
     def baseMatch5(self, theMatch, theAttr, theUser=None):
@@ -219,10 +260,13 @@ class Cell(object):
         :rtype: list
         :return: Total value accumulate to the given Attr and counter
         """
-        value = self._getTotalAttrValue(theAttr, theUser, len(theMatch)) * 3
-        self.logger.debug('Match %d %s, %s %s each, total %s' %
-                          (len(theMatch), self.__class__.__name__.lower(), value, theAttr, value * len(theMatch)))
-        return value * len(theMatch)
+        value      = self._getTotalAttrValue(theAttr, theUser, len(theMatch)) * 3
+        totalValue = value * len(theMatch)
+        #self.logger.debug('Match %d %s, %s %s each, total %s' %
+        #self.logger.debug('Match %d %s, %s %s each, total %s' %
+        #                  (len(theMatch), self.getClass(), value, theAttr, value * len(theMatch)))
+        Cell.addTraceMatch(self, theAttr, len(theMatch), value, totalValue)
+        return totalValue
 
     #--------------------------------------------------------------------------
     def executeMatch(self, theMatch, theUser=None):
@@ -254,7 +298,6 @@ class Cell(object):
         :param theUser: user instance
         """
         matchCb = self.attrsCbs[theAttr].get(len(theMatch), None)
-        #self.logger.info('Match %d %s for %s,  cb: %s' % (len(theMatch), self.__class__.__name__, theAttr, matchCb))
         if matchCb:
             return matchCb(theMatch, theAttr, theUser)
         return 0
@@ -409,11 +452,11 @@ class Cell(object):
     #--------------------------------------------------------------------------
     def getClass(self):
         """ Return the cell class name
-        
+
         :rtype: str
         :return: string with the class name
         """
-        return self.__class__.__name__.lower()
+        return utilator.getClass(self)
 
 
 ###############################################################################

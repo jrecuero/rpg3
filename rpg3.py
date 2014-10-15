@@ -98,21 +98,15 @@ class Rpg3(cocos.layer.Layer):
 
     #--------------------------------------------------------------------------
     def __init__(self):
-        """
+        """ Initializes Rpg3 instance.
+
+        Creates a valid table board and all required widgets and resources for
+        the game.
         """
         super(Rpg3, self).__init__()
 
         self.size = 8
-        while True:
-            self.createBoardPhase = True
-            self.tableSprites = []
-            self.tableboard = self.createTableBoard(self.size)
-            matches = self.tableboard.matchBoard()
-            if not self.tableboard.isThereAnyMatch(matches):
-                break
-        self.createBoardPhase = False
-        for aSprite in self.tableSprites:
-            self.add(aSprite)
+        self.createTableBoard(self.size)
         self.logger = loggerator.getLoggerator('rpg3')
         self.statsDict = cell.Cell.createAttrsDict()
 
@@ -130,11 +124,12 @@ class Rpg3(cocos.layer.Layer):
 
         self.user = User('USERNAME')
 
-        self.logger.debug('Is there any match: %s' % (self.tableboard.searchForAnyPossibleMatch(), ))
-
     #--------------------------------------------------------------------------
     def createCommandLine(self):
         """ Create command line widget
+
+        Command line widget is used to provide some information to the user
+        playing the game.
         """
         self.cmd = cocos.text.Label('Command Line', position=(400, 460), width=200, height=200, multiline=True)
         self.add(self.cmd, name='CommandLine')
@@ -153,6 +148,9 @@ class Rpg3(cocos.layer.Layer):
     def createCellCb(self, thePosition):
         """ Callback called when new cell is created
 
+        This callback method is passed to the tableboard instance, so when a
+        new cell has to be created in the tableboard, this will be called.
+
         :type thePosition: tuple
         :param thePosition: tuple with the new cell position
 
@@ -168,8 +166,18 @@ class Rpg3(cocos.layer.Layer):
         return newCell
 
     #--------------------------------------------------------------------------
+    def cleanSpritesFromBoard(self):
+        """ Remove all sprites from the tableboard.
+        """
+        for aSprite in self.tableSprites:
+            self.remove(aSprite)
+
+    #--------------------------------------------------------------------------
     def createTableBoard(self, theSize):
         """ Create a new table board
+
+        It creates a valid tableboard, where there is not any match placed, but
+        there is at least one possible match to be done in the next movement.
 
         :type theSize: int
         :param theSize: table board size x size
@@ -177,11 +185,22 @@ class Rpg3(cocos.layer.Layer):
         :rtype: TableBoard
         :return: TableBoard instance created
         """
-        return tableboard.TableBoard(theSize, theNewCellCb=self.createCellCb)
+        while True:
+            self.createBoardPhase = True
+            self.tableSprites = []
+            self.tableboard = tableboard.TableBoard(theSize, theNewCellCb=self.createCellCb)
+            matches = self.tableboard.matchBoard()
+            # When there is not any match in the board, but there are possible
+            # match, stop and start the game.
+            if not self.tableboard.isThereAnyMatch(matches) and self.tableboard.searchForAnyPossibleMatch():
+                break
+        self.createBoardPhase = False
+        for aSprite in self.tableSprites:
+            self.add(aSprite)
 
     #--------------------------------------------------------------------------
     def cellSelected(self):
-        """ Return a list with all cell selected
+        """ Return a list with all cell selected by the user.
 
         :rtype: list
         :return: list with all cell selected
@@ -191,6 +210,12 @@ class Rpg3(cocos.layer.Layer):
     #--------------------------------------------------------------------------
     def processCellSelected(self, x, y):
         """ Process cell selected at x, y
+
+        Select a cell, when the selected cell is the second one, it proceeds to
+        swap cells if the are placed together vertically or horizontally.
+
+        When the second cell is selected, no matter what at the end no cell is
+        set to selected in the tableboard.
 
         :type x: int
         :param x: cell x position
@@ -208,7 +233,10 @@ class Rpg3(cocos.layer.Layer):
 
     #--------------------------------------------------------------------------
     def updateStats(self, theMatches):
-        """ Update stats values with the given matches
+        """ Update user stats values with the given matches
+
+        Call tableboard instance to process all matches in the board, then it
+        process those results and update all required widgets.
 
         :type theMatches: list
         :param theMatches: list with all matches
@@ -221,8 +249,24 @@ class Rpg3(cocos.layer.Layer):
         #self.logger.info("stats: %s" % (self.statsDict))
 
     #--------------------------------------------------------------------------
+    def resetTableboard(self):
+        """ Reset tableboard with a new one.
+
+        Clean all sprites from the tableboard and create a new valid one.
+        """
+        self.cleanSpritesFromBoard()
+        self.createTableBoard(self.size)
+        self.newEntryInCommandLine('Reseted Tableboard')
+
+    #--------------------------------------------------------------------------
     def updateTableboard(self):
         """ Update table board with all matches
+
+        After all matches have been process, it process to update tableboard,
+        moving empty cells and creating new ones in those empty spaces.
+
+        At the end it calls to process the tableboard just in case any valid
+        match has been generated with new cells placed.
         """
         self.tableboard.fallBoard()
         for aCell in self.tableboard.emptyCellsInBoard():
@@ -230,16 +274,23 @@ class Rpg3(cocos.layer.Layer):
             self.remove(aCell.getSprite())
             newCell = self.tableboard.addNewCell(aCell.getPosition())
             self.add(newCell.getSprite())
-        self.processMatch()
-        self.logger.debug('Is there any match: %s' % (self.tableboard.searchForAnyPossibleMatch(), ))
-        #statsUserData = self.user.stats.getStatsData()
-        #for k, v in statsUserData.iteritems():
-        #    self.logger.info('User stat[%s]: %s' % (k, v))
-        self.user.addExp(100)
+
+        if not self.processMatch():
+            #statsUserData = self.user.stats.getStatsData()
+            #for k, v in statsUserData.iteritems():
+            #    self.logger.info('User stat[%s]: %s' % (k, v))
+            if not self.tableboard.searchForAnyPossibleMatch():
+                self.do(Delay(1) + CallFunc(self.resetTableboard))
 
     #--------------------------------------------------------------------------
     def processMatch(self):
         """ Process all matches
+
+        Process all valid matches in the tableboard. Calls to update user stats
+        and generate temporal sprites in matched cells.
+
+        :rtype: bool
+        :return: True if there was at least one match processed, else False
         """
         matches = self.tableboard.matchBoard()
         if self.tableboard.isThereAnyMatch(matches):
@@ -253,6 +304,8 @@ class Rpg3(cocos.layer.Layer):
                 aCell.setSprite(sprite)
                 self.add(aCell.getSprite())
             self.do(Delay(1) + CallFunc(self.updateTableboard))
+            return True
+        return False
 
     #--------------------------------------------------------------------------
     def on_mouse_press(self, x, y, buttons, modifiers):

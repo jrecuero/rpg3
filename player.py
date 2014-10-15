@@ -26,6 +26,7 @@ __docformat__ = 'restructuredtext en'
 # import player python modules
 #
 import loggerator
+import utilator
 import stats
 
 
@@ -80,7 +81,7 @@ class Player(object):
         """
         self.name   = theName
         self.stats  = stats.Stats()
-        self.logger = loggerator.getLoggerator(self.__class__.__name__.lower())
+        self.logger = loggerator.getLoggerator(utilator.getClass(self))
 
     #--------------------------------------------------------------------------
     def getStatValue(self, theStat, theKlass):
