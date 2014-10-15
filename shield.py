@@ -65,7 +65,7 @@ class Shield(cell.Cell):
     """
 
     STRING = "shield"
-    DEFENSE = 1
+    defense = 1
 
     def __init__(self, thePosition, **kwargs):
         """ Shield initialization method.

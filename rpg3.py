@@ -44,7 +44,7 @@ from shield import Shield
 from staff import Staff
 from sword import Sword
 from user import User
-import stats
+#import stats
 
 
 ###############################################################################
@@ -114,7 +114,7 @@ class Rpg3(cocos.layer.Layer):
         for aSprite in self.tableSprites:
             self.add(aSprite)
         self.logger = loggerator.getLoggerator('rpg3')
-        self.statsDict = cell.Cell.createStatsDict()
+        self.statsDict = cell.Cell.createAttrsDict()
 
         labelAttrs = {'font_name': 'Times New Roman',
                       'font_size': 16,
@@ -232,7 +232,7 @@ class Rpg3(cocos.layer.Layer):
             self.add(newCell.getSprite())
         self.processMatch()
         self.logger.debug('Is there any match: %s' % (self.tableboard.searchForAnyPossibleMatch(), ))
-        statsUserData = self.user.stats.getStatsData()
+        #statsUserData = self.user.stats.getStatsData()
         #for k, v in statsUserData.iteritems():
         #    self.logger.info('User stat[%s]: %s' % (k, v))
         self.user.addExp(100)

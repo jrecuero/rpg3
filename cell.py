@@ -123,14 +123,14 @@ class Cell(object):
         """
         """
         self.data    = getattr(self, 'STRING', 'CELL')
-        self.DAMAGE  = getattr(self, 'DAMAGE', 0)
-        self.DEFENSE = getattr(self, 'DEFENSE', 0)
-        self.MONEY   = getattr(self, 'MONEY', 0)
-        self.HEALTH  = getattr(self, 'HEALTH', 0)
-        self.POWER   = getattr(self, 'POWER', 0)
+        self.damage  = getattr(self, 'damage', 0)
+        self.defense = getattr(self, 'defense', 0)
+        self.money   = getattr(self, 'money', 0)
+        self.health  = getattr(self, 'health', 0)
+        self.power   = getattr(self, 'power', 0)
 
         self.attrsCbs = {}
-        for attr in attrs.getAttrs():
+        for attr in attrs.Attrs.getAttrs():
             self.attrsCbs[attr] = {3: self.baseMatch3, 4: self.baseMatch4, 5: self.baseMatch5}
         self.attrsCbs.update(self.customAttrsCbs)
 
@@ -158,7 +158,7 @@ class Cell(object):
         cellValue = getattr(self, theAttr, 0)
         userValue = 0
         if theUser:
-            userValue = theUser.getAttrValue(theAttr, self.__class__.__name__)
+            userValue = theUser.getStatValue(theAttr, self.getClass())
         return cellValue + userValue
 
     #--------------------------------------------------------------------------
@@ -177,9 +177,9 @@ class Cell(object):
         :rtype: list
         :return: Total value accumulate to the given Attr and counter
         """
-        value = self._getTotalStatValue(theStat, theUser, len(theMatch))
+        value = self._getTotalAttrValue(theAttr, theUser, len(theMatch))
         self.logger.debug('Match %d %s, %s %s each, total %s' %
-                          (len(theMatch), self.__class__.__name__.lower(), value, theStat, value * len(theMatch)))
+                          (len(theMatch), self.__class__.__name__.lower(), value, theAttr, value * len(theMatch)))
         return value * len(theMatch)
 
     #--------------------------------------------------------------------------
@@ -198,9 +198,9 @@ class Cell(object):
         :rtype: list
         :return: Total value accumulate to the given Attr and counter
         """
-        value = self._getTotalStatValue(theStat, theUser, len(theMatch)) * 2
+        value = self._getTotalAttrValue(theAttr, theUser, len(theMatch)) * 2
         self.logger.debug('Match %d %s, %s %s each, total %s' %
-                          (len(theMatch), self.__class__.__name__.lower(), value, theStat, value * len(theMatch)))
+                          (len(theMatch), self.__class__.__name__.lower(), value, theAttr, value * len(theMatch)))
         return value * len(theMatch)
 
     #--------------------------------------------------------------------------
@@ -219,9 +219,9 @@ class Cell(object):
         :rtype: list
         :return: Total value accumulate to the given Attr and counter
         """
-        value = self._getTotalStatValue(theStat, theUser, len(theMatch)) * 3
+        value = self._getTotalAttrValue(theAttr, theUser, len(theMatch)) * 3
         self.logger.debug('Match %d %s, %s %s each, total %s' %
-                          (len(theMatch), self.__class__.__name__.lower(), value, theStat, value * len(theMatch)))
+                          (len(theMatch), self.__class__.__name__.lower(), value, theAttr, value * len(theMatch)))
         return value * len(theMatch)
 
     #--------------------------------------------------------------------------
@@ -239,6 +239,7 @@ class Cell(object):
         reto_dict = {}
         for attr in self.attrsUsed:
             reto_dict[attr] = self._matchCb(theMatch, attr, theUser)
+        return reto_dict
 
     #--------------------------------------------------------------------------
     def _matchCb(self, theMatch, theAttr, theUser=None):

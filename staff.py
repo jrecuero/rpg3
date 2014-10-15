@@ -65,7 +65,7 @@ class Staff(cell.Cell):
     """
 
     STRING = "staff"
-    DAMAGE = 4
+    damage = 4
 
     def __init__(self, thePosition, **kwargs):
         """ Staff initialization method.

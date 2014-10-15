@@ -65,7 +65,7 @@ class Sword(cell.Cell):
     """
 
     STRING = "sword"
-    DAMAGE = 8
+    damage = 8
 
     def __init__(self, thePosition, **kwargs):
         """ Sword initialization method.

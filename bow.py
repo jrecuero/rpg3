@@ -65,7 +65,7 @@ class Bow(cell.Cell):
     """
 
     STRING = "bow"
-    DAMAGE = 5
+    damage = 5
 
     def __init__(self, thePosition, **kwargs):
         """ Bow initialization method.

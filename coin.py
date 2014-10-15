@@ -65,7 +65,7 @@ class Coin(cell.Cell):
     """
 
     STRING = "coin"
-    MONEY  = 100
+    money  = 100
 
     def __init__(self, thePosition, **kwargs):
         """ Coin initialization method.

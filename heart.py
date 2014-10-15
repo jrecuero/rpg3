@@ -65,7 +65,7 @@ class Heart(cell.Cell):
     """
 
     STRING = "heart"
-    HEALTH = 50
+    health = 50
 
     def __init__(self, thePosition, **kwargs):
         """ Heart initialization method.
