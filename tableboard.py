@@ -558,7 +558,7 @@ class TableBoard(object):
         :rtype: dict
         :return: dictionary with final stats
         """
-        statsDict = cell.Cell.createStatsDict()
+        attrsDict = cell.Cell.createStatsDict()
         for matchLines in theMatches:
             for match in matchLines:
                 cellToUse = self.getCell(match[0])
@@ -570,7 +570,7 @@ class TableBoard(object):
                         statsDict[stat] += matchStatFunc(match, theUser)
                 cellKlass = cellToUse.getClass()
                 theUser.addStatCount(len(match), cellKlass)
-        return statsDict
+        return attrsDict
 
     #--------------------------------------------------------------------------
     def cellTogetherCell(self, theCell, theOtherCell):
