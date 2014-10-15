@@ -218,7 +218,7 @@ class Rpg3(cocos.layer.Layer):
             self.statsDict[stat] += value
             label = self.get(stat)
             label.element.text = '%s: %s' % (stat, self.statsDict[stat])
-        self.logger.info("stats: %s" % (self.statsDict))
+        #self.logger.info("stats: %s" % (self.statsDict))
 
     #--------------------------------------------------------------------------
     def updateTableboard(self):
@@ -233,8 +233,8 @@ class Rpg3(cocos.layer.Layer):
         self.processMatch()
         self.logger.debug('Is there any match: %s' % (self.tableboard.searchForAnyPossibleMatch(), ))
         statsUserData = self.user.stats.getStatsData()
-        for k, v in statsUserData.iteritems():
-            self.logger.info('User stat[%s]: %s' % (k, v))
+        #for k, v in statsUserData.iteritems():
+        #    self.logger.info('User stat[%s]: %s' % (k, v))
         self.user.addExp(100)
 
     #--------------------------------------------------------------------------

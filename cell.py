@@ -177,6 +177,8 @@ class Cell(object):
         :return: Total value accumulate to the given stat and counter
         """
         value = self._getTotalStatValue(theStat, theUser, len(theMatch))
+        self.logger.debug('Match %d %s, %s %s each, total %s' %
+                          (len(theMatch), self.__class__.__name__.lower(), value, theStat, value * len(theMatch)))
         return value * len(theMatch)
 
     #--------------------------------------------------------------------------
@@ -196,6 +198,8 @@ class Cell(object):
         :return: Total value accumulate to the given stat and counter
         """
         value = self._getTotalStatValue(theStat, theUser, len(theMatch)) * 2
+        self.logger.debug('Match %d %s, %s %s each, total %s' %
+                          (len(theMatch), self.__class__.__name__.lower(), value, theStat, value * len(theMatch)))
         return value * len(theMatch)
 
     #--------------------------------------------------------------------------
@@ -215,6 +219,8 @@ class Cell(object):
         :return: Total value accumulate to the given stat and counter
         """
         value = self._getTotalStatValue(theStat, theUser, len(theMatch)) * 3
+        self.logger.debug('Match %d %s, %s %s each, total %s' %
+                          (len(theMatch), self.__class__.__name__.lower(), value, theStat, value * len(theMatch)))
         return value * len(theMatch)
 
     #--------------------------------------------------------------------------
@@ -426,6 +432,15 @@ class Cell(object):
         self.position, theOther.position = theOther.position, self.position,
         #self.sprite.image, theOther.sprite.image = theOther.sprite.image, self.sprite.image
         self.sprite.position, theOther.sprite.position = theOther.sprite.position, self.sprite.position
+
+    #--------------------------------------------------------------------------
+    def getClass(self):
+        """ Return the cell class name
+        
+        :rtype: str
+        :return: string with the class name
+        """
+        return self.__class__.__name__.lower()
 
 
 ###############################################################################

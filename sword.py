@@ -80,13 +80,13 @@ class Sword(cell.Cell):
         self.attrsUsed = ('damage', )
 
     #--------------------------------------------------------------------------
-    def damage(self, theMatch, theUser=None):
-        """
-        """
-        if len(theMatch) == 3:
-            return self._m3Stat(theMatch, 'DAMAGE')
-        else:
-            return self._m4Stat(theMatch, 'DAMAGE')
+    #def damage(self, theMatch, theUser=None):
+    #    """
+    #    """
+    #    if len(theMatch) == 3:
+    #        return self._m3Stat(theMatch, 'DAMAGE')
+    #    else:
+    #        return self._m4Stat(theMatch, 'DAMAGE')
 
 
 ###############################################################################

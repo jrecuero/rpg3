@@ -568,7 +568,7 @@ class TableBoard(object):
                     matchStatFunc = getattr(cellToUse, stat, None)
                     if matchStatFunc:
                         statsDict[stat] += matchStatFunc(match, theUser)
-                cellKlass = cellToUse.__class__.__name__.lower()
+                cellKlass = cellToUse.getClass()
                 theUser.addStatCount(len(match), cellKlass)
         return statsDict
 
@@ -629,17 +629,31 @@ class TableBoard(object):
         """
         klasses = {}
         for x in theWindow:
-            klassName = x.__class__.__name__
+            klassName = x.getClass()
             if klassName in klasses:
                 klasses[klassName] += [x]
                 if len(klasses[klassName]) == theMatchSize:
                     matchCell = klasses[klassName][0]
-                    otherCell = [val[0] for key, val in klasses.iteritems() if key != klassName]
-                    #self.logger.info('match at %s other is %s' % (theWindow, otherCell))
+                    otherCell = [acell for acell in theWindow if acell.getClass() != klassName]
+                    #self.logger.info('match at %s, match is %s,  other is %s' %
+                    #                 (theWindow, matchCell, otherCell))
                     return (True, matchCell, otherCell)
             else:
                 klasses[klassName] = [x]
         return (False, None, None)
+
+    #--------------------------------------------------------------------------
+    def _logWindow(self, theWindow):
+        """ Log information for the given window in a readable way.
+        
+        :type theWindow: list
+        :parama theWindow: window to log information
+        """
+        retoStr = ""
+        for acell in theWindow:
+            x, y = acell.getPosition()
+            retoStr += '%s[%d][%d] ' % (acell.getClass(), x, y)
+        return retoStr            
 
     #--------------------------------------------------------------------------
     def searchInCrossStreamline(self, theStreamline, theSize):
@@ -667,16 +681,16 @@ class TableBoard(object):
             anyMatch, matchCell, noMatchCell = self.matchInWindow(window, theSize - 1)
             if anyMatch and noMatchCell:
                 noMatchIndex = theStreamline.index(noMatchCell[0])
-                beforeIndex  = noMatchIndex - theSize
-                afterIndex   = noMatchIndex + theSize
-                if beforeIndex >= 0 and afterIndex < streamlineLen:
-                    crossWindow = [theStreamline[beforeIndex],
-                                   matchCell,
-                                   theStreamline[afterIndex], ]
-                    anyCrossMatch, dummy1, dummy2 = self.matchInWindow(crossWindow, theSize)
-                    if anyCrossMatch:
-                        self.logger.info('searchInCrossStreamline: match found at %s' % (crossWindow, ))
-                        return True
+                beforeIndex  = noMatchIndex - self.size
+                afterIndex   = noMatchIndex + self.size
+                if beforeIndex >= 0 and theStreamline[beforeIndex].getClass() == matchCell.getClass():
+                    self.logger.info('searchInCrossStreamline: match found at %s' %
+                                     (self._logWindow(window), ))
+                    return True
+                if afterIndex < streamlineLen and theStreamline[afterIndex].getClass() == matchCell.getClass():
+                    self.logger.info('searchInCrossStreamline: match found at %s' %
+                                     (self._logWindow(window), ))
+                    return True
 
             if (index + theSize) % self.size:
                 index += 1
@@ -707,7 +721,8 @@ class TableBoard(object):
             window = theStreamline[index:index + theSize]
             anyMatch, matchCell, noMatchCell = self.matchInWindow(window, theMatchSize)
             if anyMatch:
-                self.logger.info('searchInStreamline: match found at %s' % (window, ))
+                self.logger.info('searchInStreamline: match found at %s' %
+                                 (self._logWindow(window), ))
                 return True
             else:
                 if (index + theSize) % self.size:
