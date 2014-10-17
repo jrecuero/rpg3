@@ -194,7 +194,7 @@ class Cell(object):
         cellValue = getattr(self, theAttr, 0)
         userValue = 0
         if theUser:
-            userValue = theUser.getStatValue(theAttr, self.getClass())
+            userValue = theUser.getStatValue(self.getClass())
         return cellValue + userValue
 
     #--------------------------------------------------------------------------

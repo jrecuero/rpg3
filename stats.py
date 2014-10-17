@@ -2,6 +2,11 @@
 
 """stats.py class required for stats used by the user.
 
+Information contained in this module is related with cells that can be placed
+on the board. Every cells is a stat value that the used should be account for.
+
+New cells, it means new stats can be added along the design of the game.
+
 :author:    Jose Carlos Recuero
 :version:   0.1
 :since:     10/01/2014
@@ -21,6 +26,7 @@ __docformat__ = 'restructuredtext en'
 #
 # import std python modules
 #
+import yaml
 
 #
 # import user python modules
@@ -70,7 +76,9 @@ def addStats(theOneStat, theOtherStat):
     """
     value = theOneStat[0] + theOtherStat[0]
     count = theOneStat[1] + theOtherStat[1]
-    return (value, count)
+    runs  = theOneStat[1] + theOtherStat[1]
+    return (value, count, runs)
+
 
 ###############################################################################
 ##       _                     _       __ _       _ _   _
@@ -103,52 +111,39 @@ class Stats (object):
         """
         self.level  = 0
         self.exp    = 0
-        self.coin   = self._initStat()
-        self.shield = self._initStat()
-        self.heart  = self._initStat()
-        self.mana   = self._initStat()
-        self.axe    = self._initStat()
-        self.bow    = self._initStat()
-        self.dagger = self._initStat()
-        self.lance  = self._initStat()
-        self.staff  = self._initStat()
-        self.sword  = self._initStat()
+        statsStream = open('stats.yaml', 'r')
+        self.stdict = yaml.load(statsStream)
+        for key, val in self.stdict.iteritems():
+            self.stdict[key] = self._initStat(val)
         self.logger = loggerator.getLoggerator('stat')
 
     #--------------------------------------------------------------------------
-    def _initStat(self):
+    def _initStat(self, theInitValue):
         """ Initialize value for a stat attribute.
+
+        :type theInitValue: int
+        :param theInitValue: initial value for a stat
 
         :rtype: dict
         :return: dict with initial values
         """
-        return {'count': 0, 'value': 0, }
+        return {'count': 0, 'value': theInitValue, 'runs': 0}
 
     #--------------------------------------------------------------------------
-    def _incStatValue(self, theStat, theIncVal=1):
-        """ Increase value field for a stat.
+    def _incStatField(self, theStat, theField, theIncVal=1):
+        """ Increase a field for a stat.
 
         :type theStat: dict
         :param theStat: dictinary with the stat to update
+
+        :type theField: str
+        :param theField: name of the field
 
         :type theIncVal: int
         :param theIncVal: magnitude to increase the value
         """
-        theStat['value'] += theIncVal
-        return theStat['value']
-
-    #--------------------------------------------------------------------------
-    def _incStatCount(self, theStat, theIncCount=1):
-        """ Increase counter field for a stat.
-
-        :type theStat: dict
-        :param theStat: dictinary with the stat to update
-
-        :type theIncCount: int
-        :param theIncCount: magnitude to increase the counter
-        """
-        theStat['count'] += theIncCount
-        return theStat['count']
+        theStat[theField] += theIncVal
+        return theStat[theField]
 
     #--------------------------------------------------------------------------
     def addExp(self, theExp):
@@ -178,71 +173,11 @@ class Stats (object):
         >>> s.levelUp()
         >>> s.level
         1
-        >>> s.coin, s.shield, s.heart, s.mana
-        (1, 1, 1, 1)
-        >>> s.axe, s.bow, s.dagger, s.lance, s.staff, s.sword
-        (1, 1, 1, 1, 1, 1)
 
         """
         self.level += 1
-        self._incStatValue(self.coin)
-        self._incStatValue(self.shield)
-        self._incStatValue(self.heart)
-        self._incStatValue(self.mana)
-        self._incStatValue(self.axe)
-        self._incStatValue(self.bow)
-        self._incStatValue(self.dagger)
-        self._incStatValue(self.lance)
-        self._incStatValue(self.staff)
-        self._incStatValue(self.sword)
-
-    #--------------------------------------------------------------------------
-    def getStat(self, theStat, theKlass):
-        """ Return the given stat instance.
-
-        :type theStat: str
-        :param theStat: stat to retrieve the value
-
-        :type theKlass: object
-        :param theKlass: instance with the cell stat
-        """
-        stat = getattr(self, theStat, None) if theStat else None
-        return stat if stat else getattr(self, theKlass.lower(), None)
-
-    #--------------------------------------------------------------------------
-    def getStatValue(self, theStat, theKlass):
-        """ Return value for the given stat
-
-        >>> s = Stats()
-        >>> s.coin = 100
-        >>> s.sword = 25
-        >>> s.getStatValue('coin', None)
-        100
-        >>> s.getStatValue('dummy', 'SWORD')
-        25
-
-        :type theStat: str
-        :param theStat: stat to retrieve the value
-
-        :type theKlass: object
-        :param theKlass: instance with the cell stat
-        """
-        #self.logger.debug("getStatValue for %s, %s" % (theStat, theKlass))
-        stat = self.getStat(theStat, theKlass)
-        return stat['value'] if stat else None
-
-    #--------------------------------------------------------------------------
-    def addStatCount(self, theValue, theKlass):
-        """ Add a value to the stat counter field.
-
-        :type theValue: int
-        :param theValue: value to add to the counter
-
-        :type theKlass: object
-        :param theKlass: instance with the cell stat
-        """
-        stat = self.getStat(None, theKlass)
-        return self._incStatCount(stat, theValue) if stat else 0
+        for key in self.stdict.keys():
+            self.addStatValue(key)
 
     #--------------------------------------------------------------------------
     def getStatsData(self):
@@ -251,16 +186,101 @@ class Stats (object):
         :rtype: dict
         :return: dictionary with stats
         """
-        return {'coin': self.coin,
-                'shield': self.shield,
-                'heart': self.heart,
-                'mana': self.mana,
-                'axe': self.axe,
-                'bow': self.bow,
-                'dagger': self.dagger,
-                'lance': self.lance,
-                'staff': self.staff,
-                'sword': self.sword, }
+        return self.stdict
+
+    #--------------------------------------------------------------------------
+    def _getStatField(self, theKlass, theField):
+        """ Return the given stat instance.
+
+        :type theKlass: str
+        :param theKlass: name of the stat
+
+        :type theField: str
+        :param theField: name of the field to retrieve information
+
+        :rtype: int
+        :return: field content
+        """
+        stat = self.stdict.get(theKlass, None)
+        return stat[theField] if stat else None
+
+    #--------------------------------------------------------------------------
+    def getStatValue(self, theKlass):
+        """ Return value for the given stat
+
+        >>> s = Stats()
+        >>> s.coin = 100
+
+        :type theKlass: object
+        :param theKlass: instance with the cell stat
+        """
+        return self._getStatField(theKlass, 'value')
+
+    #--------------------------------------------------------------------------
+    def getStatCount(self, theKlass):
+        """ Return count for the given stat
+
+        :type theKlass: object
+        :param theKlass: instance with the cell stat
+        """
+        return self._getStatField(theKlass, 'count')
+
+    #--------------------------------------------------------------------------
+    def getStatRuns(self, theKlass):
+        """ Return runs for the given stat
+
+        :type theKlass: object
+        :param theKlass: instance with the cell stat
+        """
+        return self._getStatField(theKlass, 'runs')
+
+    #--------------------------------------------------------------------------
+    def addStatValue(self, theKlass, theValue=1):
+        """ Add a value to the stat value field.
+
+        :type theValue: int
+        :param theValue: value to add to the counter
+
+        :type theKlass: object
+        :param theKlass: instance with the cell stat
+
+        :rtype: int/bool
+        :return: new stat count value, None if stat not found
+        """
+        stat = self.stdict.get(theKlass, None)
+        return self._incStatField(stat, 'value', theValue) if stat else None
+
+    #--------------------------------------------------------------------------
+    def addStatCount(self, theKlass, theValue=1):
+        """ Add a value to the stat counter field.
+
+        :type theValue: int
+        :param theValue: value to add to the counter
+
+        :type theKlass: object
+        :param theKlass: instance with the cell stat
+
+        :rtype: int/bool
+        :return: new stat count value, None if stat not found
+        """
+        stat = self.stdict.get(theKlass, None)
+        return self._incStatField(stat, 'count', theValue) if stat else None
+
+    #--------------------------------------------------------------------------
+    def addStatRuns(self, theKlass, theValue=1):
+        """ Add a value to the stat runs field.
+
+        :type theValue: int
+        :param theValue: value to add to the counter
+
+        :type theKlass: object
+        :param theKlass: instance with the cell stat
+
+        :rtype: int/bool
+        :return: new stat count value, None if stat not found
+        """
+        stat = self.stdict.get(theKlass, None)
+        return self._incStatField(stat, 'runs', theValue) if stat else None
 
 
 ###############################################################################

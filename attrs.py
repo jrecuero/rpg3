@@ -2,6 +2,9 @@
 
 """attrs.py class required for attrs used by the user.
 
+Information contained in this module are attributes affected by cells placed
+on the board. Every cell can have different input in one or more attributes.
+
 :author:    Jose Carlos Recuero
 :version:   0.1
 :since:     10/10/2014

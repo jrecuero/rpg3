@@ -28,6 +28,7 @@ __docformat__ = 'restructuredtext en'
 import loggerator
 import utilator
 import stats
+import attrs
 
 
 ###############################################################################
@@ -81,18 +82,17 @@ class Player(object):
         """
         self.name   = theName
         self.stats  = stats.Stats()
+        self.attrs  = attrs.Attrs()
         self.logger = loggerator.getLoggerator(utilator.getClass(self))
 
     #--------------------------------------------------------------------------
-    def getStatValue(self, theStat, theKlass):
+    def getStatValue(self, theKlass):
         """ Return value for the given stat
 
         >>> u = Player('my name')
         >>> u.stats.power = 99
         >>> u.stats.axe = 24
-        >>> u.getStatValue('power', None)
-        99
-        >>> u.getStatValue('dummy', 'AXE')
+        >>> u.getStatValue('axe')
         24
 
         :type theStat: str
@@ -101,7 +101,7 @@ class Player(object):
         :type theKlass: object
         :param theKlass: instance with the cell stat
         """
-        return self.stats.getStatValue(theStat, theKlass)
+        return self.stats.getStatValue(theKlass)
 
     #--------------------------------------------------------------------------
     def addStatCount(self, theValue, theKlass):

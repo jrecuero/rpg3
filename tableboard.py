@@ -575,7 +575,8 @@ class TableBoard(object):
                 for key in attrsDict.keys():
                     attrsDict[key] += matchDict.get(key, 0)
                 cellKlass = cellToUse.getClass()
-                theUser.addStatCount(len(match), cellKlass)
+                theUser.addStatCount(cellKlass, len(match))
+                theUser.addStatRuns(cellKlass)
         return attrsDict
 
     #--------------------------------------------------------------------------
