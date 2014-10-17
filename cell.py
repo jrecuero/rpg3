@@ -112,11 +112,11 @@ class Cell(object):
             :type theLog: bool
             :param theLog: send the trace to the display log
         """
-        Cell.traceList.append({'cell': theCell.getClass(),
-                              'attr': theAttr,
-                              'len': theMatchLen,
-                              'val': theValue,
-                              'total': theTotalValue})
+        Cell.tracerList.append({'cell':  theCell.getClass(),
+                                'attr':  theAttr,
+                                'len':   theMatchLen,
+                                'val':   theValue,
+                                'total': theTotalValue})
         if theLog:
             theCell.logger.debug('Match %d %s, %s %s each, total %s' %
                                  (theMatchLen, theCell.getClass(), theValue, theAttr, theTotalValue))
