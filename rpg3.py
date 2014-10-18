@@ -303,6 +303,7 @@ class Rpg3(cocos.layer.Layer):
                 self.remove(aCell.getSprite())
                 aCell.setSprite(sprite)
                 self.add(aCell.getSprite())
+            self.logger.info('user stats are %s' % (self.user.stats.getStatsData(), ))
             self.do(Delay(1) + CallFunc(self.updateTableboard))
             return True
         return False

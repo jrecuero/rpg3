@@ -104,16 +104,46 @@ class Player(object):
         return self.stats.getStatValue(theKlass)
 
     #--------------------------------------------------------------------------
-    def addStatCount(self, theValue, theKlass):
-        """ Add a value to the stat counter field.
+    def addStatValue(self, theKlass, theValue=1):
+        """ Add a value to the stat value field.
 
         :type theValue: int
         :param theValue: value to add to the counter
 
         :type theKlass: object
         :param theKlass: instance with the cell stat
+
+        :rtype: int/bool
+        :return: new stat count value, None if stat not found
         """
-        return self.stats.addStatCount(theValue, theKlass)
+        return self.stats.addStatValue(theKlass, theValue)
+
+    #--------------------------------------------------------------------------
+    def addStatCount(self, theKlass, theValue=1):
+        """ Add a value to the stat counter field.
+
+        :type theKlass: object
+        :param theKlass: instance with the cell stat
+
+        :type theValue: int
+        :param theValue: value to add to the counter
+        """
+        return self.stats.addStatCount(theKlass, theValue)
+
+    #--------------------------------------------------------------------------
+    def addStatRuns(self, theKlass, theValue=1):
+        """ Add a value to the stat runs field.
+
+        :type theValue: int
+        :param theValue: value to add to the counter
+
+        :type theKlass: object
+        :param theKlass: instance with the cell stat
+
+        :rtype: int/bool
+        :return: new stat count value, None if stat not found
+        """
+        return self.stats.addStatRuns(theKlass, theValue)
 
     #--------------------------------------------------------------------------
     def addExp(self, theExp):
