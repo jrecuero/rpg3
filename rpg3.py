@@ -170,7 +170,13 @@ class Rpg3(cocos.layer.Layer):
         """ Remove all sprites from the tableboard.
         """
         for aSprite in self.tableSprites:
-            self.remove(aSprite)
+            try:
+                self.remove(aSprite)
+            except Exception:
+                # sprite was already deleted and it is not present any more
+                # TODO - Why this sprite is not found?
+                #self.logger.error('%s : Sprite was already deleted %s' % (ex, aSprite))
+                pass
 
     #--------------------------------------------------------------------------
     def createTableBoard(self, theSize):
