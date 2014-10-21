@@ -255,6 +255,16 @@ class Rpg3(cocos.layer.Layer):
         #self.logger.info("stats: %s" % (self.statsDict))
 
     #--------------------------------------------------------------------------
+    def removeSprite(self, theSprite):
+        """ Remove sprite from the scene and any other resource.
+
+        :type theSprite: Sprite
+        :param theSprite: sprite to remove
+        """
+        self.remove(theSprite)
+        self.tableSprites.remove(theSprite)
+
+    #--------------------------------------------------------------------------
     def resetTableboard(self):
         """ Reset tableboard with a new one.
 
@@ -277,7 +287,7 @@ class Rpg3(cocos.layer.Layer):
         self.tableboard.fallBoard()
         for aCell in self.tableboard.emptyCellsInBoard():
             self.tableboard.removeCell(aCell.getPosition())
-            self.remove(aCell.getSprite())
+            self.removeSprite(aCell.getSprite())
             newCell = self.tableboard.addNewCell(aCell.getPosition())
             self.add(newCell.getSprite())
 
@@ -306,7 +316,7 @@ class Rpg3(cocos.layer.Layer):
             for aCell in self.tableboard.emptyCellsInBoard():
                 sprite = cocos.sprite.Sprite('images/explosion.png')
                 sprite.position = aCell.getSprite().position
-                self.remove(aCell.getSprite())
+                self.removeSprite(aCell.getSprite())
                 aCell.setSprite(sprite)
                 self.add(aCell.getSprite())
             self.logger.info('user stats are %s' % (self.user.stats.getStatsData(), ))
