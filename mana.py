@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""mana.py class required for the mana cell.
+"""mana.py class required for the mana tablecell.
 
 :author:    Jose Carlos Recuero
 :version:   0.1
@@ -25,7 +25,7 @@ __docformat__ = 'restructuredtext en'
 #
 # import user python modules
 #
-import cell
+import tablecell
 
 
 ###############################################################################
@@ -60,12 +60,9 @@ import cell
 
 #
 #------------------------------------------------------------------------------
-class Mana(cell.Cell):
+class Mana(tablecell.TableCell):
     """
     """
-
-    STRING = "mana"
-    power  = 20
 
     def __init__(self, thePosition, **kwargs):
         """ Mana initialization method.
@@ -76,6 +73,8 @@ class Mana(cell.Cell):
         :type kwargs: dict
         :param kwargs: Dictionary with mana attributes.
         """
+        self.power      = 20
+        self.spriteName = "mana"
         super(Mana, self).__init__(thePosition, **kwargs)
         self.attrsUsed = ('power', )
 

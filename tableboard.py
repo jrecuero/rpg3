@@ -27,7 +27,7 @@ import copy
 # import user python modules
 #
 import loggerator
-import cell
+import tablecell
 
 
 ###############################################################################
@@ -567,7 +567,7 @@ class TableBoard(object):
         :rtype: dict
         :return: dictionary with final stats
         """
-        attrsDict = cell.Cell.createAttrsDict()
+        attrsDict = tablecell.TableCell.createAttrsDict()
         for matchLines in theMatches:
             for match in matchLines:
                 cellToUse = self.getCell(match[0])

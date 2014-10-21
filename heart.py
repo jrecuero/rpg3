@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""heart.py class required for the heart cell.
+"""heart.py class required for the heart tablecell.
 
 :author:    Jose Carlos Recuero
 :version:   0.1
@@ -25,7 +25,7 @@ __docformat__ = 'restructuredtext en'
 #
 # import user python modules
 #
-import cell
+import tablecell
 
 
 ###############################################################################
@@ -60,12 +60,9 @@ import cell
 
 #
 #------------------------------------------------------------------------------
-class Heart(cell.Cell):
+class Heart(tablecell.TableCell):
     """
     """
-
-    STRING = "heart"
-    health = 50
 
     def __init__(self, thePosition, **kwargs):
         """ Heart initialization method.
@@ -76,6 +73,8 @@ class Heart(cell.Cell):
         :type kwargs: dict
         :param kwargs: Dictionary with Heart attributes.
         """
+        self.health     = 50
+        self.spriteName = "heart"
         super(Heart, self).__init__(thePosition, **kwargs)
         self.attrsUsed = ('health', )
 

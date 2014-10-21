@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""lance.py class required for the lance cell.
+"""lance.py class required for the lance tablecell.
 
 :author:    Jose Carlos Recuero
 :version:   0.1
@@ -25,7 +25,7 @@ __docformat__ = 'restructuredtext en'
 #
 # import user python modules
 #
-import cell
+import tablecell
 
 
 ###############################################################################
@@ -60,12 +60,9 @@ import cell
 
 #
 #------------------------------------------------------------------------------
-class Lance(cell.Cell):
+class Lance(tablecell.TableCell):
     """
     """
-
-    STRING = "lance"
-    damage = 6
 
     def __init__(self, thePosition, **kwargs):
         """ Lance initialization method.
@@ -76,6 +73,8 @@ class Lance(cell.Cell):
         :type kwargs: dict
         :param kwargs: Dictionary with Lance attributes.
         """
+        self.damage     = 6
+        self.spriteName = "lance"
         super(Lance, self).__init__(thePosition, **kwargs)
         self.attrsUsed = ('damage', )
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""bow.py class required for the bow cell.
+"""bow.py class required for the bow tablecell.
 
 :author:    Jose Carlos Recuero
 :version:   0.1
@@ -25,7 +25,7 @@ __docformat__ = 'restructuredtext en'
 #
 # import user python modules
 #
-import cell
+import tablecell
 
 
 ###############################################################################
@@ -60,12 +60,9 @@ import cell
 
 #
 #------------------------------------------------------------------------------
-class Bow(cell.Cell):
+class Bow(tablecell.TableCell):
     """
     """
-
-    STRING = "bow"
-    damage = 5
 
     def __init__(self, thePosition, **kwargs):
         """ Bow initialization method.
@@ -76,6 +73,8 @@ class Bow(cell.Cell):
         :type kwargs: dict
         :param kwargs: Dictionary with Bow attributes.
         """
+        self.damage     = 5
+        self.spriteName = "bow"
         super(Bow, self).__init__(thePosition, **kwargs)
         self.attrsUsed = ('damage', )
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""sword.py class required for the sword cell.
+"""sword.py class required for the sword tablecell.
 
 :author:    Jose Carlos Recuero
 :version:   0.1
@@ -25,7 +25,7 @@ __docformat__ = 'restructuredtext en'
 #
 # import user python modules
 #
-import cell
+import tablecell
 
 
 ###############################################################################
@@ -60,12 +60,9 @@ import cell
 
 #
 #------------------------------------------------------------------------------
-class Sword(cell.Cell):
+class Sword(tablecell.TableCell):
     """
     """
-
-    STRING = "sword"
-    damage = 8
 
     def __init__(self, thePosition, **kwargs):
         """ Sword initialization method.
@@ -76,6 +73,8 @@ class Sword(cell.Cell):
         :type kwargs: dict
         :param kwargs: Dictionary with sword attributes.
         """
+        self.damage     = 8
+        self.spriteName = "sword"
         super(Sword, self).__init__(thePosition, **kwargs)
         self.attrsUsed = ('damage', )
 

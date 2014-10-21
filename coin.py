@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""coin.py class required for the coin cell.
+"""coin.py class required for the coin tablecell.
 
 :author:    Jose Carlos Recuero
 :version:   0.1
@@ -25,7 +25,7 @@ __docformat__ = 'restructuredtext en'
 #
 # import user python modules
 #
-import cell
+import tablecell
 
 
 ###############################################################################
@@ -60,12 +60,9 @@ import cell
 
 #
 #------------------------------------------------------------------------------
-class Coin(cell.Cell):
+class Coin(tablecell.TableCell):
     """
     """
-
-    STRING = "coin"
-    money  = 100
 
     def __init__(self, thePosition, **kwargs):
         """ Coin initialization method.
@@ -76,6 +73,8 @@ class Coin(cell.Cell):
         :type kwargs: dict
         :param kwargs: Dictionary with Coin attributes.
         """
+        self.money      = 100
+        self.spriteName = "coin"
         super(Coin, self).__init__(thePosition, **kwargs)
         self.attrsUsed = ('money', )
 

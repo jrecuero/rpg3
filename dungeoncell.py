@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-"""staff.py class required for the staff tablecell.
+"""dungeoncell.py class required a dungeoncell.
 
 :author:    Jose Carlos Recuero
 :version:   0.1
-:since:     10/01/2014
+:since:     10/21/2014
 
 """
 
@@ -21,11 +21,12 @@ __docformat__ = 'restructuredtext en'
 #
 # import std python modules
 #
+#import cocos
 
 #
 # import user python modules
 #
-import tablecell
+import cell
 
 
 ###############################################################################
@@ -38,6 +39,7 @@ import tablecell
 ###############################################################################
 #
 
+
 ###############################################################################
 ##            _                     _   _
 ##  ___ _   _| |__  _ __ ___  _   _| |_(_)_ __   ___  ___
@@ -47,6 +49,7 @@ import tablecell
 ##
 ###############################################################################
 #
+
 
 ###############################################################################
 ##       _                     _       __ _       _ _   _
@@ -60,23 +63,24 @@ import tablecell
 
 #
 #------------------------------------------------------------------------------
-class Staff(tablecell.TableCell):
+class DungeonCell(cell.Cell):
     """
     """
 
+    #--------------------------------------------------------------------------
     def __init__(self, thePosition, **kwargs):
-        """ Staff initialization method.
+        """ Dungeon Cell initialization method.
 
         :type thePosition: tuple
         :param thePosition: Tuple with x and y coordinates.
 
+        :type theName: str
+        :param theName: Sword name
+
         :type kwargs: dict
-        :param kwargs: Dictionary with Staff attributes.
+        :param kwargs: Dictionary with sword attributes.
         """
-        self.damage     = 4
-        self.spriteName = "staff"
-        super(Staff, self).__init__(thePosition, **kwargs)
-        self.attrsUsed = ('damage', )
+        super(DungeonCell, self).__init__(thePosition, **kwargs)
 
 
 ###############################################################################

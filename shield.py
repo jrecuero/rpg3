@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""shield.py class required for the shield cell.
+"""shield.py class required for the shield tablecell.
 
 :author:    Jose Carlos Recuero
 :version:   0.1
@@ -25,7 +25,7 @@ __docformat__ = 'restructuredtext en'
 #
 # import user python modules
 #
-import cell
+import tablecell
 
 
 ###############################################################################
@@ -60,12 +60,9 @@ import cell
 
 #
 #------------------------------------------------------------------------------
-class Shield(cell.Cell):
+class Shield(tablecell.TableCell):
     """
     """
-
-    STRING = "shield"
-    defense = 1
 
     def __init__(self, thePosition, **kwargs):
         """ Shield initialization method.
@@ -76,6 +73,8 @@ class Shield(cell.Cell):
         :type kwargs: dict
         :param kwargs: Dictionary with Shield attributes.
         """
+        self.defense    = 1
+        self.spriteName = "shield"
         super(Shield, self).__init__(thePosition, **kwargs)
         self.attrsUsed = ('defense', )
 

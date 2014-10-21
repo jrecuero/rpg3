@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-"""staff.py class required for the staff tablecell.
+"""dungeon.py class required for the dungeon.
 
 :author:    Jose Carlos Recuero
 :version:   0.1
-:since:     10/01/2014
+:since:     10/21/2014
 
 """
 
@@ -23,9 +23,8 @@ __docformat__ = 'restructuredtext en'
 #
 
 #
-# import user python modules
+# import dungeon python modules
 #
-import tablecell
 
 
 ###############################################################################
@@ -60,23 +59,18 @@ import tablecell
 
 #
 #------------------------------------------------------------------------------
-class Staff(tablecell.TableCell):
+class Dungeon(object):
     """
     """
 
-    def __init__(self, thePosition, **kwargs):
-        """ Staff initialization method.
+    #--------------------------------------------------------------------------
+    def __init__(self, theName=None):
+        """ Initialize Dungeon instance
 
-        :type thePosition: tuple
-        :param thePosition: Tuple with x and y coordinates.
-
-        :type kwargs: dict
-        :param kwargs: Dictionary with Staff attributes.
+        :type theName: str
+        :param theName: Dungeon name
         """
-        self.damage     = 4
-        self.spriteName = "staff"
-        super(Staff, self).__init__(thePosition, **kwargs)
-        self.attrsUsed = ('damage', )
+        self.name = theName
 
 
 ###############################################################################

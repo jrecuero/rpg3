@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""axe.py class required for the axe cell.
+"""axe.py class required for the axe tablecell.
 
 :author:    Jose Carlos Recuero
 :version:   0.1
@@ -25,7 +25,7 @@ __docformat__ = 'restructuredtext en'
 #
 # import user python modules
 #
-import cell
+import tablecell
 
 
 ###############################################################################
@@ -60,12 +60,9 @@ import cell
 
 #
 #------------------------------------------------------------------------------
-class Axe(cell.Cell):
+class Axe(tablecell.TableCell):
     """
     """
-
-    STRING = "axe"
-    damage = 10
 
     def __init__(self, thePosition, **kwargs):
         """ Axe initialization method.
@@ -76,6 +73,8 @@ class Axe(cell.Cell):
         :type kwargs: dict
         :param kwargs: Dictionary with Axe attributes.
         """
+        self.damage     = 10
+        self.spriteName = 'axe'
         super(Axe, self).__init__(thePosition, **kwargs)
         self.attrsUsed = ('damage', )
 

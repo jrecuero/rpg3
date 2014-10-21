@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""dagger.py class required for the dagger cell.
+"""dagger.py class required for the dagger tablecell.
 
 :author:    Jose Carlos Recuero
 :version:   0.1
@@ -25,7 +25,7 @@ __docformat__ = 'restructuredtext en'
 #
 # import user python modules
 #
-import cell
+import tablecell
 
 
 ###############################################################################
@@ -60,12 +60,9 @@ import cell
 
 #
 #------------------------------------------------------------------------------
-class Dagger(cell.Cell):
+class Dagger(tablecell.TableCell):
     """
     """
-
-    STRING = "dagger"
-    damage = 3
 
     def __init__(self, thePosition, **kwargs):
         """ Dagger initialization method.
@@ -76,6 +73,8 @@ class Dagger(cell.Cell):
         :type kwargs: dict
         :param kwargs: Dictionary with Dagger attributes.
         """
+        self.damage     = 3
+        self.spriteName = "dagger"
         super(Dagger, self).__init__(thePosition, **kwargs)
         self.attrsUsed = ('damage', )
 

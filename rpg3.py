@@ -30,7 +30,7 @@ import random
 # import user python modules
 #
 import loggerator
-import cell
+import tablecell
 import tableboard
 
 from axe import Axe
@@ -108,7 +108,7 @@ class Rpg3(cocos.layer.Layer):
         self.size = 8
         self.createTableBoard(self.size)
         self.logger = loggerator.getLoggerator('rpg3')
-        self.statsDict = cell.Cell.createAttrsDict()
+        self.statsDict = tablecell.TableCell.createAttrsDict()
 
         labelAttrs = {'font_name': 'Times New Roman',
                       'font_size': 16,
@@ -169,14 +169,8 @@ class Rpg3(cocos.layer.Layer):
     def cleanSpritesFromBoard(self):
         """ Remove all sprites from the tableboard.
         """
-        for aSprite in self.tableSprites:
-            try:
-                self.remove(aSprite)
-            except Exception:
-                # sprite was already deleted and it is not present any more
-                # TODO - Why this sprite is not found?
-                #self.logger.error('%s : Sprite was already deleted %s' % (ex, aSprite))
-                pass
+        for aSprite in [x for x in self.tableSprites]:
+            self.removeSprite(aSprite)
 
     #--------------------------------------------------------------------------
     def createTableBoard(self, theSize):
