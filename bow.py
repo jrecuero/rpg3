@@ -75,7 +75,7 @@ class Bow(tablecell.TableCell):
         """
         self.damage     = 5
         self.spriteName = "bow"
-        super(Bow, self).__init__(thePosition, **kwargs)
+        super(Bow, self).__init__(thePosition, theName=self.getClass(), **kwargs)
         self.attrsUsed = ('damage', )
 
 

@@ -75,7 +75,7 @@ class Lance(tablecell.TableCell):
         """
         self.damage     = 6
         self.spriteName = "lance"
-        super(Lance, self).__init__(thePosition, **kwargs)
+        super(Lance, self).__init__(thePosition, theName=self.getClass(), **kwargs)
         self.attrsUsed = ('damage', )
 
 

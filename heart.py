@@ -75,7 +75,7 @@ class Heart(tablecell.TableCell):
         """
         self.health     = 50
         self.spriteName = "heart"
-        super(Heart, self).__init__(thePosition, **kwargs)
+        super(Heart, self).__init__(thePosition, theName=self.getClass(), **kwargs)
         self.attrsUsed = ('health', )
 
 

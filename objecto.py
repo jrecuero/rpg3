@@ -70,7 +70,7 @@ class Objecto(object):
         :type theName: str
         :param theName: Objecto name
         """
-        self.name = theName
+        self.name        = theName
 
 
 ###############################################################################

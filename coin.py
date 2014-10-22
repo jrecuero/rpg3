@@ -75,7 +75,7 @@ class Coin(tablecell.TableCell):
         """
         self.money      = 100
         self.spriteName = "coin"
-        super(Coin, self).__init__(thePosition, **kwargs)
+        super(Coin, self).__init__(thePosition, theNane=self.getClass(), **kwargs)
         self.attrsUsed = ('money', )
 
 

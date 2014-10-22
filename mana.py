@@ -75,7 +75,7 @@ class Mana(tablecell.TableCell):
         """
         self.power      = 20
         self.spriteName = "mana"
-        super(Mana, self).__init__(thePosition, **kwargs)
+        super(Mana, self).__init__(thePosition, theName=self.getClass(), **kwargs)
         self.attrsUsed = ('power', )
 
 

@@ -28,6 +28,7 @@ import cocos
 #
 import utilator
 import loggerator
+import objecto
 
 
 ###############################################################################
@@ -64,7 +65,7 @@ import loggerator
 
 #
 #------------------------------------------------------------------------------
-class Cell(object):
+class Cell(objecto.Objecto):
     """
     """
 
@@ -81,10 +82,10 @@ class Cell(object):
         :type kwargs: dict
         :param kwargs: Dictionary with sword attributes.
         """
+        super(Cell, self).__init__(kwargs.get('theName', None))
         self.logger     = loggerator.getLoggerator(self.getClass())
         self.position   = thePosition
         self.data       = kwargs.get('theData', None)
-        self.name       = kwargs.get('theName', None)
         self.sprite     = kwargs.get('theSprite', None)
         self.spriteName = kwargs.get('theSpriteName', None)
         self.selected   = False

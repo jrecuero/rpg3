@@ -75,7 +75,7 @@ class Shield(tablecell.TableCell):
         """
         self.defense    = 1
         self.spriteName = "shield"
-        super(Shield, self).__init__(thePosition, **kwargs)
+        super(Shield, self).__init__(thePosition, theName=self.getClass(), **kwargs)
         self.attrsUsed = ('defense', )
 
 
