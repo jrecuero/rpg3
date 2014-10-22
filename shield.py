@@ -74,8 +74,10 @@ class Shield(tablecell.TableCell):
         :param kwargs: Dictionary with Shield attributes.
         """
         self.defense    = 1
-        self.spriteName = "shield"
-        super(Shield, self).__init__(thePosition, theName=self.getClass(), **kwargs)
+        super(Shield, self).__init__(thePosition, 
+                                     theName=self.getClass(), 
+                                     theSpriteName='shield',
+                                     **kwargs)
         self.attrsUsed = ('defense', )
 
 

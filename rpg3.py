@@ -159,9 +159,8 @@ class Rpg3(cocos.layer.Layer):
         """
         cellKlass = random.sample(Rpg3.images, 1)[0]
         newCell = cellKlass(thePosition)
-        if self.createBoardPhase:
-            self.tableSprites.append(newCell.getSprite())
-        else:
+        self.tableSprites.append(newCell.getSprite())
+        if not self.createBoardPhase:
             self.add(newCell.getSprite())
         return newCell
 
@@ -313,6 +312,7 @@ class Rpg3(cocos.layer.Layer):
                 self.removeSprite(aCell.getSprite())
                 aCell.setSprite(sprite)
                 self.add(aCell.getSprite())
+                self.tableSprites.append(aCell.getSprite())
             self.logger.info('user stats are %s' % (self.user.stats.getStatsData(), ))
             self.do(Delay(1) + CallFunc(self.updateTableboard))
             return True

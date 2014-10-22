@@ -141,7 +141,7 @@ class TableCell(cell.Cell):
     def createAttrs(self):
         """
         """
-        self.data    = getattr(self, 'STRING', 'TABLECELL')
+        self.data    = self.name
         self.damage  = getattr(self, 'damage', 0)
         self.defense = getattr(self, 'defense', 0)
         self.money   = getattr(self, 'money', 0)

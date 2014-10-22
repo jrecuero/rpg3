@@ -74,8 +74,10 @@ class Coin(tablecell.TableCell):
         :param kwargs: Dictionary with Coin attributes.
         """
         self.money      = 100
-        self.spriteName = "coin"
-        super(Coin, self).__init__(thePosition, theNane=self.getClass(), **kwargs)
+        super(Coin, self).__init__(thePosition, 
+                                   theName=self.getClass(), 
+                                   theSpriteName='coin',
+                                   **kwargs)
         self.attrsUsed = ('money', )
 
 

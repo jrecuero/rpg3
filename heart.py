@@ -74,8 +74,10 @@ class Heart(tablecell.TableCell):
         :param kwargs: Dictionary with Heart attributes.
         """
         self.health     = 50
-        self.spriteName = "heart"
-        super(Heart, self).__init__(thePosition, theName=self.getClass(), **kwargs)
+        super(Heart, self).__init__(thePosition, 
+                                    theName=self.getClass(), 
+                                    theSpriteName='heart',
+                                    **kwargs)
         self.attrsUsed = ('health', )
 
 

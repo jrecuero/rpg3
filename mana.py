@@ -74,8 +74,10 @@ class Mana(tablecell.TableCell):
         :param kwargs: Dictionary with mana attributes.
         """
         self.power      = 20
-        self.spriteName = "mana"
-        super(Mana, self).__init__(thePosition, theName=self.getClass(), **kwargs)
+        super(Mana, self).__init__(thePosition, 
+                                   theName=self.getClass(), 
+                                   theSpriteName='mana',
+                                   **kwargs)
         self.attrsUsed = ('power', )
 
 

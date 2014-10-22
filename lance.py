@@ -74,8 +74,10 @@ class Lance(tablecell.TableCell):
         :param kwargs: Dictionary with Lance attributes.
         """
         self.damage     = 6
-        self.spriteName = "lance"
-        super(Lance, self).__init__(thePosition, theName=self.getClass(), **kwargs)
+        super(Lance, self).__init__(thePosition, 
+                                    theName=self.getClass(), 
+                                    theSpriteName='lance',
+                                    **kwargs)
         self.attrsUsed = ('damage', )
 
 

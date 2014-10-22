@@ -74,8 +74,10 @@ class Staff(tablecell.TableCell):
         :param kwargs: Dictionary with Staff attributes.
         """
         self.damage     = 4
-        self.spriteName = "staff"
-        super(Staff, self).__init__(thePosition, theName=self.getClass(), **kwargs)
+        super(Staff, self).__init__(thePosition, 
+                                    theName=self.getClass(), 
+                                    theSpriteName='staff',
+                                    **kwargs)
         self.attrsUsed = ('damage', )
 
 
