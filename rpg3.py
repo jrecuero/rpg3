@@ -158,10 +158,8 @@ class Rpg3(cocos.layer.Layer):
         :return: Cell instance created
         """
         cellKlass = random.sample(Rpg3.images, 1)[0]
-        newCell = cellKlass(thePosition)
-        self.tableSprites.append(newCell.getSprite())
-        if not self.createBoardPhase:
-            self.add(newCell.getSprite())
+        newCell  = cellKlass(thePosition)
+        self.addSprite(newCell.getSprite())
         return newCell
 
     #--------------------------------------------------------------------------
@@ -248,6 +246,17 @@ class Rpg3(cocos.layer.Layer):
         #self.logger.info("stats: %s" % (self.statsDict))
 
     #--------------------------------------------------------------------------
+    def addSprite(self, theSprite):
+        """ Add sprite to the scene and any other resource.
+
+        :type theSprite: Sprite
+        :param theSprite: sprite to add
+        """
+        self.tableSprites.append(theSprite)
+        if not self.createBoardPhase:
+            self.add(theSprite)
+
+    #--------------------------------------------------------------------------
     def removeSprite(self, theSprite):
         """ Remove sprite from the scene and any other resource.
 
@@ -282,7 +291,7 @@ class Rpg3(cocos.layer.Layer):
             self.tableboard.removeCell(aCell.getPosition())
             self.removeSprite(aCell.getSprite())
             newCell = self.tableboard.addNewCell(aCell.getPosition())
-            self.add(newCell.getSprite())
+            #self.add(newCell.getSprite())
 
         if not self.processMatch():
             #statsUserData = self.user.stats.getStatsData()
@@ -311,8 +320,9 @@ class Rpg3(cocos.layer.Layer):
                 sprite.position = aCell.getSprite().position
                 self.removeSprite(aCell.getSprite())
                 aCell.setSprite(sprite)
-                self.add(aCell.getSprite())
-                self.tableSprites.append(aCell.getSprite())
+                self.addSprite(aCell.getSprite())
+                #self.add(aCell.getSprite())
+                #self.tableSprites.append(aCell.getSprite())
             self.logger.info('user stats are %s' % (self.user.stats.getStatsData(), ))
             self.do(Delay(1) + CallFunc(self.updateTableboard))
             return True
