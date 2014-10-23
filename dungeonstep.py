@@ -25,6 +25,7 @@ __docformat__ = 'restructuredtext en'
 #
 # import dungeonstep python modules
 #
+import objecto
 
 
 ###############################################################################
@@ -59,7 +60,7 @@ __docformat__ = 'restructuredtext en'
 
 #
 #------------------------------------------------------------------------------
-class DungeonStep(object):
+class DungeonStep(objecto.Objecto):
     """
     """
 
@@ -70,7 +71,7 @@ class DungeonStep(object):
         :type theName: str
         :param theName: DungeonStep name
         """
-        self.name = theName
+        super(DungeonStep, self).__init__(theName)
 
 
 ###############################################################################

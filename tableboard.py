@@ -27,6 +27,7 @@ import copy
 # import user python modules
 #
 import loggerator
+import objecto
 import tablecell
 
 
@@ -93,7 +94,7 @@ MOVE_IN_BOARD = {'right': {'loopFunc':  lambda first, second: (first, second),
 
 #
 #------------------------------------------------------------------------------
-class TableBoard(object):
+class TableBoard(objecto.Objecto):
 
     #--------------------------------------------------------------------------
     def __init__(self, theSize, theBoard=None, theNewCellCb=None):
@@ -108,6 +109,7 @@ class TableBoard(object):
         :type theNewCellCb: func
         :param theNewCellCb: Function to be called to create a new cell
         """
+        super(TableBoard, self).__init__('tableboard')
         self.size      = theSize
         self.newCellCb = theNewCellCb
         self.board     = theBoard if theBoard else self._createDefaultTableBoard()

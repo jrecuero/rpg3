@@ -27,6 +27,7 @@ __docformat__ = 'restructuredtext en'
 #
 import loggerator
 import utilator
+import objecto
 import stats
 import attrs
 
@@ -63,7 +64,7 @@ import attrs
 
 #
 #------------------------------------------------------------------------------
-class Player(object):
+class Player(objecto.Objecto):
     """
     """
 
@@ -80,7 +81,7 @@ class Player(object):
         :type theName: str
         :param theName: Player name
         """
-        self.name   = theName
+        super(Player, self).__init__(theName)
         self.stats  = stats.Stats()
         self.attrs  = attrs.Attrs()
         self.logger = loggerator.getLoggerator(utilator.getClass(self))

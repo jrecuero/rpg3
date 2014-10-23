@@ -25,6 +25,7 @@ __docformat__ = 'restructuredtext en'
 #
 # import dungeon python modules
 #
+import objecto
 
 
 ###############################################################################
@@ -59,7 +60,7 @@ __docformat__ = 'restructuredtext en'
 
 #
 #------------------------------------------------------------------------------
-class Dungeon(object):
+class Dungeon(objecto.Objecto):
     """
     """
 
@@ -70,7 +71,7 @@ class Dungeon(object):
         :type theName: str
         :param theName: Dungeon name
         """
-        self.name = theName
+        super(Dungeon, self).__init__(theName)
 
 
 ###############################################################################
