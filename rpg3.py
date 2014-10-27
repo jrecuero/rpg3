@@ -111,18 +111,23 @@ class Rpg3(cocos.layer.Layer):
         self.statsDict = tablecell.TableCell.createAttrsDict()
 
         labelAttrs = {'font_name': 'Times New Roman',
-                      'font_size': 16,
+                      'font_size': 12,
                       'anchor_x': 'left',
                       'anchor_y': 'top', }
         x, y = 32, 460
-        for stat, value in self.statsDict.iteritems():
-            label = cocos.text.Label('%s: %s' % (stat, value), **labelAttrs)
-            label.position = x, y
-            self.add(label, name=stat)
-            x, y = x, y - 20
+        #for stat, value in self.statsDict.iteritems():
+        #    label = cocos.text.Label('%s: %s' % (stat, value), **labelAttrs)
+        #    label.position = x, y
+        #    self.add(label, name=stat)
+        #    x, y = x, y - 20
         self.createCommandLine()
 
         self.user = User('USERNAME')
+        for stat, value in self.user.stats.getStatsData().iteritems():
+            label = cocos.text.Label('%s: %s' % (stat, value['count']), **labelAttrs)
+            label.position = x, y
+            self.add(label, name=stat)
+            x, y = x, y - 16
 
     #--------------------------------------------------------------------------
     def createCommandLine(self):
@@ -238,12 +243,17 @@ class Rpg3(cocos.layer.Layer):
         :type theMatches: list
         :param theMatches: list with all matches
         """
-        statsDict = self.tableboard.matchResults(theMatches, self.user)
-        for stat, value  in statsDict.iteritems():
-            self.statsDict[stat] += value
-            label = self.get(stat)
-            label.element.text = '%s: %s' % (stat, self.statsDict[stat])
+        #statsDict = self.tableboard.matchResults(theMatches, self.user)
+        #for stat, value  in statsDict.iteritems():
+        #    self.statsDict[stat] += value
+        #    label = self.get(stat)
+        #    label.element.text = '%s: %s' % (stat, self.statsDict[stat])
         #self.logger.info("stats: %s" % (self.statsDict))
+        self.tableboard.matchResults(theMatches, self.user)
+        userStats = self.user.stats.getStatsData()
+        for stat, value in userStats.iteritems():
+            label = self.get(stat)
+            label.element.text = '%s: %s' % (stat, value['count'])
 
     #--------------------------------------------------------------------------
     def addSprite(self, theSprite):
@@ -290,7 +300,8 @@ class Rpg3(cocos.layer.Layer):
         for aCell in self.tableboard.emptyCellsInBoard():
             self.tableboard.removeCell(aCell.getPosition())
             self.removeSprite(aCell.getSprite())
-            newCell = self.tableboard.addNewCell(aCell.getPosition())
+            self.tableboard.addNewCell(aCell.getPosition())
+            #newCell = self.tableboard.addNewCell(aCell.getPosition())
             #self.add(newCell.getSprite())
 
         if not self.processMatch():
@@ -323,7 +334,7 @@ class Rpg3(cocos.layer.Layer):
                 self.addSprite(aCell.getSprite())
                 #self.add(aCell.getSprite())
                 #self.tableSprites.append(aCell.getSprite())
-            self.logger.info('user stats are %s' % (self.user.stats.getStatsData(), ))
+            #self.logger.info('user stats are %s' % (self.user.stats.getStatsData(), ))
             self.do(Delay(1) + CallFunc(self.updateTableboard))
             return True
         return False
