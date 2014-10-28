@@ -41,6 +41,7 @@ from heart import Heart
 from lance import Lance
 from mana import Mana
 from shield import Shield
+from step import Step
 from staff import Staff
 from sword import Sword
 from user import User
@@ -94,6 +95,7 @@ class Rpg3(cocos.layer.Layer):
               Mana,
               Shield,
               Staff,
+              Step,
               Sword, ]
 
     #--------------------------------------------------------------------------

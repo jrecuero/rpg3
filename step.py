@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 
-"""attrs.py class required for attrs used by the user.
-
-Information contained in this module are attributes affected by cells placed
-on the board. Every cell can have different input in one or more attributes.
+"""step.py class required for the step tablecell.
 
 :author:    Jose Carlos Recuero
 :version:   0.1
-:since:     10/10/2014
+:since:     10/01/2014
 
 """
 
@@ -28,7 +25,8 @@ __docformat__ = 'restructuredtext en'
 #
 # import user python modules
 #
-import loggerator
+import tablecell
+
 
 ###############################################################################
 ##
@@ -39,14 +37,6 @@ import loggerator
 ##
 ###############################################################################
 #
-
-DAMAGE  = 'damage'
-DEFENSE = 'defense'
-MONEY   = 'money'
-HEALTH  = 'health'
-POWER   = 'power'
-MOVE    = 'move'
-
 
 ###############################################################################
 ##            _                     _   _
@@ -70,30 +60,25 @@ MOVE    = 'move'
 
 #
 #------------------------------------------------------------------------------
-class Attrs (object):
+class Step(tablecell.TableCell):
     """
     """
-    #--------------------------------------------------------------------------
-    @staticmethod
-    def getAttrs():
-        """
-        """
-        return (DAMAGE, DEFENSE, MONEY, HEALTH, POWER, MOVE)
 
-    #--------------------------------------------------------------------------
-    @staticmethod
-    def createAttrsDict():
-        """
-        """
-        return dict(zip(Attrs.getAttrs(), (0, ) * len(Attrs.getAttrs())))
+    def __init__(self, thePosition, **kwargs):
+        """ Step initialization method.
 
-    #--------------------------------------------------------------------------
-    def __init__(self):
-        """ Initialize Attrs instance
+        :type thePosition: tuple
+        :param thePosition: Tuple with x and y coordinates.
+
+        :type kwargs: dict
+        :param kwargs: Dictionary with Step attributes.
         """
-        self.logger   = loggerator.getLoggerator('attrs')
-        for attr in Attrs.getAttrs():
-            setattr(self, attr, 0)
+        self.move = 1
+        super(Step, self).__init__(thePosition,
+                                   theName=self.getClass(),
+                                   theSpriteName='step',
+                                   **kwargs)
+        self.attrsUsed = ('move', )
 
 
 ###############################################################################
