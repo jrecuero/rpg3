@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""dungeonstep.py class required for the dungeonstep.
+"""point.py class required for the point.
 
 :author:    Jose Carlos Recuero
 :version:   0.1
@@ -23,10 +23,8 @@ __docformat__ = 'restructuredtext en'
 #
 
 #
-# import dungeonstep python modules
+# import point python modules
 #
-import objecto
-import dungeoncell
 
 
 ###############################################################################
@@ -61,38 +59,60 @@ import dungeoncell
 
 #
 #------------------------------------------------------------------------------
-class DungeonStep(objecto.Objecto):
+class Point(object):
     """
     """
 
     #--------------------------------------------------------------------------
-    def __init__(self, theName=None, theWide=0):
-        """ Initialize DungeonStep instance
+    def __init__(self, theX=0, theY=0):
+        """ Initialize Point instance
 
-        :type theName: str
-        :param theName: DungeonStep name
+        :type theX: int
+        :param theX: point x value
 
-        :type theWide: int
-        :param theWide: wide of the step
+        :type theY: int
+        :param theY: point y value
         """
-        super(DungeonStep, self).__init__(theName)
-        self.step = []
-        self.wide = theWide
-        if theWide:
-            for x in xrange(theWide):
-                self.step.append(dungeoncell.DungeonCell((x, 0)))
+        self.x = theX
+        self.y = theY
 
     #--------------------------------------------------------------------------
-    def getCell(self, thePosition):
-        """ Return the cell for the given position in the step.
+    def set(self, theX=None, theY=None, theDict=None):
+        """ Set values for the point.
 
-        :type thePosition: tuple
-        :param thePosition: position of the cell
+        :type theX: int
+        :param theX: point x value
 
-        :rtype: dungeoncell.DungeonCell
-        :return: dungeon cell for the given position
+        :type theY: int
+        :param theY: point y value
+
+        :type theDict: dict
+        :param theDict: dictionary with point values
         """
-        return self.step[thePosition[0]]
+        if theDict:
+            self.x = theDict['x']
+            self.y = theDict['y']
+        else:
+            self.x = theX if theX is not None else self.x
+            self.y = theY if theY is not None else self.y
+
+    #--------------------------------------------------------------------------
+    def getAsDict(self):
+        """ Get point value as dictionary.
+
+        :rtype: dict
+        :return: dictionary with point values
+        """
+        return {'x': self.x, 'y': self.y}
+
+    #--------------------------------------------------------------------------
+    def getAsTuple(self):
+        """ Get point value as a tuple.
+
+        :rtype: tuple
+        :return: tuple with point values
+        """
+        return (self.x, self.y)
 
 
 ###############################################################################

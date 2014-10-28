@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-"""player.py class required for the player characted.
+"""panepos.py class required for the pane position.
 
 :author:    Jose Carlos Recuero
 :version:   0.1
-:since:     10/08/2014
+:since:     10/21/2014
 
 """
 
@@ -23,14 +23,8 @@ __docformat__ = 'restructuredtext en'
 #
 
 #
-# import player python modules
+# import panepos python modules
 #
-import loggerator
-import utilator
-import objecto
-import stats
-import attrs
-import panepos
 
 
 ###############################################################################
@@ -65,105 +59,62 @@ import panepos
 
 #
 #------------------------------------------------------------------------------
-class Player(objecto.Objecto):
+class PanePosition(object):
     """
     """
 
     #--------------------------------------------------------------------------
-    def __init__(self, theName):
-        """ Initialize Player instance
+    def __init__(self, thePane=None, thePoint=None):
+        """ Initialize pane position instance
 
-        >>> u = Player('my name')
-        >>> u.name
-        'my name'
-        >>> u.stats # doctest: +ELLIPSIS
-        <stats.Stats object at 0x...>
+        :type thePane: object
+        :param thePane: instance with the pane where point is referenced
 
-        :type theName: str
-        :param theName: Player name
+        :type thePoint: Point
+        :param thePoint: position point
         """
-        super(Player, self).__init__(theName)
-        self.stats   = stats.Stats()
-        self.attrs   = attrs.Attrs()
-        self.panepos = panepos.PanePosition()
-        self.logger  = loggerator.getLoggerator(utilator.getClass(self))
+        self.pane  = thePane
+        self.point = thePoint
 
     #--------------------------------------------------------------------------
-    def getStatValue(self, theKlass):
-        """ Return value for the given stat
+    def set(self, thePane=None, thePoint=None):
+        """ Set pane position instance
 
-        >>> u = Player('my name')
-        >>> u.stats.power = 99
-        >>> u.stats.axe = 24
-        >>> u.getStatValue('axe')
-        24
+        :type thePane: object
+        :param thePane: instance with the pane where point is referenced
 
-        :type theStat: str
-        :param theStat: stat to retrieve the value
-
-        :type theKlass: object
-        :param theKlass: instance with the cell stat
+        :type thePoint: point.Point
+        :param thePoint: position point
         """
-        return self.stats.getStatValue(theKlass)
+        self.pane  = thePane if thePane is not None else self.pane
+        self.point = thePoint if thePoint is not None else self.point
 
     #--------------------------------------------------------------------------
-    def addStatValue(self, theKlass, theValue=1):
-        """ Add a value to the stat value field.
+    def get(self):
+        """ Return pane position value.
 
-        :type theValue: int
-        :param theValue: value to add to the counter
-
-        :type theKlass: object
-        :param theKlass: instance with the cell stat
-
-        :rtype: int/bool
-        :return: new stat count value, None if stat not found
+        :rtype: dict
+        :return: dictionary with pane and point values
         """
-        return self.stats.addStatValue(theKlass, theValue)
+        return {'pane': self.pane, 'point': self.point}
 
     #--------------------------------------------------------------------------
-    def addStatCount(self, theKlass, theValue=1):
-        """ Add a value to the stat counter field.
+    def getPane(self):
+        """ Return the pane value.
 
-        :type theKlass: object
-        :param theKlass: instance with the cell stat
-
-        :type theValue: int
-        :param theValue: value to add to the counter
+        :rtype: object
+        :return: object with the pane for the position
         """
-        return self.stats.addStatCount(theKlass, theValue)
+        return self.pane
 
     #--------------------------------------------------------------------------
-    def addStatRuns(self, theKlass, theValue=1):
-        """ Add a value to the stat runs field.
+    def getPoint(self):
+        """ Return the point value.
 
-        :type theValue: int
-        :param theValue: value to add to the counter
-
-        :type theKlass: object
-        :param theKlass: instance with the cell stat
-
-        :rtype: int/bool
-        :return: new stat count value, None if stat not found
+        :rtype: point.Point
+        :return: Point with the point for the position
         """
-        return self.stats.addStatRuns(theKlass, theValue)
-
-    #--------------------------------------------------------------------------
-    def addExp(self, theExp):
-        """ Add some experience
-
-        >>> u = Player('the name')
-        >>> u.addExp(23)
-        >>> u.stats.exp, u.stats.level
-        (23, 0)
-        >>> u.addExp(201)
-        >>> u.stats.exp, u.stats.level
-        (24, 2)
-
-        :type theExp: int
-        :param theExp: experience to be added
-        """
-        self.stats.addExp(theExp)
+        return self.point
 
 
 ###############################################################################

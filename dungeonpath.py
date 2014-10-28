@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""dungeonstep.py class required for the dungeonstep.
+"""dungeonpath.py class required for the dungeonpath.
 
 :author:    Jose Carlos Recuero
 :version:   0.1
@@ -23,10 +23,10 @@ __docformat__ = 'restructuredtext en'
 #
 
 #
-# import dungeonstep python modules
+# import dungeonpath python modules
 #
 import objecto
-import dungeoncell
+import dungeonstep
 
 
 ###############################################################################
@@ -61,38 +61,28 @@ import dungeoncell
 
 #
 #------------------------------------------------------------------------------
-class DungeonStep(objecto.Objecto):
+class DungeonPath(objecto.Objecto):
     """
     """
 
     #--------------------------------------------------------------------------
-    def __init__(self, theName=None, theWide=0):
-        """ Initialize DungeonStep instance
+    def __init__(self, theName=None):
+        """ Initialize DungeonPath instance
 
         :type theName: str
-        :param theName: DungeonStep name
-
-        :type theWide: int
-        :param theWide: wide of the step
+        :param theName: DungeonPath name
         """
-        super(DungeonStep, self).__init__(theName)
-        self.step = []
-        self.wide = theWide
-        if theWide:
-            for x in xrange(theWide):
-                self.step.append(dungeoncell.DungeonCell((x, 0)))
+        super(DungeonPath, self).__init__(theName)
+        self.path = self.baseLinearPath()
 
     #--------------------------------------------------------------------------
-    def getCell(self, thePosition):
-        """ Return the cell for the given position in the step.
-
-        :type thePosition: tuple
-        :param thePosition: position of the cell
-
-        :rtype: dungeoncell.DungeonCell
-        :return: dungeon cell for the given position
+    def baseLinearPath(self, theLen=100, theWide=3):
+        """ Create a basic linear path.
         """
-        return self.step[thePosition[0]]
+        path = []
+        for x in xrange(theLen):
+            path.append(dungeonstep.DungeonStep(theWide))
+        return path
 
 
 ###############################################################################
