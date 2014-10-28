@@ -48,6 +48,20 @@ from user import User
 #import stats
 
 
+# These assert are to avoid PEP8 complains.
+assert Axe
+assert Bow
+assert Coin
+assert Dagger
+assert Heart
+assert Lance
+assert Mana
+assert Shield
+assert Step
+assert Staff
+assert Sword
+
+
 ###############################################################################
 ##
 ##   ___ ___  _ __  ___| |_ __ _ _ __ | |_ ___
@@ -86,18 +100,6 @@ class Rpg3(cocos.layer.Layer):
 
     is_event_handler = True
 
-    images = [Axe,
-              Bow,
-              Coin,
-              Dagger,
-              Heart,
-              Lance,
-              Mana,
-              Shield,
-              Staff,
-              Step,
-              Sword, ]
-
     #--------------------------------------------------------------------------
     def __init__(self):
         """ Initializes Rpg3 instance.
@@ -108,6 +110,7 @@ class Rpg3(cocos.layer.Layer):
         super(Rpg3, self).__init__()
 
         self.size = 8
+        self.user = User('USERNAME')
         self.createTableBoard(self.size)
         self.logger = loggerator.getLoggerator('rpg3')
         self.statsDict = tablecell.TableCell.createAttrsDict()
@@ -124,7 +127,6 @@ class Rpg3(cocos.layer.Layer):
         #    x, y = x, y - 20
         self.createCommandLine()
 
-        self.user = User('USERNAME')
         for stat, value in self.user.stats.getStatsData().iteritems():
             label = cocos.text.Label('%s: %s' % (stat, value['count']), **labelAttrs)
             label.position = x, y
@@ -164,8 +166,9 @@ class Rpg3(cocos.layer.Layer):
         :rtype: Cell
         :return: Cell instance created
         """
-        cellKlass = random.sample(Rpg3.images, 1)[0]
-        newCell  = cellKlass(thePosition)
+        cellStr   = random.sample(self.user.stats.getStatsData().keys(), 1)[0]
+        cellKlass = eval(cellStr.capitalize())
+        newCell   = cellKlass(thePosition)
         self.addSprite(newCell.getSprite())
         return newCell
 
