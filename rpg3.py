@@ -33,18 +33,18 @@ import loggerator
 import tablecell
 import tableboard
 
-from axe import Axe
-from bow import Bow
-from coin import Coin
-from dagger import Dagger
-from heart import Heart
-from lance import Lance
-from mana import Mana
-from shield import Shield
-from step import Step
-from staff import Staff
-from sword import Sword
-from user import User
+from pieces.axe import Axe
+from pieces.bow import Bow
+from pieces.coin import Coin
+from pieces.dagger import Dagger
+from pieces.heart import Heart
+from pieces.lance import Lance
+from pieces.mana import Mana
+from pieces.shield import Shield
+from pieces.step import Step
+from pieces.staff import Staff
+from pieces.sword import Sword
+from players.user import User
 #import stats
 
 
@@ -280,6 +280,19 @@ class Rpg3(cocos.layer.Layer):
         """
         self.remove(theSprite)
         self.tableSprites.remove(theSprite)
+
+    #--------------------------------------------------------------------------
+    def replaceSpriteAtCell(self, theCell):
+        """ Replace sprite (for explosion) at the given cell.
+
+        :type theCell: tablecell.TableCell
+        :param theCell: table cell where sprite will be replaced
+        """
+        sprite = cocos.sprite.Sprite('images/explosion.png')
+        sprite.position = theCell.getSprite().position
+        self.removeSprite(theCell.getSprite())
+        theCell.setSprite(sprite)
+        self.addSprite(theCell.getSprite())
 
     #--------------------------------------------------------------------------
     def resetTableboard(self):

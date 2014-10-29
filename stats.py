@@ -111,7 +111,7 @@ class Stats (object):
         """
         self.level  = 0
         self.exp    = 0
-        statsStream = open('stats.yaml', 'r')
+        statsStream = open('config/stats.yaml', 'r')
         self.stdict = yaml.load(statsStream)
         for key, val in self.stdict.iteritems():
             self.stdict[key] = self._initStat(val)
