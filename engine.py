@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-"""player.py class required for the player characted.
+"""engine.py class required for the engine.
 
 :author:    Jose Carlos Recuero
 :version:   0.1
-:since:     10/08/2014
+:since:     10/21/2014
 
 """
 
@@ -23,15 +23,9 @@ __docformat__ = 'restructuredtext en'
 #
 
 #
-# import player python modules
+# import engine python modules
 #
-import loggerator
-import utilator
 import objecto
-import stats
-import attrs
-#import point
-#import dungeonpath
 
 
 ###############################################################################
@@ -66,105 +60,87 @@ import attrs
 
 #
 #------------------------------------------------------------------------------
-class Player(objecto.Objecto):
+class Phase(object):
+    """
+    """
+    NONE         = 0
+    MATCH        = 1
+    USER_ACTION  = 2
+    OTHER_ACTION = 3
+    MOVEMENT     = 4
+
+    #--------------------------------------------------------------------------
+    @staticmethod
+    def nextPhase(thePhase):
+        """ Return the next phase to run
+
+        :type thePhase: int
+        :param thePhase: active phase
+
+        :rtype: int
+        :return: next active phase
+        """
+        if thePhase == Phase.NONE:
+            return Phase.NONE
+        elif thePhase == Phase.MATCH:
+            return Phase.USER_ACTION
+        elif thePhase == Phase.USER_ACTION:
+            return Phase.OTHER_ACTION
+        elif thePhase == Phase.OTHER_ACTION:
+            return Phase.MOVEMENT
+        elif thePhase == Phase.MOVEMENT:
+            return Phase.MATCH
+        else:
+            return Phase.NONE
+
+
+#
+#------------------------------------------------------------------------------
+class Engine(objecto.Objecto):
     """
     """
 
     #--------------------------------------------------------------------------
-    def __init__(self, theName):
-        """ Initialize Player instance
+    def __init__(self, theTableboard, theDungeon, theName=None):
+        """ Initialize Engine instance
 
-        >>> u = Player('my name')
-        >>> u.name
-        'my name'
-        >>> u.stats # doctest: +ELLIPSIS
-        <stats.Stats object at 0x...>
+        :type theTableboard: tableboard.TableBoard
+        :param theTableboard: table board instance
+
+        :type theDungeon: dungeon.Dungeon
+        :param theDungeon: dungeon instance
 
         :type theName: str
-        :param theName: Player name
+        :param theName: Engine name
         """
-        super(Player, self).__init__(theName)
-        self.stats   = stats.Stats()
-        self.attrs   = attrs.Attrs()
-        self.logger  = loggerator.getLoggerator(utilator.getClass(self))
-        self.dungeonpath = None
+        super(Engine, self).__init__(theName)
+        self.tableboard  = theTableboard
+        self.dungeon     = theDungeon
+        self.activePhase = Phase.NONE
 
     #--------------------------------------------------------------------------
-    def getStatValue(self, theKlass):
-        """ Return value for the given stat
-
-        >>> u = Player('my name')
-        >>> u.stats.power = 99
-        >>> u.stats.axe = 24
-        >>> u.getStatValue('axe')
-        24
-
-        :type theStat: str
-        :param theStat: stat to retrieve the value
-
-        :type theKlass: object
-        :param theKlass: instance with the cell stat
+    def runMatchPhase(self):
+        """ Run the User match phase
         """
-        return self.stats.getStatValue(theKlass)
+        pass
 
     #--------------------------------------------------------------------------
-    def addStatValue(self, theKlass, theValue=1):
-        """ Add a value to the stat value field.
-
-        :type theValue: int
-        :param theValue: value to add to the counter
-
-        :type theKlass: object
-        :param theKlass: instance with the cell stat
-
-        :rtype: int/bool
-        :return: new stat count value, None if stat not found
+    def runUserActionPhase(self):
+        """ Run the User action phase
         """
-        return self.stats.addStatValue(theKlass, theValue)
+        pass
 
     #--------------------------------------------------------------------------
-    def addStatCount(self, theKlass, theValue=1):
-        """ Add a value to the stat counter field.
-
-        :type theKlass: object
-        :param theKlass: instance with the cell stat
-
-        :type theValue: int
-        :param theValue: value to add to the counter
+    def runOtherActionPhase(self):
+        """ Run Other action phase
         """
-        return self.stats.addStatCount(theKlass, theValue)
+        pass
 
     #--------------------------------------------------------------------------
-    def addStatRuns(self, theKlass, theValue=1):
-        """ Add a value to the stat runs field.
-
-        :type theValue: int
-        :param theValue: value to add to the counter
-
-        :type theKlass: object
-        :param theKlass: instance with the cell stat
-
-        :rtype: int/bool
-        :return: new stat count value, None if stat not found
+    def runMovementPhase(self):
+        """ Run movement phase
         """
-        return self.stats.addStatRuns(theKlass, theValue)
-
-    #--------------------------------------------------------------------------
-    def addExp(self, theExp):
-        """ Add some experience
-
-        >>> u = Player('the name')
-        >>> u.addExp(23)
-        >>> u.stats.exp, u.stats.level
-        (23, 0)
-        >>> u.addExp(201)
-        >>> u.stats.exp, u.stats.level
-        (24, 2)
-
-        :type theExp: int
-        :param theExp: experience to be added
-        """
-        self.stats.addExp(theExp)
+        pass
 
 
 ###############################################################################
