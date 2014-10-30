@@ -101,7 +101,7 @@ class Engine(objecto.Objecto):
     """
 
     #--------------------------------------------------------------------------
-    def __init__(self, theTableboard, theDungeon, theLayer, theName=None):
+    def __init__(self, theTableboard, theDungeon, theLayer, theUser, theName=None):
         """ Initialize Engine instance
 
         :type theTableboard: tableboard.TableBoard
@@ -113,6 +113,9 @@ class Engine(objecto.Objecto):
         :type theLayer: cocos.layer.Layer
         :param theLayer: graphical layer used
 
+        :type theUser: user.User
+        :param theUser: user player instance
+
         :type theName: str
         :param theName: Engine name
         """
@@ -120,39 +123,28 @@ class Engine(objecto.Objecto):
         self.tableboard  = theTableboard
         self.dungeon     = theDungeon
         self.layer       = theLayer
+        self.user        = theUser
         self.activePhase = Phase.NONE
-
-    #--------------------------------------------------------------------------
-    def _updateStats(self, theMatches):
-        """ Update user stats values with the given matches
-
-        Call tableboard instance to process all matches in the board, then it
-        process those results and update all required widgets.
-
-        :type theMatches: list
-        :param theMatches: list with all matches
-        """
-        self.tableboard.matchResults(theMatches, self.layer.user)
-        userStats = self.layer.user.stats.getStatsData()
-        for stat, value in userStats.iteritems():
-            label = self.layer.get(stat)
-            label.element.text = '%s: %s' % (stat, value['count'])
 
     #--------------------------------------------------------------------------
     def runMatchPhase(self):
         """ Run the User match phase
+
+        :rtype: list
+        :return: list with all matches, None if no matches were found
         """
         matches = self.tableboard.matchBoard()
         if self.tableboard.isThereAnyMatch(matches):
-            self._updateStats(matches)
+            self.tableboard.matchResults(matches, self.user)
             self.tableboard.setEmptyCells(matches)
+            return matches
+        return None
 
-            for aCell in self.tableboard.emptyCellsInBoard():
-                self.layer_replaceSpriteAtCell(aCell)
-            #>>>>
-            #self.layer.do(Delay(0) + CallFunc(self.updateTableboard))
-            return True
-        return False
+    #--------------------------------------------------------------------------
+    def runUpdateTableboard(self):
+        """ Run update table board
+        """
+        self.tableboard.fallBoard()
 
     #--------------------------------------------------------------------------
     def runUserActionPhase(self):

@@ -282,8 +282,8 @@ class Rpg3(cocos.layer.Layer):
         self.tableSprites.remove(theSprite)
 
     #--------------------------------------------------------------------------
-    def replaceSpriteAtCell(self, theCell):
-        """ Replace sprite (for explosion) at the given cell.
+    def replaceSriteForExplosionAtCell(self, theCell):
+        """ Replace sprite for explosion sprite at the given cell.
 
         :type theCell: tablecell.TableCell
         :param theCell: table cell where sprite will be replaced
@@ -356,6 +356,51 @@ class Rpg3(cocos.layer.Layer):
             self.do(Delay(1) + CallFunc(self.updateTableboard))
             return True
         return False
+
+    #--------------------------------------------------------------------------
+    def _updateStats(self):
+        """ Update user stats values with given matches using dungeon engine.
+
+        Call tableboard instance to process all matches in the board, then it
+        process those results and update all required widgets.
+        """
+        userStats = self.user.stats.getStatsData()
+        for stat, value in userStats.iteritems():
+            label = self.get(stat)
+            label.element.text = '%s: %s' % (stat, value['count'])
+
+    #--------------------------------------------------------------------------
+    def _replaceSpriteForExplosion(self):
+        """ Replace all empty cell sprites for explosion sprites.
+        """
+        for aCell in self.tableboard.emptyCellsInBoard():
+            self.replaceSriteForExplosionAtCell(aCell)
+
+    #--------------------------------------------------------------------------
+    def _processMatch(self):
+        """ Process match using dungeon engine.
+        """
+        matches = self.engine.runMatchPhase()
+        if matches is not None:
+            self._updateStats()
+            self._replaceSpriteForExplosion()
+            self.do(Delay(1) + CallFunc(self.updateTableboard))
+            return True
+        return False
+
+    #--------------------------------------------------------------------------
+    def _updateTableboard(self):
+        """ Update table board using dungeon engine.
+        """
+        self.engine.runUpdateTableboard()
+        for aCell in self.tableboard.emptyCellsInBoard():
+            self.tableboard.removeCell(aCell.getPosition())
+            self.removeSprite(aCell.getSprite())
+            self.tableboard.addNewCell(aCell.getPosition())
+
+        if not self._processMatch():
+            if not self.tableboard.searchForAnyPossibleMatch():
+                self.do(Delay(1) + CallFunc(self.resetTableboard))
 
     #--------------------------------------------------------------------------
     def on_mouse_press(self, x, y, buttons, modifiers):
