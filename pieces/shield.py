@@ -84,18 +84,18 @@ class Shield(tablecell.TableCell):
 
 #
 #------------------------------------------------------------------------------
-class ShieldeSkillSet(skillset.SkillSet):
-    """ Shielde skill set available to be used by any player.
+class ShieldSkillSet(skillset.SkillSet):
+    """ Shield skill set available to be used by any player.
     """
 
     #--------------------------------------------------------------------------
     def __init__(self, thePlayer):
-        """ Initialize ShieldeSkillSet instance.
+        """ Initialize ShieldSkillSet instance.
 
         :type thePlayer: player.Player
         :param thePlayer: Player instance that will use the skillset
         """
-        super(ShieldeSkillSet, self).__init__(thePlayer, 'Shielde Skill Set')
+        super(ShieldSkillSet, self).__init__(thePlayer, Shield(), 'Shield Skill Set')
 
 
 ###############################################################################

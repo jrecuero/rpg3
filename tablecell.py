@@ -120,7 +120,7 @@ class TableCell(cell.Cell):
                                  (theMatchLen, theCell.getClass(), theValue, theAttr, theTotalValue))
 
     #--------------------------------------------------------------------------
-    def __init__(self, thePosition, **kwargs):
+    def __init__(self, thePosition=None, **kwargs):
         """ TableCell initialization method.
 
         :type thePosition: tuple
@@ -132,7 +132,10 @@ class TableCell(cell.Cell):
         :type kwargs: dict
         :param kwargs: Dictionary with sword attributes.
         """
-        super(TableCell, self).__init__(thePosition, **kwargs)
+        # Allow to create a table cell without any position because they should
+        # be used for skill set instances.
+        if thePosition is not None:
+            super(TableCell, self).__init__(thePosition, **kwargs)
         self.attrsUsed = ()
         self.createAttrs()
         self.attrs = attrs.Attrs()

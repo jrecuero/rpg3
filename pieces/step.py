@@ -95,7 +95,7 @@ class StepSkillSet(skillset.SkillSet):
         :type thePlayer: player.Player
         :param thePlayer: Player instance that will use the skillset
         """
-        super(StepSkillSet, self).__init__(thePlayer, 'Step Skill Set')
+        super(StepSkillSet, self).__init__(thePlayer, Step(), 'Step Skill Set')
 
 
 ###############################################################################

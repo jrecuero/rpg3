@@ -95,7 +95,7 @@ class ManaSkillSet(skillset.SkillSet):
         :type thePlayer: player.Player
         :param thePlayer: Player instance that will use the skillset
         """
-        super(ManaSkillSet, self).__init__(thePlayer, 'Axe Skill Set')
+        super(ManaSkillSet, self).__init__(thePlayer, Mana(), 'Mana Skill Set')
 
 
 ###############################################################################

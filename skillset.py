@@ -61,22 +61,57 @@ import objecto
 #
 #------------------------------------------------------------------------------
 class SkillSet(objecto.Objecto):
-    """
+    """ Skill set are abilities that player can use in the action phase.
     """
 
     #--------------------------------------------------------------------------
-    def __init__(self, thePlayer, theName=None):
+    def __init__(self, thePlayer, theTableCell=None, theName=None):
         """ Initialize SkillSet instance
 
         :type thePlayer: player.Player
         :param thePlayer: Player instance that will use the skillset
 
+        :type theTableCell: tablecell.TableCell
+        :param theTableCell: table cell related with the skill set
+
         :type theName: str
         :param theName: SkillSet name
         """
         super(SkillSet, self).__init__(theName)
-        self.player = thePlayer
+        self.player    = thePlayer
+        self.tablecell = theTableCell
 
+    #--------------------------------------------------------------------------
+    def baseAttack(self):
+        """ Skill Set basic and common attack.
+        """
+        userDamage = self.user.getDamage()
+        cellDamage = self.tablecell.attrs.damage if self.tablecell else 0
+        return userDamage + cellDamage
+
+    #--------------------------------------------------------------------------
+    def baseDefense(self):
+        """ Skill Set basic and common defense.
+        """
+        userDefense = self.user.getDefense()
+        cellDefense = self.tablecell.attrs.defense if self.tablecell else 0
+        return userDefense + cellDefense
+
+    #--------------------------------------------------------------------------
+    def baseMoney(self):
+        """ Skill Set basic and common defense.
+        """
+        userMoney = self.user.getMoney()
+        cellMoney = self.tablecell.attrs.money if self.tablecell else 0
+        return userMoney + cellMoney
+
+    #--------------------------------------------------------------------------
+    def baseHealth(self):
+        """ Skill Set basic and common defense.
+        """
+        userHealth = self.user.getHealth()
+        cellHealth = self.tablecell.attrs.health if self.tablecell else 0
+        return userHealth + cellHealth
 
 
 ###############################################################################

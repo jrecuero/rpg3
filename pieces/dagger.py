@@ -95,13 +95,7 @@ class DaggerSkillSet(skillset.SkillSet):
         :type thePlayer: player.Player
         :param thePlayer: Player instance that will use the skillset
         """
-        super(DaggerSkillSet, self).__init__(thePlayer, 'Dagger Skill Set')
-
-    #--------------------------------------------------------------------------
-    def attack(self):
-        """ Dagger Skill Set basic attack.
-        """
-        pass
+        super(DaggerSkillSet, self).__init__(thePlayer, Dagger(), 'Dagger Skill Set')
 
 
 ###############################################################################

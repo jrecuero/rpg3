@@ -95,13 +95,7 @@ class SwordSkillSet(skillset.SkillSet):
         :type thePlayer: player.Player
         :param thePlayer: Player instance that will use the skillset
         """
-        super(SwordSkillSet, self).__init__(thePlayer, 'Sword Skill Set')
-
-    #--------------------------------------------------------------------------
-    def attack(self):
-        """ Sword Skill Set basic attack.
-        """
-        pass
+        super(SwordSkillSet, self).__init__(thePlayer, Sword(), 'Sword Skill Set')
 
 
 ###############################################################################

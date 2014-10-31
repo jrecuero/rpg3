@@ -95,13 +95,7 @@ class LanceSkillSet(skillset.SkillSet):
         :type thePlayer: player.Player
         :param thePlayer: Player instance that will use the skillset
         """
-        super(LanceSkillSet, self).__init__(thePlayer, 'Lance Skill Set')
-
-    #--------------------------------------------------------------------------
-    def attack(self):
-        """ Lance Skill Set basic attack.
-        """
-        pass
+        super(LanceSkillSet, self).__init__(thePlayer, Lance(), 'Lance Skill Set')
 
 
 ###############################################################################

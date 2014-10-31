@@ -95,7 +95,7 @@ class HeartSkillSet(skillset.SkillSet):
         :type thePlayer: player.Player
         :param thePlayer: Player instance that will use the skillset
         """
-        super(HeartSkillSet, self).__init__(thePlayer, 'Heart Skill Set')
+        super(HeartSkillSet, self).__init__(thePlayer, Heart(), 'Heart Skill Set')
 
 
 ###############################################################################

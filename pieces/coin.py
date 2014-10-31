@@ -95,7 +95,7 @@ class CoinSkillSet(skillset.SkillSet):
         :type thePlayer: player.Player
         :param thePlayer: Player instance that will use the skillset
         """
-        super(CoinSkillSet, self).__init__(thePlayer, 'Coin Skill Set')
+        super(CoinSkillSet, self).__init__(thePlayer, Coin(), 'Coin Skill Set')
 
 
 ###############################################################################
