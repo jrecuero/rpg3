@@ -26,6 +26,7 @@ __docformat__ = 'restructuredtext en'
 # import user python modules
 #
 import tablecell
+import skillset
 
 
 ###############################################################################
@@ -74,11 +75,33 @@ class Dagger(tablecell.TableCell):
         :param kwargs: Dictionary with Dagger attributes.
         """
         self.damage     = 3
-        super(Dagger, self).__init__(thePosition, 
-                                     theName=self.getClass(), 
+        super(Dagger, self).__init__(thePosition,
+                                     theName=self.getClass(),
                                      theSpriteName='dagger',
                                      **kwargs)
         self.attrsUsed = ('damage', )
+
+
+#
+#------------------------------------------------------------------------------
+class DaggerSkillSet(skillset.SkillSet):
+    """ Dagger skill set available to be used by any player.
+    """
+
+    #--------------------------------------------------------------------------
+    def __init__(self, thePlayer):
+        """ Initialize DaggerSkillSet instance.
+
+        :type thePlayer: player.Player
+        :param thePlayer: Player instance that will use the skillset
+        """
+        super(DaggerSkillSet, self).__init__(thePlayer, 'Dagger Skill Set')
+
+    #--------------------------------------------------------------------------
+    def attack(self):
+        """ Dagger Skill Set basic attack.
+        """
+        pass
 
 
 ###############################################################################

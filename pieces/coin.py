@@ -26,6 +26,7 @@ __docformat__ = 'restructuredtext en'
 # import user python modules
 #
 import tablecell
+import skillset
 
 
 ###############################################################################
@@ -74,11 +75,27 @@ class Coin(tablecell.TableCell):
         :param kwargs: Dictionary with Coin attributes.
         """
         self.money      = 100
-        super(Coin, self).__init__(thePosition, 
-                                   theName=self.getClass(), 
+        super(Coin, self).__init__(thePosition,
+                                   theName=self.getClass(),
                                    theSpriteName='coin',
                                    **kwargs)
         self.attrsUsed = ('money', )
+
+
+#
+#------------------------------------------------------------------------------
+class CoinSkillSet(skillset.SkillSet):
+    """ Coin skill set available to be used by any player.
+    """
+
+    #--------------------------------------------------------------------------
+    def __init__(self, thePlayer):
+        """ Initialize CoinSkillSet instance.
+
+        :type thePlayer: player.Player
+        :param thePlayer: Player instance that will use the skillset
+        """
+        super(CoinSkillSet, self).__init__(thePlayer, 'Coin Skill Set')
 
 
 ###############################################################################

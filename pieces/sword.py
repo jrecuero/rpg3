@@ -26,6 +26,7 @@ __docformat__ = 'restructuredtext en'
 # import user python modules
 #
 import tablecell
+import skillset
 
 
 ###############################################################################
@@ -74,20 +75,33 @@ class Sword(tablecell.TableCell):
         :param kwargs: Dictionary with sword attributes.
         """
         self.damage     = 8
-        super(Sword, self).__init__(thePosition, 
-                                    theName=self.getClass(), 
+        super(Sword, self).__init__(thePosition,
+                                    theName=self.getClass(),
                                     theSpriteName='sword',
                                     **kwargs)
         self.attrsUsed = ('damage', )
 
+
+#
+#------------------------------------------------------------------------------
+class SwordSkillSet(skillset.SkillSet):
+    """ Sword skill set available to be used by any player.
+    """
+
     #--------------------------------------------------------------------------
-    #def damage(self, theMatch, theUser=None):
-    #    """
-    #    """
-    #    if len(theMatch) == 3:
-    #        return self._m3Stat(theMatch, 'DAMAGE')
-    #    else:
-    #        return self._m4Stat(theMatch, 'DAMAGE')
+    def __init__(self, thePlayer):
+        """ Initialize SwordSkillSet instance.
+
+        :type thePlayer: player.Player
+        :param thePlayer: Player instance that will use the skillset
+        """
+        super(SwordSkillSet, self).__init__(thePlayer, 'Sword Skill Set')
+
+    #--------------------------------------------------------------------------
+    def attack(self):
+        """ Sword Skill Set basic attack.
+        """
+        pass
 
 
 ###############################################################################

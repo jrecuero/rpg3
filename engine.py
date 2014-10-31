@@ -70,28 +70,34 @@ class Phase(object):
     MOVEMENT     = 4
 
     #--------------------------------------------------------------------------
-    @staticmethod
-    def nextPhase(thePhase):
-        """ Return the next phase to run
+    def __init__(self, theInitialPhase=NONE):
+        """ Initialize Phase instance.
 
-        :type thePhase: int
-        :param thePhase: active phase
+        :type theInitialPhase: int
+        :param theInitialPhase: initial phase value
+        """
+        self.phase = theInitialPhase
+
+    #--------------------------------------------------------------------------
+    def nextPhase(self):
+        """ Return the next phase to run
 
         :rtype: int
         :return: next active phase
         """
-        if thePhase == Phase.NONE:
-            return Phase.NONE
-        elif thePhase == Phase.MATCH:
-            return Phase.USER_ACTION
-        elif thePhase == Phase.USER_ACTION:
-            return Phase.OTHER_ACTION
-        elif thePhase == Phase.OTHER_ACTION:
-            return Phase.MOVEMENT
-        elif thePhase == Phase.MOVEMENT:
-            return Phase.MATCH
+        if self.phase == Phase.NONE:
+            self.phase = Phase.NONE
+        elif self.phase == Phase.MATCH:
+            self.phase = Phase.USER_ACTION
+        elif self.phase == Phase.USER_ACTION:
+            self.phase = Phase.OTHER_ACTION
+        elif self.phase == Phase.OTHER_ACTION:
+            self.phase = Phase.MOVEMENT
+        elif self.phase == Phase.MOVEMENT:
+            self.phase = Phase.MATCH
         else:
             return Phase.NONE
+        return self.phase
 
 
 #
@@ -124,7 +130,7 @@ class Engine(objecto.Objecto):
         self.dungeon     = theDungeon
         self.layer       = theLayer
         self.user        = theUser
-        self.activePhase = Phase.NONE
+        self.activePhase = Phase()
 
     #--------------------------------------------------------------------------
     def runMatchPhase(self):

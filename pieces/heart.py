@@ -26,6 +26,7 @@ __docformat__ = 'restructuredtext en'
 # import user python modules
 #
 import tablecell
+import skillset
 
 
 ###############################################################################
@@ -74,11 +75,27 @@ class Heart(tablecell.TableCell):
         :param kwargs: Dictionary with Heart attributes.
         """
         self.health     = 50
-        super(Heart, self).__init__(thePosition, 
-                                    theName=self.getClass(), 
+        super(Heart, self).__init__(thePosition,
+                                    theName=self.getClass(),
                                     theSpriteName='heart',
                                     **kwargs)
         self.attrsUsed = ('health', )
+
+
+#
+#------------------------------------------------------------------------------
+class HeartSkillSet(skillset.SkillSet):
+    """ Heart skill set available to be used by any player.
+    """
+
+    #--------------------------------------------------------------------------
+    def __init__(self, thePlayer):
+        """ Initialize HeartSkillSet instance.
+
+        :type thePlayer: player.Player
+        :param thePlayer: Player instance that will use the skillset
+        """
+        super(HeartSkillSet, self).__init__(thePlayer, 'Heart Skill Set')
 
 
 ###############################################################################

@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-"""staff.py class required for the staff tablecell.
+"""skillset.py class required for the skillset.
 
 :author:    Jose Carlos Recuero
 :version:   0.1
-:since:     10/01/2014
+:since:     10/21/2014
 
 """
 
@@ -23,10 +23,9 @@ __docformat__ = 'restructuredtext en'
 #
 
 #
-# import user python modules
+# import skillset python modules
 #
-import tablecell
-import skillset
+import objecto
 
 
 ###############################################################################
@@ -61,47 +60,23 @@ import skillset
 
 #
 #------------------------------------------------------------------------------
-class Staff(tablecell.TableCell):
+class SkillSet(objecto.Objecto):
     """
-    """
-
-    def __init__(self, thePosition, **kwargs):
-        """ Staff initialization method.
-
-        :type thePosition: tuple
-        :param thePosition: Tuple with x and y coordinates.
-
-        :type kwargs: dict
-        :param kwargs: Dictionary with Staff attributes.
-        """
-        self.damage     = 4
-        super(Staff, self).__init__(thePosition,
-                                    theName=self.getClass(),
-                                    theSpriteName='staff',
-                                    **kwargs)
-        self.attrsUsed = ('damage', )
-
-
-#
-#------------------------------------------------------------------------------
-class StaffSkillSet(skillset.SkillSet):
-    """ Staff skill set available to be used by any player.
     """
 
     #--------------------------------------------------------------------------
-    def __init__(self, thePlayer):
-        """ Initialize StaffSkillSet instance.
+    def __init__(self, thePlayer, theName=None):
+        """ Initialize SkillSet instance
 
         :type thePlayer: player.Player
         :param thePlayer: Player instance that will use the skillset
-        """
-        super(StaffSkillSet, self).__init__(thePlayer, 'Staff Skill Set')
 
-    #--------------------------------------------------------------------------
-    def attack(self):
-        """ Staff Skill Set basic attack.
+        :type theName: str
+        :param theName: SkillSet name
         """
-        pass
+        super(SkillSet, self).__init__(theName)
+        self.player = thePlayer
+
 
 
 ###############################################################################

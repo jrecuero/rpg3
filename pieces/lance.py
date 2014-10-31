@@ -26,6 +26,7 @@ __docformat__ = 'restructuredtext en'
 # import user python modules
 #
 import tablecell
+import skillset
 
 
 ###############################################################################
@@ -74,11 +75,33 @@ class Lance(tablecell.TableCell):
         :param kwargs: Dictionary with Lance attributes.
         """
         self.damage     = 6
-        super(Lance, self).__init__(thePosition, 
-                                    theName=self.getClass(), 
+        super(Lance, self).__init__(thePosition,
+                                    theName=self.getClass(),
                                     theSpriteName='lance',
                                     **kwargs)
         self.attrsUsed = ('damage', )
+
+
+#
+#------------------------------------------------------------------------------
+class LanceSkillSet(skillset.SkillSet):
+    """ Lance skill set available to be used by any player.
+    """
+
+    #--------------------------------------------------------------------------
+    def __init__(self, thePlayer):
+        """ Initialize LanceSkillSet instance.
+
+        :type thePlayer: player.Player
+        :param thePlayer: Player instance that will use the skillset
+        """
+        super(LanceSkillSet, self).__init__(thePlayer, 'Lance Skill Set')
+
+    #--------------------------------------------------------------------------
+    def attack(self):
+        """ Lance Skill Set basic attack.
+        """
+        pass
 
 
 ###############################################################################

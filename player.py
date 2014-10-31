@@ -90,6 +90,96 @@ class Player(objecto.Objecto):
         self.dungeonpath = None
 
     #--------------------------------------------------------------------------
+    def getDamage(self):
+        """ Return player damage
+        """
+        return self.attrs.damage
+
+    #--------------------------------------------------------------------------
+    def getDefense(self):
+        """ Return player defense
+        """
+        return self.attrs.defense
+
+    #--------------------------------------------------------------------------
+    def getMoney(self):
+        """ Return player money
+        """
+        return self.attrs.money
+
+    #--------------------------------------------------------------------------
+    def getHealth(self):
+        """ Return player health
+        """
+        return self.attrs.health
+
+    #--------------------------------------------------------------------------
+    def getPower(self):
+        """ Return player power
+        """
+        return self.attrs.power
+
+    #--------------------------------------------------------------------------
+    def getMove(self):
+        """ Set player move
+        """
+        return self.attrs.move
+
+    #--------------------------------------------------------------------------
+    def setDamage(self, theDamage):
+        """ Set player damage
+
+        :type theDamage: int
+        :param theDamage: new damage value
+        """
+        self.attrs.damage = theDamage
+
+    #--------------------------------------------------------------------------
+    def setDefense(self, theDefense):
+        """ Set player defense
+
+        :type theDefense: int
+        :param theDefense: new defense value
+        """
+        self.attrs.defense = theDefense
+
+    #--------------------------------------------------------------------------
+    def setMoney(self, theMoney):
+        """ Set player money
+
+        :type theMoney: int
+        :param theMoney: new money value
+        """
+        self.attrs.money = theMoney
+
+    #--------------------------------------------------------------------------
+    def setHealth(self, theHealth):
+        """ Set player health
+
+        :type theHealth: int
+        :param theHealth: new health value
+        """
+        self.attrs.health = theHealth
+
+    #--------------------------------------------------------------------------
+    def setPower(self, thePower):
+        """ Set player power
+
+        :type thePower: int
+        :param thePower: new power value
+        """
+        self.attrs.power = thePower
+
+    #--------------------------------------------------------------------------
+    def setMove(self, theMove):
+        """ Set player move
+
+        :type theMove: int
+        :param theMove: new move value
+        """
+        self.attrs.move = theMove
+
+    #--------------------------------------------------------------------------
     def getStatValue(self, theKlass):
         """ Return value for the given stat
 

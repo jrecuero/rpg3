@@ -26,6 +26,7 @@ __docformat__ = 'restructuredtext en'
 # import user python modules
 #
 import tablecell
+import skillset
 
 
 ###############################################################################
@@ -74,11 +75,27 @@ class Shield(tablecell.TableCell):
         :param kwargs: Dictionary with Shield attributes.
         """
         self.defense    = 1
-        super(Shield, self).__init__(thePosition, 
-                                     theName=self.getClass(), 
+        super(Shield, self).__init__(thePosition,
+                                     theName=self.getClass(),
                                      theSpriteName='shield',
                                      **kwargs)
         self.attrsUsed = ('defense', )
+
+
+#
+#------------------------------------------------------------------------------
+class ShieldeSkillSet(skillset.SkillSet):
+    """ Shielde skill set available to be used by any player.
+    """
+
+    #--------------------------------------------------------------------------
+    def __init__(self, thePlayer):
+        """ Initialize ShieldeSkillSet instance.
+
+        :type thePlayer: player.Player
+        :param thePlayer: Player instance that will use the skillset
+        """
+        super(ShieldeSkillSet, self).__init__(thePlayer, 'Shielde Skill Set')
 
 
 ###############################################################################

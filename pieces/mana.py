@@ -26,6 +26,7 @@ __docformat__ = 'restructuredtext en'
 # import user python modules
 #
 import tablecell
+import skillset
 
 
 ###############################################################################
@@ -74,11 +75,27 @@ class Mana(tablecell.TableCell):
         :param kwargs: Dictionary with mana attributes.
         """
         self.power      = 20
-        super(Mana, self).__init__(thePosition, 
-                                   theName=self.getClass(), 
+        super(Mana, self).__init__(thePosition,
+                                   theName=self.getClass(),
                                    theSpriteName='mana',
                                    **kwargs)
         self.attrsUsed = ('power', )
+
+
+#
+#------------------------------------------------------------------------------
+class ManaSkillSet(skillset.SkillSet):
+    """ Mana skill set available to be used by any player.
+    """
+
+    #--------------------------------------------------------------------------
+    def __init__(self, thePlayer):
+        """ Initialize ManaSkillSet instance.
+
+        :type thePlayer: player.Player
+        :param thePlayer: Player instance that will use the skillset
+        """
+        super(ManaSkillSet, self).__init__(thePlayer, 'Axe Skill Set')
 
 
 ###############################################################################

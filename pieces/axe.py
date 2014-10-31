@@ -26,6 +26,7 @@ __docformat__ = 'restructuredtext en'
 # import user python modules
 #
 import tablecell
+import skillset
 
 
 ###############################################################################
@@ -64,6 +65,7 @@ class Axe(tablecell.TableCell):
     """
     """
 
+    #--------------------------------------------------------------------------
     def __init__(self, thePosition, **kwargs):
         """ Axe initialization method.
 
@@ -79,6 +81,28 @@ class Axe(tablecell.TableCell):
                                   theSpriteName='axe',
                                   **kwargs)
         self.attrsUsed = ('damage', )
+
+
+#
+#------------------------------------------------------------------------------
+class AxeSkillSet(skillset.SkillSet):
+    """ Axe skill set available to be used by any player.
+    """
+
+    #--------------------------------------------------------------------------
+    def __init__(self, thePlayer):
+        """ Initialize AxeSkillSet instance.
+
+        :type thePlayer: player.Player
+        :param thePlayer: Player instance that will use the skillset
+        """
+        super(AxeSkillSet, self).__init__(thePlayer, 'Axe Skill Set')
+
+    #--------------------------------------------------------------------------
+    def attack(self):
+        """ Axe Skill Set basic attack.
+        """
+        pass
 
 
 ###############################################################################

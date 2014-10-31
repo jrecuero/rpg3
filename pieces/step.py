@@ -26,6 +26,7 @@ __docformat__ = 'restructuredtext en'
 # import user python modules
 #
 import tablecell
+import skillset
 
 
 ###############################################################################
@@ -79,6 +80,22 @@ class Step(tablecell.TableCell):
                                    theSpriteName='step',
                                    **kwargs)
         self.attrsUsed = ('move', )
+
+
+#
+#------------------------------------------------------------------------------
+class StepSkillSet(skillset.SkillSet):
+    """ Step skill set available to be used by any player.
+    """
+
+    #--------------------------------------------------------------------------
+    def __init__(self, thePlayer):
+        """ Initialize StepSkillSet instance.
+
+        :type thePlayer: player.Player
+        :param thePlayer: Player instance that will use the skillset
+        """
+        super(StepSkillSet, self).__init__(thePlayer, 'Step Skill Set')
 
 
 ###############################################################################

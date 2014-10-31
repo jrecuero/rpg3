@@ -26,6 +26,7 @@ __docformat__ = 'restructuredtext en'
 # import user python modules
 #
 import tablecell
+import skillset
 
 
 ###############################################################################
@@ -74,11 +75,33 @@ class Bow(tablecell.TableCell):
         :param kwargs: Dictionary with Bow attributes.
         """
         self.damage     = 5
-        super(Bow, self).__init__(thePosition, 
+        super(Bow, self).__init__(thePosition,
                                   theName=self.getClass(),
-                                  theSpriteName='bow', 
+                                  theSpriteName='bow',
                                   **kwargs)
         self.attrsUsed = ('damage', )
+
+
+#
+#------------------------------------------------------------------------------
+class BowSkillSet(skillset.SkillSet):
+    """ Bow skill set available to be used by any player.
+    """
+
+    #--------------------------------------------------------------------------
+    def __init__(self, thePlayer):
+        """ Initialize BowSkillSet instance.
+
+        :type thePlayer: player.Player
+        :param thePlayer: Player instance that will use the skillset
+        """
+        super(BowSkillSet, self).__init__(thePlayer, 'Bow Skill Set')
+
+    #--------------------------------------------------------------------------
+    def attack(self):
+        """ Bow Skill Set basic attack.
+        """
+        pass
 
 
 ###############################################################################
