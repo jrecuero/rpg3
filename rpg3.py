@@ -32,6 +32,7 @@ import random
 import loggerator
 import tablecell
 import tableboard
+import engine
 
 from pieces.axe import Axe
 from pieces.bow import Bow
@@ -120,11 +121,6 @@ class Rpg3(cocos.layer.Layer):
                       'anchor_x': 'left',
                       'anchor_y': 'top', }
         x, y = 32, 460
-        #for stat, value in self.statsDict.iteritems():
-        #    label = cocos.text.Label('%s: %s' % (stat, value), **labelAttrs)
-        #    label.position = x, y
-        #    self.add(label, name=stat)
-        #    x, y = x, y - 20
         self.createCommandLine()
 
         for stat, value in self.user.stats.getStatsData().iteritems():
@@ -132,6 +128,8 @@ class Rpg3(cocos.layer.Layer):
             label.position = x, y
             self.add(label, name=stat)
             x, y = x, y - 16
+
+        self.engine = engine.Engine(self.tableboard, None, self, self.user)
 
     #--------------------------------------------------------------------------
     def createCommandLine(self):
@@ -239,28 +237,6 @@ class Rpg3(cocos.layer.Layer):
             [aCell.select() for aCell in cells]
 
     #--------------------------------------------------------------------------
-    def updateStats(self, theMatches):
-        """ Update user stats values with the given matches
-
-        Call tableboard instance to process all matches in the board, then it
-        process those results and update all required widgets.
-
-        :type theMatches: list
-        :param theMatches: list with all matches
-        """
-        #statsDict = self.tableboard.matchResults(theMatches, self.user)
-        #for stat, value  in statsDict.iteritems():
-        #    self.statsDict[stat] += value
-        #    label = self.get(stat)
-        #    label.element.text = '%s: %s' % (stat, self.statsDict[stat])
-        #self.logger.info("stats: %s" % (self.statsDict))
-        self.tableboard.matchResults(theMatches, self.user)
-        userStats = self.user.stats.getStatsData()
-        for stat, value in userStats.iteritems():
-            label = self.get(stat)
-            label.element.text = '%s: %s' % (stat, value['count'])
-
-    #--------------------------------------------------------------------------
     def addSprite(self, theSprite):
         """ Add sprite to the scene and any other resource.
 
@@ -305,60 +281,7 @@ class Rpg3(cocos.layer.Layer):
         self.newEntryInCommandLine('Reseted Tableboard')
 
     #--------------------------------------------------------------------------
-    def updateTableboard(self):
-        """ Update table board with all matches
-
-        After all matches have been process, it process to update tableboard,
-        moving empty cells and creating new ones in those empty spaces.
-
-        At the end it calls to process the tableboard just in case any valid
-        match has been generated with new cells placed.
-        """
-        self.tableboard.fallBoard()
-        for aCell in self.tableboard.emptyCellsInBoard():
-            self.tableboard.removeCell(aCell.getPosition())
-            self.removeSprite(aCell.getSprite())
-            self.tableboard.addNewCell(aCell.getPosition())
-            #newCell = self.tableboard.addNewCell(aCell.getPosition())
-            #self.add(newCell.getSprite())
-
-        if not self.processMatch():
-            #statsUserData = self.user.stats.getStatsData()
-            #for k, v in statsUserData.iteritems():
-            #    self.logger.info('User stat[%s]: %s' % (k, v))
-            if not self.tableboard.searchForAnyPossibleMatch():
-                self.do(Delay(1) + CallFunc(self.resetTableboard))
-
-    #--------------------------------------------------------------------------
-    def processMatch(self):
-        """ Process all matches
-
-        Process all valid matches in the tableboard. Calls to update user stats
-        and generate temporal sprites in matched cells.
-
-        :rtype: bool
-        :return: True if there was at least one match processed, else False
-        """
-        matches = self.tableboard.matchBoard()
-        if self.tableboard.isThereAnyMatch(matches):
-            self.updateStats(matches)
-            self.tableboard.setEmptyCells(matches)
-
-            for aCell in self.tableboard.emptyCellsInBoard():
-                sprite = cocos.sprite.Sprite('images/explosion.png')
-                sprite.position = aCell.getSprite().position
-                self.removeSprite(aCell.getSprite())
-                aCell.setSprite(sprite)
-                self.addSprite(aCell.getSprite())
-                #self.add(aCell.getSprite())
-                #self.tableSprites.append(aCell.getSprite())
-            #self.logger.info('user stats are %s' % (self.user.stats.getStatsData(), ))
-            self.do(Delay(1) + CallFunc(self.updateTableboard))
-            return True
-        return False
-
-    #--------------------------------------------------------------------------
-    def _updateStats(self):
+    def updateStats(self):
         """ Update user stats values with given matches using dungeon engine.
 
         Call tableboard instance to process all matches in the board, then it
@@ -370,26 +293,29 @@ class Rpg3(cocos.layer.Layer):
             label.element.text = '%s: %s' % (stat, value['count'])
 
     #--------------------------------------------------------------------------
-    def _replaceSpriteForExplosion(self):
+    def replaceSpriteForExplosion(self):
         """ Replace all empty cell sprites for explosion sprites.
         """
         for aCell in self.tableboard.emptyCellsInBoard():
             self.replaceSriteForExplosionAtCell(aCell)
 
     #--------------------------------------------------------------------------
-    def _processMatch(self):
+    def processMatch(self):
         """ Process match using dungeon engine.
         """
         matches = self.engine.runMatchPhase()
         if matches is not None:
-            self._updateStats()
-            self._replaceSpriteForExplosion()
-            self.do(Delay(1) + CallFunc(self.updateTableboard))
+            self.updateStats()
+            self.replaceSpriteForExplosion()
+            self.scheduleEventAt(0.5, self.updateTableboard)
             return True
-        return False
+        else:
+            if not self.tableboard.searchForAnyPossibleMatch():
+                self.scheduleEventAt(0.5, self.resetTableboard)
+            return False
 
     #--------------------------------------------------------------------------
-    def _updateTableboard(self):
+    def updateTableboard(self):
         """ Update table board using dungeon engine.
         """
         self.engine.runUpdateTableboard()
@@ -398,9 +324,19 @@ class Rpg3(cocos.layer.Layer):
             self.removeSprite(aCell.getSprite())
             self.tableboard.addNewCell(aCell.getPosition())
 
-        if not self._processMatch():
-            if not self.tableboard.searchForAnyPossibleMatch():
-                self.do(Delay(1) + CallFunc(self.resetTableboard))
+        self.scheduleEventAt(0, self.processMatch)
+
+    #--------------------------------------------------------------------------
+    def scheduleEventAt(self, theDelay, theAction):
+        """ Schedule for running theAction at the given theDelay time.
+
+        :type theDelay: float
+        :param theDelay: delay the action should run
+
+        :type theAction: func
+        :param theAction: method to run
+        """
+        self.do(Delay(theDelay) + CallFunc(theAction))
 
     #--------------------------------------------------------------------------
     def on_mouse_press(self, x, y, buttons, modifiers):
@@ -419,7 +355,7 @@ class Rpg3(cocos.layer.Layer):
         :param modifiers: modifiers
         """
         self.processCellSelected(x, y)
-        self.processMatch()
+        self.scheduleEventAt(0, self.processMatch)
 
 
 ###############################################################################
