@@ -97,6 +97,15 @@ class StaffSkillSet(skillset.SkillSet):
         """
         super(StaffSkillSet, self).__init__(thePlayer, Staff(), 'Staff Skill Set')
 
+    #--------------------------------------------------------------------------
+    def getSkills(self):
+        """ Return list with all available skills.
+
+        :rtype: list
+        :return: list with available skills
+        """
+        return (self.baseAttack, )
+
 
 ###############################################################################
 ##                  _

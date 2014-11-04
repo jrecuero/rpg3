@@ -97,6 +97,15 @@ class StepSkillSet(skillset.SkillSet):
         """
         super(StepSkillSet, self).__init__(thePlayer, Step(), 'Step Skill Set')
 
+    #--------------------------------------------------------------------------
+    def getSkills(self):
+        """ Return list with all available skills.
+
+        :rtype: list
+        :return: list with available skills
+        """
+        return (self.baseMove, )
+
 
 ###############################################################################
 ##                  _

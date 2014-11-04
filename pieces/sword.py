@@ -97,6 +97,15 @@ class SwordSkillSet(skillset.SkillSet):
         """
         super(SwordSkillSet, self).__init__(thePlayer, Sword(), 'Sword Skill Set')
 
+    #--------------------------------------------------------------------------
+    def getSkills(self):
+        """ Return list with all available skills.
+
+        :rtype: list
+        :return: list with available skills
+        """
+        return (self.baseAttack, )
+
 
 ###############################################################################
 ##                  _

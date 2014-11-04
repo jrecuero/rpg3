@@ -99,7 +99,7 @@ class SkillSet(objecto.Objecto):
 
     #--------------------------------------------------------------------------
     def baseMoney(self):
-        """ Skill Set basic and common defense.
+        """ Skill Set basic and common money.
         """
         userMoney = self.user.getMoney()
         cellMoney = self.tablecell.attrs.money if self.tablecell else 0
@@ -107,11 +107,36 @@ class SkillSet(objecto.Objecto):
 
     #--------------------------------------------------------------------------
     def baseHealth(self):
-        """ Skill Set basic and common defense.
+        """ Skill Set basic and common health.
         """
         userHealth = self.user.getHealth()
         cellHealth = self.tablecell.attrs.health if self.tablecell else 0
         return userHealth + cellHealth
+
+    #--------------------------------------------------------------------------
+    def basePower(self):
+        """ Skill Set basic and common power.
+        """
+        userPower = self.user.getPower()
+        cellPower = self.tablecell.attrs.power if self.tablecell else 0
+        return userPower + cellPower
+
+    #--------------------------------------------------------------------------
+    def baseMove(self):
+        """ Skill Set basic and common move.
+        """
+        userMove = self.user.getMove()
+        cellMove = self.tablecell.attrs.move if self.tablecell else 0
+        return userMove + cellMove
+
+    #--------------------------------------------------------------------------
+    def getSkills(self):
+        """ Return list with all available skills.
+
+        :rtype: list
+        :return: list with available skills
+        """
+        return []
 
 
 ###############################################################################

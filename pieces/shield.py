@@ -97,6 +97,15 @@ class ShieldSkillSet(skillset.SkillSet):
         """
         super(ShieldSkillSet, self).__init__(thePlayer, Shield(), 'Shield Skill Set')
 
+    #--------------------------------------------------------------------------
+    def getSkills(self):
+        """ Return list with all available skills.
+
+        :rtype: list
+        :return: list with available skills
+        """
+        return (self.baseDefense, )
+
 
 ###############################################################################
 ##                  _

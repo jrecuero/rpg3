@@ -97,6 +97,15 @@ class ManaSkillSet(skillset.SkillSet):
         """
         super(ManaSkillSet, self).__init__(thePlayer, Mana(), 'Mana Skill Set')
 
+    #--------------------------------------------------------------------------
+    def getSkills(self):
+        """ Return list with all available skills.
+
+        :rtype: list
+        :return: list with available skills
+        """
+        return (self.basePower, )
+
 
 ###############################################################################
 ##                  _

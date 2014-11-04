@@ -97,6 +97,15 @@ class HeartSkillSet(skillset.SkillSet):
         """
         super(HeartSkillSet, self).__init__(thePlayer, Heart(), 'Heart Skill Set')
 
+    #--------------------------------------------------------------------------
+    def getSkills(self):
+        """ Return list with all available skills.
+
+        :rtype: list
+        :return: list with available skills
+        """
+        return (self.baseHealth, )
+
 
 ###############################################################################
 ##                  _

@@ -97,6 +97,15 @@ class CoinSkillSet(skillset.SkillSet):
         """
         super(CoinSkillSet, self).__init__(thePlayer, Coin(), 'Coin Skill Set')
 
+    #--------------------------------------------------------------------------
+    def getSkills(self):
+        """ Return list with all available skills.
+
+        :rtype: list
+        :return: list with available skills
+        """
+        return (self.baseMoney, )
+
 
 ###############################################################################
 ##                  _

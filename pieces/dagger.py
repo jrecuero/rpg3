@@ -97,6 +97,15 @@ class DaggerSkillSet(skillset.SkillSet):
         """
         super(DaggerSkillSet, self).__init__(thePlayer, Dagger(), 'Dagger Skill Set')
 
+    #--------------------------------------------------------------------------
+    def getSkills(self):
+        """ Return list with all available skills.
+
+        :rtype: list
+        :return: list with available skills
+        """
+        return (self.baseAttack, )
+
 
 ###############################################################################
 ##                  _

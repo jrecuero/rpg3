@@ -95,13 +95,16 @@ class BowSkillSet(skillset.SkillSet):
         :type thePlayer: player.Player
         :param thePlayer: Player instance that will use the skillset
         """
-        super(BowSkillSet, self).__init__(thePlayer, 'Bow Skill Set')
+        super(BowSkillSet, self).__init__(thePlayer, Bow(), 'Bow Skill Set')
 
     #--------------------------------------------------------------------------
-    def attack(self):
-        """ Bow Skill Set basic attack.
+    def getSkills(self):
+        """ Return list with all available skills.
+
+        :rtype: list
+        :return: list with available skills
         """
-        pass
+        return (self.baseAttack, )
 
 
 ###############################################################################
