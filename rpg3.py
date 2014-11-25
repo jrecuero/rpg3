@@ -23,6 +23,8 @@ __docformat__ = 'restructuredtext en'
 #
 import cocos
 from cocos.actions import Delay, CallFunc
+from cocos.menu import Menu, MenuItem, fixedPositionMenuLayout
+from cocos.menu import shake, shake_back
 import pyglet
 import random
 
@@ -95,6 +97,30 @@ assert Sword
 
 #
 #------------------------------------------------------------------------------
+class SkillMenu(Menu):
+    """
+    """
+
+    def __init__(self):
+        """
+        """
+        super(SkillMenu, self).__init__('Skills')
+        # Change font size for different menu items.
+        self.font_title['font_size']          = 16
+        self.font_item['font_size']           = 8
+        self.font_item_selected['font_size']  = 10
+        items = [(MenuItem('Axe', self.on_quit)), (MenuItem('Bow', self.on_quit)), ]
+        self.create_menu(items,
+                         selected_effect=shake(),
+                         unselected_effect=shake_back(),
+                         layout_strategy=fixedPositionMenuLayout([(250, 460), (250, 430)], ))
+
+    def on_quit(self):
+        exit()
+
+
+#
+#------------------------------------------------------------------------------
 class Rpg3(cocos.layer.Layer):
     """
     """
@@ -130,6 +156,8 @@ class Rpg3(cocos.layer.Layer):
             x, y = x, y - 16
 
         self.engine = engine.Engine(self.tableboard, None, self, self.user)
+
+        self.add(SkillMenu())
 
     #--------------------------------------------------------------------------
     def createCommandLine(self):
